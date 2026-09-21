@@ -80,7 +80,7 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
 .slot{width:78px;height:78px;border:3px dashed var(--meok);border-radius:14px;
   display:flex;align-items:center;justify-content:center;font-size:40px;background:#FBF3DC}
 .slot.filled{border-style:solid;background:var(--dalbit)}
-.slot.opt{border-color:#A99C7E}
+.slot.optional{border-color:#A99C7E}
 .eq{font-size:26px;color:#6B6256}
 .result-syl{width:104px;height:104px;border:3px solid var(--meok);border-radius:14px;
   display:flex;align-items:center;justify-content:center;font-size:58px;background:var(--ssuk);
@@ -144,7 +144,45 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
 .note{border-left:5px solid var(--juhong);padding:10px 0 10px 15px;margin-top:18px;
   background:#FBF3DC;font-size:15px}
 .stars{font-size:60px;color:var(--hwang);letter-spacing:.1em}
-@media (prefers-reduced-motion: reduce){*{transition:none !important}}
+/* 캐릭터 안내 */
+.guide{display:flex;align-items:flex-end;gap:10px;margin:4px 0 22px}
+.guide-fig{flex:0 0 96px}
+.guide-fig svg{display:block;width:96px;height:80px}
+.bubble{position:relative;background:#fff;border:3px solid var(--meok);border-radius:16px;
+  padding:9px 14px 11px;font-size:15.5px;line-height:1.6;max-width:560px}
+.bubble::before{content:'';position:absolute;left:-15px;bottom:16px;
+  border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:12px solid var(--meok)}
+.bubble::after{content:'';position:absolute;left:-9px;bottom:19px;
+  border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #fff}
+.bubble b{display:block;font-family:var(--display);font-weight:400;font-size:15px;color:var(--juhong);line-height:1.3}
+.guide.side{margin-top:18px}
+.guide.side .guide-fig{flex-basis:76px}
+.guide.side .guide-fig svg{width:76px;height:64px}
+.guide.side .bubble{background:#FBF3DC}
+.guide.side .bubble::after{border-right-color:#FBF3DC}
+.bubble.solo{margin:0 0 12px}
+.bubble.solo::before,.bubble.solo::after{display:none}
+.guide.happy .guide-fig{animation:hop .6s ease}
+.guide.oops .guide-fig{animation:tilt .7s ease}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-14px)}}
+@keyframes tilt{0%,100%{transform:rotate(0)}30%{transform:rotate(-9deg)}65%{transform:rotate(6deg)}}
+.trio{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 14px}
+.trio-one{text-align:center;width:104px}
+.trio-one svg{display:block;width:104px;height:88px}
+.trio-one b{font-family:var(--display);font-weight:400;font-size:19px;display:block;line-height:1.2}
+.trio-one span{font-size:12.5px;color:#6B6256}
+.scene{position:relative;width:240px;height:220px;margin:0 auto 4px}
+.scene .moon{position:absolute;left:40px;top:0}
+.scene .tori{position:absolute;left:0;bottom:0}
+.scene .tori svg{display:block;width:240px;height:200px}
+.scene .pestle{animation:pound .45s ease-in-out 5}
+@keyframes pound{0%,100%{transform:translateY(0)}50%{transform:translateY(12px)}}
+@media (max-width:560px){
+  .guide-fig{flex-basis:72px}
+  .guide-fig svg{width:72px;height:60px}
+  .bubble{font-size:14.5px}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important}}
 @media (max-width:560px){
   header{padding:10px 14px;row-gap:6px}
   header .back{order:1}
@@ -274,7 +312,7 @@ const PIC = {
 };
 
 const MODULES = [
-{ n:1, title:'첫 소리', why:'모음 여섯 개와 자음 다섯 개만으로도 서른 글자를 읽을 수 있어요.',
+{ n:1, title:'첫 소리', why:'모음 여섯 개랑 자음 다섯 개만 알아도 서른 글자를 읽을 수 있어. 같이 해 보자.',
   add:{cho:['ㄱ','ㄴ','ㅁ','ㅅ','ㅇ'], jung:['ㅏ','ㅓ','ㅗ','ㅜ','ㅡ','ㅣ'], jong:[]},
   listen:[{a:'가',o:['가','거','고']},{a:'누',o:['나','누','느']},
           {a:'미',o:['모','무','미']},{a:'소',o:['서','소','수']}],
@@ -282,7 +320,7 @@ const MODULES = [
          {w:'소',en:'cow',p:'cow'},{w:'아기',en:'baby',p:'baby'},{w:'모기',en:'mosquito',p:'mosquito'}],
   dict:['아기','나무','오이'] },
 
-{ n:2, title:'남은 자음', why:'자음 아홉 개가 더 들어오면 읽을 수 있는 말이 갑자기 늘어나요.',
+{ n:2, title:'남은 자음', why:'자음 아홉 개가 더 오면 읽을 수 있는 말이 확 늘어나. 포도, 하마 같은 말도 읽게 돼.',
   add:{cho:['ㄷ','ㄹ','ㅂ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'], jung:[], jong:[]},
   listen:[{a:'도',o:['도','조','포']},{a:'리',o:['리','디','비']},
           {a:'차',o:['자','차','타']},{a:'하',o:['하','파','카']}],
@@ -290,7 +328,7 @@ const MODULES = [
          {w:'치마',en:'skirt'},{w:'하마',en:'hippo'}],
   dict:['다리','포도','하마'] },
 
-{ n:3, title:'길어진 모음', why:'획 하나가 더 붙으면 소리 앞에 이 소리가 붙어요. 아에 붙으면 야.',
+{ n:3, title:'길어진 모음', why:'획 하나만 더 그으면 소리가 달라져. ㅏ에 획을 하나 더 그으면 ㅑ가 돼.',
   add:{cho:[], jung:['ㅑ','ㅕ','ㅛ','ㅠ'], jong:[]},
   listen:[{a:'야',o:['아','야','여']},{a:'유',o:['우','유','요']},
           {a:'여',o:['어','여','요']},{a:'교',o:['고','교','구']}],
@@ -298,16 +336,16 @@ const MODULES = [
          {w:'야구',en:'baseball'},{w:'유리',en:'glass'}],
   dict:['여우','우유','요리'] },
 
-{ n:4, title:'어려운 모음', why:'모양이 닮은 모음끼리 섞이기 쉬워요. 여기서 실수가 가장 많이 나와요.',
+{ n:4, title:'어려운 모음', why:'모양이 닮은 모음은 헷갈리기 쉬워. 여기서 실수가 제일 많이 나오니까 천천히 가자.',
   add:{cho:[], jung:['ㅐ','ㅔ','ㅒ','ㅖ','ㅘ','ㅝ','ㅚ','ㅟ','ㅢ'], jong:[]},
   listen:[{a:'개',o:['개','게','거']},{a:'게',o:['개','게','기']},
           {a:'과',o:['고','과','구']},{a:'위',o:['우','위','외']}],
   words:[{w:'사과',en:'apple'},{w:'가게',en:'store'},{w:'시계',en:'clock'},
          {w:'의자',en:'chair'},{w:'귀',en:'ear'}],
   dict:['사과','가게','의자'],
-  note:'요즘 서울말에서는 ㅐ와 ㅔ의 소리 차이가 거의 사라졌어요. 그래서 개와 게는 귀로 구별하기 어렵고, 뜻으로 기억해야 해요. 이런 짝은 소리방에서 따로 연습해요.' },
+  note:{w:'tori', t:'참, 요즘 서울말에서는 ㅐ랑 ㅔ 소리가 거의 똑같아. 내 큰 귀로도 구별하기 어려워. 그래서 개랑 게는 뜻으로 기억해야 해.'} },
 
-{ n:5, title:'쌍둥이 자음', why:'같은 글자가 둘이면 목에 힘을 주고 세게 소리 내요.',
+{ n:5, title:'쌍둥이 자음', why:'똑같은 글자가 둘이면 목에 힘을 꽉 주고 세게 소리 내. 가, 까 하고 해 봐.',
   add:{cho:['ㄲ','ㄸ','ㅃ','ㅆ','ㅉ'], jung:[], jong:[]},
   listen:[{a:'까',o:['가','까','카']},{a:'따',o:['다','따','타']},
           {a:'빠',o:['바','빠','파']},{a:'짜',o:['자','짜','차']}],
@@ -315,16 +353,16 @@ const MODULES = [
          {w:'뿌리',en:'root'},{w:'쓰레기',en:'trash'}],
   dict:['토끼','꼬리','아빠'] },
 
-{ n:6, title:'받침이 왔어요', why:'글자 아래에 자음이 하나 더 들어가요. 대표 받침 일곱 개부터 배워요.',
+{ n:6, title:'받침이 왔어요', why:'이제 글자 아래에 자음이 하나 더 들어가. 이걸 받침이라고 해. 대표 받침 일곱 개부터 배우자.',
   add:{cho:[], jung:[], jong:['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅇ']},
   listen:[{a:'산',o:['사','산','상']},{a:'밥',o:['바','밥','밤']},
           {a:'공',o:['고','곤','공']},{a:'물',o:['무','물','문']}],
   words:[{w:'산',en:'mountain'},{w:'공',en:'ball'},{w:'물',en:'water'},
          {w:'곰',en:'bear'},{w:'밥',en:'rice, meal'}],
   dict:['산','공','물'],
-  note:'받침은 소리를 끝에서 막아요. 사는 열려 있고 산은 코로 막히고 상은 목 안에서 막혀요. 입 모양과 혀 위치를 같이 느껴 보세요.' },
+  note:{w:'tori', t:'받침은 소리를 끝에서 막아 줘. 사는 열려 있고, 산은 코로 막히고, 상은 목 안쪽에서 막혀. 입 모양이랑 혀 위치를 같이 느껴 봐.'} },
 
-{ n:7, title:'소리는 같은데', why:'소리가 똑같아도 글자가 다를 수 있어요. 여기가 한글 쓰기의 가장 큰 문턱이에요.',
+{ n:7, title:'소리는 같은데', why:'소리가 똑같아도 글자가 다를 수 있어. 여기가 한글 쓰기에서 제일 높은 언덕이야. 담이가 도와줄 거야.',
   add:{cho:[], jung:[], jong:['ㅋ','ㄲ','ㅅ','ㅆ','ㅈ','ㅊ','ㅌ','ㅍ','ㅎ']},
   cmp:[{s:'밖',d:'박',n:'ㄲ 받침은 ㄱ 소리가 나요'},
        {s:'옷',d:'옫',n:'ㅅ 받침은 ㄷ 소리가 나요'},
@@ -339,9 +377,9 @@ const MODULES = [
   words:[{w:'옷',en:'clothes'},{w:'꽃',en:'flower'},{w:'밖',en:'outside'},
          {w:'잎',en:'leaf'},{w:'부엌',en:'kitchen'}],
   dict:['옷','꽃','밖'],
-  note:'왜 이렇게 쓸까요. 꽃에 이가 붙으면 꽃이가 되고 소리는 꼬치가 돼요. 숨어 있던 ㅊ이 나타나요. 그래서 꼳이 아니라 꽃으로 적어요. 한글은 소리를 적는 게 아니라 말의 뿌리를 적어요.' },
+  note:{w:'dami', t:'왜 꼳이라고 안 쓰고 꽃이라고 쓰는지 알려 주마. “꽃이 피어요”라고 하면 [꼬치 피어요]라고 소리 난단다. 숨어 있던 ㅊ이 나타나지. 그래서 한글은 소리가 아니라 말의 뿌리를 적는단다.'} },
 
-{ n:8, title:'겹받침', why:'받침이 두 개예요. 소리는 보통 둘 중 하나만 나요.',
+{ n:8, title:'겹받침', why:'받침이 두 개나 있어. 그런데 소리는 보통 하나만 나. 어느 쪽이 소리 나는지 같이 찾아보자.',
   add:{cho:[], jung:[], jong:['ㄳ','ㄵ','ㄶ','ㄺ','ㄻ','ㄼ','ㅀ','ㅄ']},
   cmp:[{s:'값',d:'갑',n:'ㅄ에서 ㅂ만 소리 나요'},
        {s:'닭',d:'닥',n:'ㄺ에서 ㄱ만 소리 나요'},
@@ -356,7 +394,7 @@ const MODULES = [
   words:[{w:'값',en:'price'},{w:'삶',en:'life'},{w:'여덟',en:'eight'},
          {w:'닭',en:'chicken'},{w:'흙',en:'soil'}],
   dict:['값','삶','닭'],
-  note:'겹받침은 뒤에 무엇이 오느냐에 따라 소리가 달라져요. 닭은 닥이지만 닭이는 다기예요. 숨어 있던 ㄹ이 살아나요. 3단계 맞춤법방에서 더 자세히 다뤄요.' }
+  note:{w:'dami', t:'겹받침은 뒤에 무엇이 오느냐에 따라 소리가 달라진단다. 닭 혼자 있으면 [닥]이지만, “닭이 울어요”라고 하면 [달기 우러요]가 된단다. 숨어 있던 ㄹ이 살아나는 게야. 3단계 맞춤법방에서 더 자세히 알려 주마.'} }
 ];
 
 /* ══════════════════════════════════════════════════════════════
@@ -514,6 +552,117 @@ hintToggle.addEventListener('change', () => {
   });
 });
 
+/* ---- 캐릭터 -------------------------------------------------
+   토리(토끼)  소리와 쓰기: 소리 듣기, 획순, 따라 쓰기, 듣고 고르기, 받아쓰기
+   모이(까치)  말 모으기: 글자 조립, 단어 읽기, 모은 말 세기
+   담이(호랑이) 이야기와 뿌리: 소리와 글자가 다른 이유
+   캐릭터는 반말(담이는 옛날 어른 말투), 화면 안내는 해요체로 씁니다.   */
+const NAME = {tori:'토리', moi:'모이', dami:'담이'};
+const CHAR = {
+  tori(m){
+    const mouth = m === 'happy'
+      ? '<path d="M101 107 q10 13 20 0 Z" fill="#C1403A" stroke="#221F1C" stroke-width="2.4" stroke-linejoin="round"/>'
+      : m === 'oops'
+      ? '<ellipse cx="111" cy="112" rx="4" ry="5" fill="#221F1C"/>'
+      : '<path d="M104 110 q7 6 14 0" stroke="#221F1C" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+    return `<svg viewBox="0 0 240 200" aria-hidden="true">
+      <g stroke="#221F1C" stroke-width="3.2" stroke-linejoin="round">
+        <path d="M96 74 C86 48 84 26 94 20 C106 26 104 54 104 74 Z" fill="#EDE3CB"/>
+        <path d="M97 66 C91 48 90 32 95 28 C101 33 100 52 102 66 Z" fill="#D98B7E" stroke="none"/>
+        <path d="M118 72 C114 48 118 26 129 22 C137 30 128 56 126 73 Z" fill="#EDE3CB"/>
+        <path d="M120 66 C118 48 121 34 127 30 C131 37 124 52 124 66 Z" fill="#D98B7E" stroke="none"/>
+        <ellipse cx="112" cy="140" rx="40" ry="42" fill="#EDE3CB"/>
+        <circle cx="110" cy="92" r="27" fill="#EDE3CB"/>
+        <path d="M36 168 L92 168 L86 190 L42 190 Z" fill="#8A6A4A"/>
+      </g>
+      <g class="pestle" stroke="#221F1C" stroke-width="3.2">
+        <path d="M150 150 L196 74" stroke-width="11" stroke-linecap="round" fill="none"/>
+        <circle cx="198" cy="70" r="12" fill="#C9A87C"/>
+      </g>
+      <circle cx="101" cy="90" r="3.6" fill="#221F1C"/>
+      <circle cx="121" cy="90" r="3.6" fill="#221F1C"/>
+      <path d="M107 100 L115 100 L111 105 Z" fill="#C1403A"/>
+      ${mouth}
+    </svg>`;
+  },
+  moi(m){
+    const eye = m === 'happy'
+      ? '<path d="M74 85 q6 -8 12 0" stroke="#EDE3CB" stroke-width="3.4" fill="none" stroke-linecap="round"/>'
+      : '<circle cx="80" cy="82" r="5.4" fill="#EDE3CB"/><circle cx="81" cy="82" r="2.6" fill="#221F1C"/>';
+    return `<svg viewBox="0 0 240 200" aria-hidden="true">
+      <g stroke="#221F1C" stroke-width="3.2" stroke-linejoin="round">
+        <path d="M168 118 L222 150 L214 162 L160 136 Z" fill="#2D6E8E"/>
+        <ellipse cx="118" cy="120" rx="52" ry="40" fill="#EDE3CB"/>
+        <path d="M118 82 C150 82 168 100 168 122 C168 138 156 150 140 152 C150 128 142 96 118 82 Z" fill="#221F1C"/>
+        <circle cx="82" cy="88" r="26" fill="#221F1C"/>
+        <path d="M58 86 L32 94 L58 102 Z" fill="#E3A93C"/>
+        <path d="M96 152 L96 172 M124 152 L124 172" stroke-width="5" stroke-linecap="round"/>
+      </g>
+      ${eye}
+      <rect x="96" y="106" width="34" height="24" rx="3" fill="#EDE3CB" stroke="#221F1C" stroke-width="2.6"/>
+      <path d="M96 107 L113 120 L130 107" fill="none" stroke="#221F1C" stroke-width="2.6"/>
+    </svg>`;
+  },
+  dami(m){
+    const mouth = m === 'happy'
+      ? '<path d="M94 137 q16 20 32 0 Z" fill="#C1403A" stroke="#221F1C" stroke-width="3" stroke-linejoin="round"/>'
+      : m === 'oops'
+      ? '<path d="M99 143 L121 143" stroke="#221F1C" stroke-width="3" stroke-linecap="round"/>'
+      : '<path d="M110 133 L110 140 M110 140 q-11 10 -19 0 M110 140 q11 10 19 0" stroke="#221F1C" stroke-width="3" fill="none" stroke-linecap="round"/>';
+    return `<svg viewBox="0 0 240 200" aria-hidden="true">
+      <g stroke="#221F1C" stroke-width="3.2" stroke-linejoin="round">
+        <circle cx="74" cy="60" r="16" fill="#E3A93C"/>
+        <circle cx="146" cy="60" r="16" fill="#E3A93C"/>
+        <ellipse cx="110" cy="112" rx="62" ry="58" fill="#E3A93C"/>
+        <ellipse cx="110" cy="132" rx="34" ry="26" fill="#EDE3CB"/>
+      </g>
+      <g stroke="#221F1C" stroke-width="6" stroke-linecap="round">
+        <path d="M64 92 L84 86"/><path d="M62 108 L82 106"/>
+        <path d="M156 92 L136 86"/><path d="M158 108 L138 106"/>
+        <path d="M100 62 L104 78"/><path d="M120 62 L116 78"/>
+      </g>
+      <circle cx="92" cy="106" r="6" fill="#221F1C"/>
+      <circle cx="128" cy="106" r="6" fill="#221F1C"/>
+      <path d="M102 124 L118 124 L110 133 Z" fill="#221F1C"/>
+      ${mouth}
+    </svg>`;
+  }
+};
+
+/* 화면마다 주 안내 캐릭터가 하나 있고, 정답과 오답에 반응합니다. */
+let curGuide = null;
+function guide(who, text, side){
+  const wrap = h('div', {class:'guide' + (side ? ' side' : ''), 'data-who':who});
+  wrap.append(h('div', {class:'guide-fig', html: CHAR[who]('')}),
+              h('div', {class:'bubble'}, h('b', {}, NAME[who]), h('span', {}, text)));
+  if(!side) curGuide = wrap;
+  return wrap;
+}
+function say(who, text){
+  return h('div', {class:'bubble solo'}, h('b', {}, NAME[who]), h('span', {}, text));
+}
+function react(mood){
+  if(!curGuide) return;
+  const g = curGuide, who = g.dataset.who;
+  g.querySelector('.guide-fig').innerHTML = CHAR[who](mood);
+  g.classList.remove('happy', 'oops');
+  void g.offsetWidth;
+  g.classList.add(mood);
+  clearTimeout(react.t);
+  react.t = setTimeout(() => {
+    g.classList.remove('happy', 'oops');
+    g.querySelector('.guide-fig').innerHTML = CHAR[who]('');
+  }, 1200);
+}
+function trio(){
+  const t = h('div', {class:'trio'});
+  [['tori','소리와 쓰기'], ['moi','말 모으기'], ['dami','옛날 이야기']].forEach(([w, role]) => {
+    t.append(h('div', {class:'trio-one'},
+      h('div', {html: CHAR[w]('')}), h('b', {}, NAME[w]), h('span', {}, role)));
+  });
+  return t;
+}
+
 /* ---- 진도 (모듈별 별 개수) ---- */
 const stars = {};   /* 실제 사이트에서는 progress.js 가 localStorage 로 대신합니다 */
 
@@ -529,6 +678,7 @@ nextBtn.addEventListener('click', () => {
 /* ---- 모듈 선택 화면 ---- */
 function showPicker(){
   mod = null;
+  curGuide = null;
   hdrTitle.textContent = '한글 트랙';
   document.getElementById('stepLabel').textContent = '';
   document.getElementById('trackFill').style.width = '0%';
@@ -538,14 +688,15 @@ function showPicker(){
   card.innerHTML = '';
   card.append(
     h('h2', {}, '한글 트랙'),
-    h('p', {class:'sub'}, '여덟 모듈이에요. 소리부터 시작해서 겹받침까지 가요. 순서대로 하는 게 좋지만, 이미 아는 곳은 건너뛰어도 돼요.')
+    trio(),
+    guide('tori', '안녕, 나는 토리야. 모이랑 담이랑 같이 여덟 개 모듈을 지나서 보름달까지 가 보자. 이미 아는 곳은 건너뛰어도 돼.')
   );
   const g = h('div', {class:'modgrid'});
   MODULES.forEach(m => {
     const got = stars[m.n] || 0;
     const jm = [...m.add.jung, ...m.add.cho, ...m.add.jong].join(' ');
     g.append(h('button', {class:'modcard', onclick: () => startModule(m.n)},
-      h('div', {html: moonSVG(m.n, 56)}),
+      h('div', {html: moonSVG(m.n, 56, !!stars[m.n])}),
       h('div', {style:'flex:1'},
         h('b', {}, m.n + '. ' + m.title),
         h('span', {}, got ? '★'.repeat(got) + '☆'.repeat(3-got) : '아직 안 했어요'),
@@ -554,17 +705,33 @@ function showPicker(){
     ));
   });
   card.append(g);
-  card.append(h('div', {class:'note'},
-    '모듈 7번이 이 트랙의 핵심이에요. 소리가 같아도 글자가 다른 이유를 여기서 처음 다뤄요. 듣고 쓰는 아이가 가장 많이 틀리는 지점이에요.'));
 }
 
-function moonSVG(n, size){
-  const off = -34 + (n - 1) * (34 / 3.5);
-  const full = n >= 8;
+/* 달 모양 ----------------------------------------------------
+   n번째 모듈은 전체의 n/8 만큼 찬 달입니다. 모듈 1은 초승달, 모듈 8은 보름달.
+   한국과 미국(북반구)에서 차오르는 달은 오른쪽부터 밝아지므로
+   밝은 부분 = 오른쪽 반원 + 명암 경계선(타원 호)으로 직접 그립니다.
+   가리개 원을 덮는 방식은 바탕색이 바뀌면 테두리 밖으로 삐져나와서 쓰지 않습니다.
+   다 한 모듈은 밝은 부분이 금색이 됩니다.                                   */
+function moonSVG(n, size, done){
+  const f = Math.max(0, Math.min(1, n / MODULES.length));
+  const cx = 30, cy = 30, r = 24;
+  const litColor = done ? '#E3A93C' : '#F5E6BD';
+  let lit;
+  if(f >= 1){
+    const crater = done ? '#C98E26' : '#DCC894';
+    lit = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${litColor}"/>
+      <g fill="${crater}"><circle cx="23" cy="23" r="4.5"/><circle cx="37" cy="33" r="3.4"/>
+      <circle cx="26" cy="39" r="2.6"/><circle cx="38" cy="20" r="2"/></g>`;
+  } else {
+    const rx = (r * Math.abs(1 - 2 * f)).toFixed(2);
+    const sweep = f > 0.5 ? 1 : 0;   /* 반달 전에는 경계선이 오른쪽으로, 이후에는 왼쪽으로 부풉니다 */
+    lit = `<path d="M${cx} ${cy - r} A${r} ${r} 0 0 1 ${cx} ${cy + r} A${rx} ${r} 0 0 ${sweep} ${cx} ${cy - r} Z" fill="${litColor}"/>`;
+  }
   return `<svg width="${size}" height="${size}" viewBox="0 0 60 60" aria-hidden="true">
-    <circle cx="30" cy="30" r="24" fill="#F5E6BD" stroke="#221F1C" stroke-width="2.5"/>
-    ${full ? '' : `<circle cx="${30 + off}" cy="30" r="24" fill="#EDE3CB"/>`}
-    <circle cx="30" cy="30" r="24" fill="none" stroke="#221F1C" stroke-width="2.5"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="#17324A"/>
+    ${lit}
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#221F1C" stroke-width="2.5"/>
   </svg>`;
 }
 
@@ -590,6 +757,7 @@ function render(){
   nextBtn.style.visibility = 'visible';
   document.getElementById('stepLabel').textContent = (step+1) + ' / ' + steps.length;
   document.getElementById('trackFill').style.width = (step/(steps.length-1)*100) + '%';
+  curGuide = null;
   steps[step]();
   window.scrollTo(0,0);
 }
@@ -599,21 +767,19 @@ function intro(){
   const newJamo = [...mod.add.jung, ...mod.add.cho, ...mod.add.jong];
   card.append(
     h('h2', {}, mod.title),
-    h('p', {class:'sub'}, mod.why),
+    guide('tori', mod.why + (mod.note && !mod.cmp && mod.note.w === 'tori' ? ' ' + mod.note.t : '')),
     h('div', {class:'strokebox', style:'display:inline-block;padding:18px 26px;cursor:default'},
       h('div', {style:'font-size:44px;line-height:1.5;letter-spacing:.06em'},
         newJamo.length ? newJamo.join(' ') : '지금까지 배운 받침으로 연습해요')
     ),
-    h('p', {class:'sub', style:'margin-top:20px'},
-      '토리가 소리를 먼저 들려줄 거예요. 소리를 듣고, 글자는 그다음에 봐요.')
   );
-  if(mod.note) card.append(h('div', {class:'note'}, mod.note));
+  if(mod.note && !mod.cmp && mod.note.w !== 'tori') card.append(guide(mod.note.w, mod.note.t, true));
 }
 
 /* ---- 2. 소리 듣기 ---- */
 function soundScreen(){
   card.append(h('h2', {}, '소리를 들어 봐요'),
-              h('p', {class:'sub'}, '글자를 누르면 소리가 나요. 새로 배우는 글자는 테두리가 빨간색이에요.'));
+              guide('tori', '내 귀는 아주 커서 소리를 잘 들어. 글자를 누르면 내가 소리 내 줄게. 빨간 테두리가 오늘 새로 만나는 글자야.'));
   const make = (list, cls, label) => {
     if(!list.length) return null;
     const wrap = h('div', {});
@@ -648,8 +814,8 @@ function soundScreen(){
 function strokeScreen(){
   const list = [...mod.add.jung, ...mod.add.cho, ...mod.add.jong].filter(j => JAMO[j] && JAMO[j].s);
   card.append(h('h2', {}, '어떻게 쓰는지 봐요'),
-              h('p', {class:'sub'}, list.length ? '글자를 누르면 쓰는 순서가 다시 보여요.'
-                : '이번 모듈에는 새로 쓰는 법을 배우는 글자가 없어요. 겹받침은 이미 아는 자음 두 개를 나란히 써요.'));
+              guide('tori', list.length ? '글자는 쓰는 순서가 정해져 있어. 글자를 누르면 순서를 다시 보여 줄게.'
+                : '이번에는 새로 쓰는 글자가 없어. 겹받침은 이미 아는 자음 두 개를 나란히 쓰면 돼.'));
   if(!list.length){
     const l2 = [...mod.add.jong];
     const g = h('div', {class:'grid'});
@@ -692,7 +858,7 @@ function strokeScreen(){
 /* ---- 4. 따라 쓰기 ---- */
 function traceScreen(){
   card.append(h('h2', {}, '따라 써 봐요'),
-              h('p', {class:'sub'}, '옅은 글자 위를 손가락이나 마우스로 따라 그어요.'));
+              guide('tori', '옅은 글자 위를 손가락으로 따라 그어 봐. 아까 본 순서대로 쓰면 더 좋아.'));
   const all = [...mod.add.jung, ...mod.add.cho, ...mod.add.jong];
   const list = all.length ? all : pool.jong;
   let current = list[0];
@@ -703,15 +869,15 @@ function traceScreen(){
       current = j;
       [...pick.children].forEach(c => c.setAttribute('aria-pressed','false'));
       b.setAttribute('aria-pressed','true');
-      guide(); speak(j);
+      drawTraceBase(); speak(j);
     }}, j);
     pick.append(b);
   });
   card.append(h('div', {class:'tracewrap'}, canvas, pick),
-    h('button', {class:'btn quiet play', style:'margin-top:14px', onclick: guide}, '지우기'));
+    h('button', {class:'btn quiet play', style:'margin-top:14px', onclick: drawTraceBase}, '지우기'));
 
   const ctx = canvas.getContext('2d');
-  function guide(){
+  function drawTraceBase(){
     ctx.clearRect(0,0,300,300);
     ctx.fillStyle = '#F5E6BD'; ctx.fillRect(0,0,300,300);
     ctx.strokeStyle = '#D5C69C'; ctx.lineWidth = 2;
@@ -722,7 +888,7 @@ function traceScreen(){
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(current, 150, 158);
   }
-  guide();
+  drawTraceBase();
   let drawing = false;
   const pos = e => { const r = canvas.getBoundingClientRect();
     return [(e.clientX-r.left)*(300/r.width), (e.clientY-r.top)*(300/r.height)]; };
@@ -745,12 +911,12 @@ function traceScreen(){
 function buildScreen(){
   const useJong = pool.jong.length > 0;
   card.append(h('h2', {}, '글자를 만들어 봐요'),
-    h('p', {class:'sub'}, useJong
-      ? '자음과 모음을 고르면 글자가 되고, 받침을 누르면 아래에 붙어요.'
-      : '자음 하나와 모음 하나를 고르면 글자가 돼요.'));
+    guide('moi', useJong
+      ? '나는 모으는 걸 좋아해. 자음이랑 모음을 모으면 글자가 되고, 받침을 누르면 아래에 붙어.'
+      : '나는 모으는 걸 좋아해. 자음 하나랑 모음 하나를 모으면 글자가 돼. 골라 봐.'));
   let cho = null, jung = null, jong = null;
   const sC = h('div', {class:'slot'}, ''), sV = h('div', {class:'slot'}, '');
-  const sJ = h('div', {class:'slot opt'}, '');
+  const sJ = h('div', {class:'slot optional'}, '');
   const out = h('div', {class:'result-syl'}, '');
   const asm = h('div', {class:'assembly'}, sC, h('span',{class:'eq'},'+'), sV);
   if(useJong) asm.append(h('span',{class:'eq'},'+'), sJ);
@@ -789,6 +955,7 @@ function buildScreen(){
         ? josa(cho,'와') + ' ' + josa(jung,'와') + ' ' + josa(jong,'이')
         : josa(cho,'와') + ' ' + josa(jung,'이');
       setFeedback(parts + ' 만나면 ' + josa(syl,'이에요') + '.', 'ok');
+      react('happy');
     }
   }
 }
@@ -796,7 +963,7 @@ function buildScreen(){
 /* ---- 6. 듣고 고르기 ---- */
 function listenScreen(){
   card.append(h('h2', {}, '듣고 골라요'),
-    h('p', {class:'sub'}, '소리를 듣고 맞는 글자를 눌러요. ' + mod.listen.length + '문제예요.'));
+    guide('tori', '내가 소리를 낼 테니까 잘 듣고 맞는 글자를 골라 봐. 모두 ' + mod.listen.length + '문제야.'));
   let qi = 0, locked = false;
   const box = h('div', {});
   card.append(box);
@@ -817,11 +984,13 @@ function listenScreen(){
       if(o === q.a){
         e.currentTarget.classList.add('right'); score++;
         setFeedback('맞았어요.', 'ok');
+        react('happy');
       } else {
         e.currentTarget.classList.add('wrong');
         const good = btns.find(b => b.textContent === q.a);
         if(good) good.classList.add('right');
         setFeedback('이건 ' + josa(q.a,'이에요') + '.', 'no');
+        react('oops');
       }
       setTimeout(() => {
         qi++;
@@ -837,7 +1006,7 @@ function listenScreen(){
 /* ---- 7. 단어 읽기 ---- */
 function wordScreen(){
   card.append(h('h2', {}, '배운 글자로 만든 말'),
-    h('p', {class:'sub'}, '카드를 누르면 소리가 나요. 뜻은 뜻 보기를 눌러요.'));
+    guide('moi', '내가 모아 온 말들이야. 카드를 누르면 소리가 나고, 뜻 보기를 누르면 영어 뜻이 나와.'));
   const box = h('div', {class:'words'});
   mod.words.forEach(item => {
     const el = h('div', {class:'word', onclick: () => speak(item.w)});
@@ -853,7 +1022,7 @@ function wordScreen(){
 /* ---- 8. 소리와 글자 대조 (7, 8번 모듈) ---- */
 function compareScreen(){
   card.append(h('h2', {}, '소리와 글자가 달라요'),
-    h('p', {class:'sub'}, '왼쪽은 쓰는 모양, 오른쪽은 나는 소리예요. 듣기 버튼으로 확인해요.'));
+    guide('dami', '옛날 이야기 하나 해 주마. 왼쪽은 쓰는 모양이고, 오른쪽은 실제로 나는 소리란다. 듣기를 눌러서 귀로도 확인해 보거라.'));
   const t = h('table', {class:'cmp'});
   t.append(h('tr', {}, h('th',{},'이렇게 써요'), h('th',{},'이렇게 들려요'), h('th',{},'왜'), h('th',{},'')));
   mod.cmp.forEach(c => {
@@ -865,15 +1034,15 @@ function compareScreen(){
     ));
   });
   card.append(t);
-  if(mod.note) card.append(h('div', {class:'note'}, mod.note));
+  if(mod.note) card.append(guide(mod.note.w, mod.note.t, true));
 }
 
 /* ---- 9. 받아쓰기 ---- */
 function dictationScreen(){
   const useJong = pool.jong.length > 0;
   card.append(h('h2', {}, '듣고 써 봐요'),
-    h('p', {class:'sub'}, '한국어 자판이 없어도 괜찮아요. 자음과 모음을 눌러서 글자를 만들어요.'
-      + (useJong ? ' 받침은 글자를 만든 다음에 눌러요.' : '')));
+    guide('tori', '내가 말하는 걸 듣고 써 봐. 한국어 자판이 없어도 괜찮아. 자음이랑 모음을 눌러서 글자를 만들면 돼.'
+      + (useJong ? ' 받침은 글자를 다 만든 다음에 눌러.' : '')));
   let qi = 0;
   const box = h('div', {class:'dictbox'});
   card.append(box);
@@ -923,6 +1092,7 @@ function dictationScreen(){
       if(typed === target){
         ans.classList.add('right'); score++;
         setFeedback('맞았어요.', 'ok');
+        react('happy');
       } else {
         ans.classList.add('wrong');
         ans.innerHTML = '';
@@ -930,6 +1100,7 @@ function dictationScreen(){
           h('span', {style:'font-size:26px;margin:0 14px;color:#6B6256'}, '→'),
           h('span', {}, target));
         setFeedback('어디가 다른지 보세요.', 'no');
+        react('oops');
       }
       ctrl.remove();
       setTimeout(() => {
@@ -948,14 +1119,17 @@ function resultScreen(){
   stars[mod.n] = Math.max(stars[mod.n] || 0, s);
   const next = MODULES.find(m => m.n === mod.n + 1);
   card.append(h('div', {style:'text-align:center;padding-top:10px'},
-    h('div', {html: moonSVG(mod.n, 132), style:'margin-bottom:8px'}),
+    h('div', {class:'scene'},
+      h('div', {class:'moon', html: moonSVG(mod.n, 160, true)}),
+      h('div', {class:'tori', html: CHAR.tori(s === 3 ? 'happy' : '')})),
     h('h2', {}, '달이 조금 차올랐어요'),
     h('div', {class:'stars'}, '★'.repeat(s) + '☆'.repeat(3-s)),
     h('p', {class:'sub'}, '맞힌 문제 ' + score + ' / ' + maxScore),
-    h('p', {class:'sub', style:'max-width:46ch;margin:0 auto 22px'},
-      s === 3
-        ? (next ? '다음은 ' + next.n + '번 ' + josa(next.title,'이에요') + '.' : '한글 트랙을 다 끝냈어요. 이제 1단계로 가요.')
-        : '틀린 글자는 어휘창고에 담아 둘게요. 내일 다시 나올 거예요.'),
+    h('div', {style:'max-width:520px;margin:0 auto 22px;text-align:left'},
+      say('tori', s === 3
+        ? (next ? '떡방아 잘 찧었어. 이제 ' + next.n + '번 모듈로 가자.' : '한글 트랙을 다 끝냈어. 보름달이 떴어. 이제 1단계로 가자.')
+        : '괜찮아. 떡은 방아를 여러 번 찧어야 만들어져. 한 번 더 해 볼까?'),
+      guide('moi', '오늘 새 말을 ' + mod.words.length + '개 모았어.', true)),
     h('div', {style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'},
       h('button', {class:'btn quiet', onclick: () => startModule(mod.n)}, '다시 하기'),
       next ? h('button', {class:'btn', onclick: () => startModule(next.n)}, '다음 모듈')
