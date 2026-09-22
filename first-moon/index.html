@@ -156,6 +156,15 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
 .note{border-left:5px solid var(--juhong);padding:10px 0 10px 15px;margin-top:18px;
   background:#FBF3DC;font-size:15px}
 .stars{font-size:60px;color:var(--hwang);letter-spacing:.1em}
+/* 소리 환경 안내 */
+.envnote{background:#FBF3DC;border-bottom:3px solid var(--meok);border-left:8px solid var(--juhong);padding:12px 18px}
+.envnote b{display:block;font-family:var(--display);font-weight:400;font-size:18px;line-height:1.3}
+.envnote p{margin:2px 0 8px;font-size:14.5px;max-width:48em}
+.envnote .row{display:flex;gap:8px;flex-wrap:wrap}
+.envnote a,.envnote button{font-size:14px;border:2px solid var(--meok);border-radius:999px;background:#fff;
+  padding:5px 14px;color:var(--meok);text-decoration:none;font-family:var(--text)}
+.envnote .primary{background:var(--hwang)}
+
 /* 빠른 확인 */
 .checkcta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-8px 0 22px}
 .checkcta span{font-size:13.5px;color:#5A5248}
@@ -224,6 +233,8 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
     <div class="track"><i id="trackFill"></i></div>
   </div>
 </header>
+
+<div id="envNote" class="envnote" role="region" aria-label="소리 안내" hidden></div>
 
 <main><div class="card" id="card"></div></main>
 
@@ -429,6 +440,34 @@ function compose(cho, jung, jong){
   if(ci < 0 || ji < 0 || ki < 0) return '';
   return String.fromCharCode(0xAC00 + ci*588 + ji*28 + ki);
 }
+/* ---- 자모의 소리 --------------------------------------------
+   음성 엔진에 ㄱ 한 글자를 주면 소리 [그]가 아니라 이름 "기역"을 읽습니다.
+   발음 중심으로 가르치려면 소리를 들려줘야 하므로, 자모는 소리 음절로 바꿔서 냅니다.
+   첫소리 자음은 ㅡ를 붙여 [그], 모음은 ㅇ을 붙여 [아], 받침은 대표음으로 [윽].
+   첫소리 ㅇ은 소리가 없으므로 [으]가 됩니다.                                   */
+const JONG_REP = {'ㄱ':'ㄱ','ㄲ':'ㄱ','ㅋ':'ㄱ','ㄳ':'ㄱ','ㄺ':'ㄱ',
+  'ㄴ':'ㄴ','ㄵ':'ㄴ','ㄶ':'ㄴ',
+  'ㄷ':'ㄷ','ㅅ':'ㄷ','ㅆ':'ㄷ','ㅈ':'ㄷ','ㅊ':'ㄷ','ㅌ':'ㄷ','ㅎ':'ㄷ',
+  'ㄹ':'ㄹ','ㄼ':'ㄹ','ㄽ':'ㄹ','ㄾ':'ㄹ','ㅀ':'ㄹ',
+  'ㅁ':'ㅁ','ㄻ':'ㅁ','ㅂ':'ㅂ','ㅍ':'ㅂ','ㅄ':'ㅂ','ㄿ':'ㅂ','ㅇ':'ㅇ'};
+const JONG_HINT = {'ㄱ':'k','ㄴ':'n','ㄷ':'t','ㄹ':'l','ㅁ':'m','ㅂ':'p','ㅇ':'ng'};
+function jamoSound(j, role){
+  if(role === 'jung') return compose('ㅇ', j);
+  if(role === 'jong') return compose('ㅇ', 'ㅡ', JONG_REP[j] || j);
+  return compose(j, 'ㅡ');
+}
+function jamoHint(j, role){
+  if(role === 'jong') return JONG_HINT[JONG_REP[j]] || '';
+  if(role === 'cho' && j === 'ㅇ') return 'silent';
+  return (JAMO[j] || {}).h || '';
+}
+function roleOf(j){
+  if(!mod) return 'cho';
+  if(mod.add.jong.includes(j)) return 'jong';
+  if(mod.add.jung.includes(j)) return 'jung';
+  return 'cho';
+}
+
 /* 이미 만든 음절에 받침만 얹습니다. */
 function addJong(syl, jong){
   const c = syl.charCodeAt(0);
@@ -520,7 +559,7 @@ document.addEventListener('pointerdown', unlockAudio);
 document.addEventListener('keydown', unlockAudio);
 
 function audioWarn(){
-  if(ttsWarned) return;
+  if(ttsWarned || envShown) return;
   ttsWarned = true;
   const n = document.getElementById('audioNote');
   if(n){
@@ -529,8 +568,53 @@ function audioWarn(){
     setTimeout(() => { n.style.display = 'none'; }, 8000);
   }
 }
+/* ---- 녹음 파일 -----------------------------------------------
+   ../audio/manifest.json 이 있으면 녹음된 소리를 먼저 쓰고, 녹음이 없는 말만 음성 합성으로 냅니다.
+   녹음 파일은 카카오톡 같은 앱 속 브라우저에서도 재생됩니다.
+   파일 이름은 글자의 유니코드 번호입니다. 가는 ac00.wav, 나무는 b098-bb34.wav   */
+const AUDIO_BASE = '../audio/';
+let CLIPS = null, clipsReady = false;
+const clipId = text => [...text].map(c => c.codePointAt(0).toString(16)).join('-');
+function onClipsReady(){ clipsReady = true; document.dispatchEvent(new Event('clipsready')); }
+try {
+  fetch(AUDIO_BASE + 'manifest.json', {cache: 'no-cache'})
+    .then(r => r.ok ? r.json() : null)
+    .then(j => { if(j && j.clips && typeof j.clips === 'object') CLIPS = j.clips; })
+    .catch(() => {})
+    .finally(onClipsReady);
+} catch(e) { onClipsReady(); }
+const clipCache = {};
+let playingClip = null;
+function clipAudio(text){
+  if(!CLIPS || !text) return null;
+  const id = clipId(text);
+  if(!CLIPS[id]) return null;
+  if(!clipCache[id]){ const a = new Audio(AUDIO_BASE + id + '.wav'); a.preload = 'auto'; clipCache[id] = a; }
+  return clipCache[id];
+}
+function playClip(text){
+  const a = clipAudio(text);
+  if(!a) return false;
+  try {
+    if(playingClip && playingClip !== a) playingClip.pause();
+    if(ttsOK) safe(() => speechSynthesis.cancel());
+    a.currentTime = 0;
+    const pr = a.play();
+    playingClip = a;
+    if(pr && pr.catch) pr.catch(() => ttsSpeak(text));
+    return true;
+  } catch(e) { return false; }
+}
+function preloadClips(texts){ texts.forEach(t => clipAudio(t)); }
+
 function speak(text){
+  if(!text) return;
+  if(playClip(text)) return;
+  ttsSpeak(text);
+}
+function ttsSpeak(text){
   if(!ttsOK || !text) return;
+  if(playingClip){ try { playingClip.pause(); } catch(e) {} }
   const done = safe(() => {
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
@@ -851,6 +935,7 @@ function moonSVG(n, size, done){
 /* ---- 모듈 시작 ---- */
 function startModule(n){
   mod = MODULES.find(m => m.n === n);
+  try { preloadClips(listClips().filter(c => c.night === n).map(c => c.text)); } catch(e) {}
   pool = poolUpTo(n);
   score = 0;
   maxScore = mod.listen.length + mod.dict.length;
@@ -895,18 +980,20 @@ function soundScreen(){
               guide('tori', '내 귀는 아주 커서 소리를 잘 들어. 글자를 누르면 내가 소리 내 줄게. 빨간 테두리가 오늘 새로 만나는 글자야.'));
   const make = (list, cls, label) => {
     if(!list.length) return null;
+    const role = label === '모음' ? 'jung' : label === '받침' ? 'jong' : 'cho';
     const wrap = h('div', {});
     wrap.append(h('p', {class:'grouplabel'}, label));
     const g = h('div', {class:'grid', style:'margin-bottom:20px'});
     list.forEach(j => {
       const meta = JAMO[j] || {h:''};
       const isNew = [...mod.add.cho, ...mod.add.jung, ...mod.add.jong].includes(j);
-      const hintEl = h('small', {'data-hint':meta.h}, hintsOn() ? meta.h : '');
+      const hint = jamoHint(j, role);
+      const hintEl = h('small', {'data-hint':hint}, hintsOn() ? hint : '');
       g.append(h('button', {
         class:'tile ' + cls, style: isNew ? 'border-color:var(--juhong)' : '',
         'aria-label': j + ' 소리 듣기',
         onclick: e => {
-          speak(j);
+          speak(jamoSound(j, role));
           /* currentTarget 은 핸들러가 끝나면 null 이 됩니다.
              지연 실행 안에서 쓰려면 지금 붙잡아 둬야 합니다. */
           const el = e.currentTarget;
@@ -947,7 +1034,7 @@ function strokeScreen(){
       svg.append(p);
     });
     const b = h('button', {class:'strokebox', 'aria-label': j + ' 쓰는 순서 보기',
-      onclick: () => { animate(svg); speak(j); }});
+      onclick: () => { animate(svg); speak(jamoSound(j, roleOf(j))); }});
     b.append(svg, h('span', {}, j));
     box.append(b);
     animate(svg);
@@ -982,7 +1069,7 @@ function traceScreen(){
       current = j;
       [...pick.children].forEach(c => c.setAttribute('aria-pressed','false'));
       b.setAttribute('aria-pressed','true');
-      drawTraceBase(); speak(j);
+      drawTraceBase(); speak(jamoSound(j, roleOf(j)));
     }}, j);
     pick.append(b);
   });
@@ -1401,6 +1488,120 @@ function startCheck(){
       btns));
     window.scrollTo(0,0);
   }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   소리 환경 안내
+   카카오톡 같은 앱 속 브라우저는 음성 합성을 지원하지 않습니다.
+   한국어 음성이 없는 기기에서는 브라우저가 오류 없이 조용히 넘어가 버리기도 합니다.
+   녹음 파일이 있으면 두 경우 모두 대부분 해결되므로 안내하지 않습니다.
+   ══════════════════════════════════════════════════════════════ */
+const UA = navigator.userAgent || '';
+const ENV = {
+  kakao: /KAKAOTALK/i.test(UA),
+  ios: /iPhone|iPad|iPod/.test(UA) || (/Macintosh/.test(UA) && navigator.maxTouchPoints > 1),
+  android: /Android/i.test(UA),
+  windows: /Windows/.test(UA),
+  mac: /Macintosh/.test(UA) && !(navigator.maxTouchPoints > 1),
+  firefox: /Firefox\//.test(UA)
+};
+ENV.inapp = ENV.kakao || /Instagram|FBAN|FBAV|FB_IAB|Line\/|NAVER\(inapp|DaumApps|; wv\)/i.test(UA)
+  || (ENV.ios && !/Safari\//.test(UA));
+let envShown = false;
+
+function koVoiceAvailable(){
+  try { return (speechSynthesis.getVoices() || []).some(v => v.lang && v.lang.toLowerCase().replace('_', '-').startsWith('ko')); }
+  catch(e) { return false; }
+}
+function copyAddress(btn){
+  const url = location.href;
+  const ok = () => { btn.textContent = '복사했어요'; };
+  try {
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(ok, fallback); return; }
+  } catch(e) {}
+  fallback();
+  function fallback(){
+    const t = document.createElement('textarea');
+    t.value = url; document.body.append(t); t.select();
+    try { document.execCommand('copy'); ok(); } catch(e) { btn.textContent = url; }
+    t.remove();
+  }
+}
+function clipsComplete(){
+  try { return !!CLIPS && listClips().every(c => CLIPS[c.id]); } catch(e) { return false; }
+}
+function envMessage(){
+  if(clipsComplete()) return null;
+  if(ENV.kakao) return {title:'카카오톡 안에서 열려 있어요',
+    body:'카카오톡 안의 브라우저에서는 소리가 나지 않을 수 있어요. 아래 버튼을 누르거나, 오른쪽 위 더보기 메뉴에서 \u2018다른 브라우저로 열기\u2019를 눌러 주세요.',
+    open:'kakaotalk://web/openExternal?url=' + encodeURIComponent(location.href)};
+  if(ENV.inapp) return {title:'앱 안의 브라우저에서 열려 있어요',
+    body:'이 화면에서는 소리가 나지 않을 수 있어요. 메뉴에서 \u2018브라우저로 열기\u2019를 누르거나, 주소를 복사해서 ' + (ENV.ios ? '사파리' : '크롬') + '에 붙여 넣어 주세요.'};
+  if(ttsOK && koVoiceAvailable()) return null;
+  if(ENV.firefox) return {title:'파이어폭스에서는 한국어 음성을 찾지 못했어요',
+    body:'파이어폭스는 기기에 깔린 음성만 쓸 수 있어요. 크롬이나 엣지, 사파리로 열면 소리가 나요.'};
+  if(ENV.ios) return {title:'이 기기에서 한국어 음성을 찾지 못했어요',
+    body:'설정에서 \u2018음성\u2019을 검색해 한국어 음성을 내려받으면 소리가 나요. 내려받은 뒤에는 이 페이지를 새로 고쳐 주세요.'};
+  if(ENV.android) return {title:'이 휴대전화에서 한국어 음성을 찾지 못했어요',
+    body:'휴대전화 설정에서 \u2018텍스트 음성 변환\u2019을 찾아 한국어 음성 데이터를 내려받으면 소리가 나요. 크롬 브라우저로 열어 보는 것도 방법이에요.'};
+  if(ENV.windows) return {title:'이 컴퓨터에서 한국어 음성을 찾지 못했어요',
+    body:'크롬이나 엣지로 열어 보세요. 그래도 소리가 안 나면 윈도우 설정에서 \u2018음성\u2019을 찾아 한국어 음성을 추가해 주세요.'};
+  if(ENV.mac) return {title:'이 컴퓨터에서 한국어 음성을 찾지 못했어요',
+    body:'시스템 설정에서 \u2018음성\u2019을 검색해 한국어 음성을 추가하거나, 크롬이나 사파리로 열어 보세요.'};
+  return {title:'이 브라우저에서 한국어 음성을 찾지 못했어요', body:'크롬이나 사파리로 열어 보세요.'};
+}
+function showEnvNote(){
+  if(envShown) return;
+  const m = envMessage();
+  if(!m) return;
+  envShown = true;
+  const box = document.getElementById('envNote');
+  box.innerHTML = '';
+  const row = h('div', {class:'row'});
+  if(m.open) row.append(h('a', {class:'primary', href:m.open}, '다른 브라우저로 열기'));
+  if(ENV.inapp){ const c = h('button', {}, '주소 복사'); c.addEventListener('click', () => copyAddress(c)); row.append(c); }
+  row.append(h('button', {onclick: () => { box.hidden = true; }}, '닫기'));
+  box.append(h('b', {}, m.title), h('p', {}, m.body), row);
+  box.hidden = false;
+}
+/* 녹음 목록과 음성 목록이 둘 다 준비된 뒤에 한 번만 판단합니다. */
+(function(){
+  let voicesSettled = !ttsOK, fired = false;
+  const tryShow = () => { if(!fired && clipsReady && voicesSettled){ fired = true; showEnvNote(); } };
+  if(ttsOK){
+    const settle = () => { voicesSettled = true; tryShow(); };
+    if(koVoiceAvailable()) settle();
+    safe(() => speechSynthesis.addEventListener('voiceschanged', () => { if(koVoiceAvailable()) settle(); }));
+    setTimeout(settle, 1500);
+  }
+  document.addEventListener('clipsready', tryShow);
+  tryShow();
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   녹음 목록
+   녹음실(record/)이 이 목록을 읽어 갑니다. 화면에서 소리 내는 말이 모두 들어 있습니다.
+   글자 조립에서 아이가 자유롭게 만드는 글자는 경우의 수가 너무 많아 빠지고, 음성 합성이 맡습니다.
+   ══════════════════════════════════════════════════════════════ */
+function listClips(){
+  const out = [], seen = new Set();
+  const add = (text, night, label, say) => {
+    if(!text || seen.has(text)) return;
+    seen.add(text);
+    out.push({id: clipId(text), text, night, label, say: say || '자연스러운 속도로 한 번'});
+  };
+  MODULES.forEach(m => {
+    m.add.jung.forEach(j => add(jamoSound(j, 'jung'), m.n, j + ' 모음 소리', '모음 소리만 한 번'));
+    m.add.cho.forEach(j => add(jamoSound(j, 'cho'), m.n, j + ' 첫소리', j === 'ㅇ' ? '첫소리 ㅇ은 소리가 없어요. [으]만 짧게' : '자음 소리를 [' + jamoSound(j, 'cho') + ']로 짧게'));
+    m.add.jong.forEach(j => add(jamoSound(j, 'jong'), m.n, j + ' 받침 소리', '끝을 막듯이 짧게'));
+    m.listen.forEach(q => add(q.a, m.n, '듣고 고르기'));
+    m.words.forEach(w => add(w.w, m.n, '단어'));
+    (m.cmp || []).forEach(c => add(c.s, m.n, '소리와 글자'));
+    m.dict.forEach(w => add(w, m.n, '받아쓰기'));
+  });
+  CHECK.forEach(q => add(q.a, q.n, '빠른 확인'));
+  CHECK_DICT.forEach(d => add(d.w, d.n, '빠른 확인 받아쓰기'));
+  return out;
 }
 
 /* 주소에 ?night=7 처럼 붙이면 그 밤으로 바로 들어갑니다.

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>녹음실 - 달토끼</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --meok:#221F1C; --hanji:#EDE3CB; --hanji-deep:#E0D2B2;
+  --gamcheong:#17324A; --byeok:#2D6E8E; --juhong:#C1403A;
+  --hwang:#E3A93C; --ssuk:#6E8F58; --dalbit:#F5E6BD;
+  --display:'Jua',sans-serif; --text:'Noto Sans KR',sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--hanji);color:var(--meok);font-family:var(--text);line-height:1.6;word-break:keep-all;overflow-wrap:anywhere}
+button{font-family:inherit;cursor:pointer;color:var(--meok)}
+button:focus-visible{outline:3px solid var(--byeok);outline-offset:2px}
+header{background:var(--gamcheong);color:var(--dalbit);padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header b{font-family:var(--display);font-weight:400;font-size:22px}
+header span{font-size:13px;color:#9DB4C6}
+header a{margin-left:auto;color:#9DB4C6;font-size:14px}
+.wrap{max-width:1100px;margin:0 auto;padding:18px 20px 60px}
+h1{font-family:var(--display);font-weight:400;font-size:30px;margin:4px 0 4px}
+.intro p{margin:0 0 10px;max-width:60em}
+.tips{margin:0 0 14px;padding-left:20px;font-size:14.5px}
+.tips li{margin:2px 0}
+.err{background:var(--juhong);color:#fff;border:3px solid var(--meok);border-radius:12px;padding:12px 16px;margin:12px 0}
+.warn{background:#FBF3DC;border-left:6px solid var(--juhong);padding:8px 12px;margin:10px 0;font-size:14px}
+.btn{font-family:var(--display);font-size:18px;padding:10px 22px;border-radius:999px;border:3px solid var(--meok);background:#fff}
+.btn.main{background:var(--hwang)}
+.btn.rec{background:var(--juhong);color:#fff}
+.btn.rec.on{animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.6}}
+.btn:disabled{opacity:.45;cursor:default}
+
+.studio{display:grid;grid-template-columns:300px 1fr;gap:18px;margin-top:16px;align-items:start}
+.list{border:3px solid var(--meok);border-radius:14px;background:var(--dalbit);max-height:72vh;overflow:auto}
+.list h3{margin:0;padding:8px 12px;font-family:var(--display);font-weight:400;font-size:16px;background:var(--hanji-deep);
+  border-bottom:2px solid var(--meok);position:sticky;top:0}
+.item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:none;border-bottom:1px solid #D5C69C;
+  background:transparent;padding:6px 12px;font-size:15px}
+.item:hover{background:#FBF3DC}
+.item.cur{background:var(--hwang)}
+.item i{width:12px;height:12px;border-radius:50%;border:2px solid var(--meok);flex:0 0 12px}
+.item.done i{background:var(--ssuk)}
+.item .t{font-size:20px;min-width:3.2em}
+.item small{color:#6B6256;font-size:12px}
+
+.stage{border:3px solid var(--meok);border-radius:14px;background:#fff;padding:18px 22px}
+.meta{font-size:14px;color:var(--juhong);font-weight:700}
+.big{font-size:96px;line-height:1.2;margin:6px 0 2px}
+.say{font-size:16px;color:#5A5248;margin-bottom:14px}
+.meter{height:14px;border:2px solid var(--meok);border-radius:8px;background:var(--hanji);overflow:hidden;margin-bottom:14px}
+.meter i{display:block;height:100%;width:0;background:var(--ssuk);transition:width .05s}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.opt{font-size:14px;color:#5A5248}
+#status{min-height:1.6em;font-weight:500;margin:8px 0 0}
+#status.bad{color:var(--juhong)}
+#status.good{color:#4E6B3C}
+.export{margin-top:18px;border-top:2px dashed #B9AB88;padding-top:14px}
+.export p{margin:4px 0 10px}
+details{margin-top:12px;font-size:14.5px}
+details ol{padding-left:20px}
+code{background:var(--hanji-deep);padding:1px 6px;border-radius:5px;font-size:13px}
+kbd{border:2px solid var(--meok);border-radius:5px;padding:0 6px;font-size:12px;background:#fff}
+@media (max-width:800px){ .studio{grid-template-columns:1fr} .list{max-height:40vh} .big{font-size:72px} }
+</style>
+</head>
+<body>
+<header><b>달토끼 녹음실</b><span>만드는 사람용 도구</span><a href="../">사이트로</a></header>
+
+<div class="wrap">
+  <section class="intro">
+    <h1>첫째 달 소리 녹음</h1>
+    <p>첫째 달 화면에서 들리는 소리를 하나씩 녹음합니다. 녹음은 이 브라우저에 저장되니 여러 번에 나눠서 해도 됩니다. 다 하지 않고 일부만 올려도 되고, 녹음이 없는 말은 기기 음성으로 대신 나옵니다.</p>
+    <ul class="tips">
+      <li>조용한 방에서, 입과 마이크 사이를 한 뼘 정도로 두세요.</li>
+      <li>처음부터 끝까지 같은 목소리 크기와 같은 속도로 해 주세요. 앞뒤 빈 소리와 음량은 도구가 자동으로 맞춥니다.</li>
+      <li>자음 소리 [그], [느]와 받침 소리 [윽], [은]은 짧게 끊어서 해 주세요. 아이가 듣는 건 글자 이름이 아니라 소리입니다.</li>
+      <li>단축키: <kbd>스페이스</kbd> 녹음 시작과 끝, <kbd>P</kbd> 다시 듣기, <kbd>→</kbd> 다음, <kbd>←</kbd> 이전</li>
+    </ul>
+    <button class="btn main" id="micBtn">마이크 켜기</button>
+    <span id="micState" class="opt"></span>
+    <div id="loadErr"></div>
+  </section>
+
+  <section class="studio" id="studio" hidden>
+    <div class="list" id="list" aria-label="녹음할 목록"></div>
+    <div class="stage">
+      <div class="meta" id="meta"></div>
+      <div class="big" id="big"></div>
+      <div class="say" id="say"></div>
+      <div class="meter" aria-hidden="true"><i id="meterFill"></i></div>
+      <div class="controls">
+        <button class="btn rec" id="recBtn">녹음</button>
+        <button class="btn" id="playBtn">듣기</button>
+        <button class="btn" id="prevBtn">이전</button>
+        <button class="btn" id="nextBtn">다음</button>
+        <button class="btn" id="delBtn">이 녹음 지우기</button>
+      </div>
+      <label class="opt"><input type="checkbox" id="auto" checked> 녹음이 끝나면 한 번 들려주고 다음으로 넘어가기</label>
+      <p id="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="export" id="exportSec" hidden>
+    <p id="count"></p>
+    <button class="btn main" id="exportBtn">audio 폴더 내려받기 (zip)</button>
+    <details>
+      <summary>저장소에 올리는 법</summary>
+      <ol>
+        <li>내려받은 zip을 풀면 <code>audio</code> 폴더가 나옵니다. 안에 <code>manifest.json</code>과 wav 파일들이 있습니다.</li>
+        <li>저장소 맨 위(홈 <code>index.html</code>이 있는 곳)에 <code>audio</code> 폴더를 그대로 올립니다.</li>
+        <li>다시 녹음한 뒤에는 새로 내려받아 <code>audio</code> 폴더 전체를 덮어쓰면 됩니다. 파일 이름이 글자마다 정해져 있어서 겹치지 않습니다.</li>
+      </ol>
+    </details>
+  </section>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   달토끼 녹음실
+   목록: 첫째 달 페이지의 listClips() 를 숨긴 창으로 읽어 옵니다. 내용이 바뀌면 목록도 따라 바뀝니다.
+   처리: 녹음 → 앞뒤 빈 소리 자르기 → 음량 맞추기 → 22,050Hz 모노 16비트 WAV.
+   WAV는 아이폰, 안드로이드, 카카오톡 속 브라우저까지 어디서나 재생됩니다.
+   저장: 이 브라우저의 IndexedDB. 내보내기: 압축하지 않는 zip(소리 파일은 이미 작습니다).
+   ══════════════════════════════════════════════════════════════ */
+const OUT_RATE = 22050;
+const $ = id => document.getElementById(id);
+let clips = [], cur = 0, saved = new Set();
+let stream = null, actx = null, analyser = null, recorder = null, chunks = [], recording = false, safetyTimer = null;
+let lastAudio = null;
+
+function status(msg, kind){ const s = $('status'); s.textContent = msg || ''; s.className = kind || ''; }
+
+/* ---- 저장소 ---- */
+const dbp = new Promise((res, rej) => {
+  try {
+    const r = indexedDB.open('daltokki-record', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('clips', {keyPath: 'id'});
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  } catch(e) { rej(e); }
+});
+function tx(mode, fn){
+  return dbp.then(db => new Promise((res, rej) => {
+    const t = db.transaction('clips', mode); const st = t.objectStore('clips');
+    let out; const req = fn(st); if(req) req.onsuccess = () => { out = req.result; };
+    t.oncomplete = () => res(out); t.onerror = () => rej(t.error);
+  }));
+}
+const idbPut = rec => tx('readwrite', st => st.put(rec));
+const idbGet = id => tx('readonly', st => st.get(id));
+const idbDel = id => tx('readwrite', st => st.delete(id));
+const idbAll = () => tx('readonly', st => st.getAll());
+
+/* ---- 목록 불러오기 ---- */
+function loadList(){
+  const f = document.createElement('iframe');
+  f.hidden = true; f.src = '../first-moon/?clips=1';
+  f.addEventListener('load', async () => {
+    try {
+      clips = f.contentWindow.listClips();
+      if(!Array.isArray(clips) || !clips.length) throw new Error('empty');
+    } catch(e) {
+      $('loadErr').innerHTML = '<div class="err">녹음 목록을 읽지 못했어요. 이 도구는 파일을 직접 열면 동작하지 않고, 사이트 주소(예: https://daltokki.github.io/record/)에서 열어야 합니다.</div>';
+      return;
+    }
+    try { (await idbAll()).forEach(r => saved.add(r.id)); } catch(e) {
+      $('loadErr').innerHTML = '<div class="warn">이 브라우저에서는 녹음을 저장해 둘 수 없어요. 창을 닫기 전에 꼭 내려받기를 해 주세요.</div>';
+    }
+    const firstMissing = clips.findIndex(c => !saved.has(c.id));
+    cur = firstMissing >= 0 ? firstMissing : 0;
+    $('studio').hidden = false; $('exportSec').hidden = false;
+    renderList(); show();
+  });
+  document.body.append(f);
+}
+
+const ORD = ['첫째','둘째','셋째','넷째','다섯째','여섯째','일곱째','여덟째'];
+function renderList(){
+  const box = $('list'); box.innerHTML = '';
+  let night = 0;
+  clips.forEach((c, i) => {
+    if(c.night !== night){
+      night = c.night;
+      const n = clips.filter(x => x.night === night);
+      const d = n.filter(x => saved.has(x.id)).length;
+      const hd = document.createElement('h3'); hd.textContent = (ORD[night - 1] || night) + ' 밤  ' + d + ' / ' + n.length;
+      box.append(hd);
+    }
+    const b = document.createElement('button');
+    b.className = 'item' + (saved.has(c.id) ? ' done' : '') + (i === cur ? ' cur' : '');
+    b.innerHTML = `<i></i><span class="t"></span><small></small>`;
+    b.querySelector('.t').textContent = c.text;
+    b.querySelector('small').textContent = c.label;
+    b.addEventListener('click', () => { cur = i; renderList(); show(); b.blur(); });
+    box.append(b);
+  });
+  $('count').textContent = '모두 ' + clips.length + '개 가운데 ' + clips.filter(c => saved.has(c.id)).length + '개를 녹음했어요.';
+  const curEl = box.querySelector('.item.cur');
+  if(curEl) curEl.scrollIntoView({block: 'nearest'});
+}
+function show(){
+  const c = clips[cur]; if(!c) return;
+  $('meta').textContent = (ORD[c.night - 1] || c.night) + ' 밤 · ' + c.label + (saved.has(c.id) ? ' · 녹음됨' : '');
+  $('big').textContent = c.text;
+  $('say').textContent = c.say;
+  $('playBtn').disabled = !saved.has(c.id);
+  $('delBtn').disabled = !saved.has(c.id);
+  status('');
+}
+function go(d){ cur = Math.max(0, Math.min(clips.length - 1, cur + d)); renderList(); show(); }
+
+/* ---- 마이크 ---- */
+function pickMime(){
+  if(typeof MediaRecorder === 'undefined') return null;
+  const list = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
+  return list.find(m => { try { return MediaRecorder.isTypeSupported(m); } catch(e) { return false; } }) || '';
+}
+async function micOn(){
+  if(stream) return true;
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined'){
+    $('micState').textContent = '이 브라우저는 녹음을 지원하지 않아요. 크롬이나 사파리 최신판을 써 주세요.'; return false;
+  }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({audio: {echoCancellation: false, autoGainControl: false, noiseSuppression: true}});
+  } catch(e) {
+    $('micState').textContent = '마이크를 쓸 수 없어요. 브라우저 주소창 옆에서 마이크 권한을 허용해 주세요.'; return false;
+  }
+  actx = new (window.AudioContext || window.webkitAudioContext)();
+  const src = actx.createMediaStreamSource(stream);
+  analyser = actx.createAnalyser(); analyser.fftSize = 1024; src.connect(analyser);
+  const data = new Float32Array(analyser.fftSize);
+  (function meter(){
+    analyser.getFloatTimeDomainData(data);
+    let s = 0; for(let i = 0; i < data.length; i++) s += data[i] * data[i];
+    $('meterFill').style.width = Math.min(100, Math.sqrt(s / data.length) * 400) + '%';
+    requestAnimationFrame(meter);
+  })();
+  $('micBtn').hidden = true;
+  $('micState').textContent = '마이크가 켜졌어요. 말하면 아래 막대가 움직입니다.';
+  return true;
+}
+
+/* ---- 녹음 ---- */
+async function toggleRec(){
+  if(recording){ stopRec(); return; }
+  if(!(await micOn())) return;
+  if(actx.state === 'suspended') await actx.resume();
+  /* 스피커로 나오던 소리가 다음 녹음에 섞이지 않게 먼저 멈춥니다. */
+  if(lastAudio){ try { lastAudio.onended = null; lastAudio.pause(); } catch(e) {} }
+  chunks = [];
+  const mime = pickMime();
+  try { recorder = mime ? new MediaRecorder(stream, {mimeType: mime}) : new MediaRecorder(stream); }
+  catch(e) { recorder = new MediaRecorder(stream); }
+  recorder.ondataavailable = e => { if(e.data && e.data.size) chunks.push(e.data); };
+  recorder.onstop = onStopped;
+  recorder.start();
+  recording = true;
+  $('recBtn').classList.add('on'); $('recBtn').textContent = '끝내기';
+  status('듣고 있어요. 말한 뒤 스페이스를 한 번 더 누르세요.');
+  safetyTimer = setTimeout(stopRec, 6000);
+}
+function stopRec(){
+  clearTimeout(safetyTimer);
+  if(recorder && recorder.state === 'recording') recorder.stop();
+}
+async function onStopped(){
+  recording = false;
+  $('recBtn').classList.remove('on'); $('recBtn').textContent = '녹음';
+  const c = clips[cur];
+  status('다듬는 중이에요.');
+  try {
+    const blob = new Blob(chunks, {type: recorder.mimeType || 'audio/webm'});
+    const wav = await processBlob(blob);
+    await idbPut({id: c.id, text: c.text, wav: wav.buffer, at: Date.now()});
+    saved.add(c.id);
+    renderList(); show();
+    const secs = (wav.length - 44) / 2 / OUT_RATE;
+    /* 한 음절은 보통 1초 안쪽입니다. 너무 길면 두 번 말했거나 잡음이 들어간 것입니다. */
+    const limit = c.text.length <= 1 ? 1.4 : 0.9 + 0.5 * c.text.length;
+    const tooLong = secs > limit;
+    status(tooLong ? '저장했지만 ' + secs.toFixed(1) + '초로 길어요. 한 번만 말했는지 듣고, 이상하면 다시 녹음해 주세요.'
+                   : '저장했어요. ' + secs.toFixed(2) + '초', tooLong ? 'bad' : 'good');
+    const a = playBytes(wav);
+    if($('auto').checked && a && !tooLong){
+      const here = cur;
+      a.onended = () => { if(cur === here && !recording) go(1); };
+    }
+  } catch(e) {
+    status(e.message || '녹음을 처리하지 못했어요. 다시 해 주세요.', 'bad');
+  }
+}
+
+/* 앞뒤 빈 소리 자르기, 음량 맞추기, 22,050Hz 모노로 바꾸기 */
+async function processBlob(blob){
+  const arr = await blob.arrayBuffer();
+  let buf;
+  try { buf = await actx.decodeAudioData(arr); }
+  catch(e) { throw new Error('녹음 형식을 읽지 못했어요. 다른 브라우저로 해 보세요.'); }
+  const sr = buf.sampleRate, len = buf.length, ch = buf.numberOfChannels;
+  if(len < sr * 0.35) throw new Error('너무 짧아요. 말하고 나서 끝내기를 눌러 주세요.');
+  const mono = new Float32Array(len);
+  for(let c = 0; c < ch; c++){ const d = buf.getChannelData(c); for(let i = 0; i < len; i++) mono[i] += d[i] / ch; }
+  /* 10ms 단위로 크기를 재되, 키보드 누르는 소리가 섞이는 처음과 끝 0.15초는 빼고 찾습니다. */
+  const win = Math.max(1, Math.floor(sr * 0.01));
+  const guard = Math.floor(0.15 * sr / win);
+  const rms = [];
+  for(let i = 0; i < len; i += win){
+    let s = 0; const e = Math.min(len, i + win);
+    for(let j = i; j < e; j++) s += mono[j] * mono[j];
+    rms.push(Math.sqrt(s / (e - i)));
+  }
+  let peakR = 0;
+  for(let k = guard; k < rms.length - guard; k++) peakR = Math.max(peakR, rms[k]);
+  if(peakR < 0.004) throw new Error('소리가 거의 안 들려요. 마이크를 확인하고 조금 더 크게 말해 주세요.');
+  const th = Math.max(0.006, peakR * 0.1);
+  let a = -1, b = -1;
+  for(let k = guard; k < rms.length - guard; k++) if(rms[k] > th){ if(a < 0) a = k; b = k; }
+  const start = Math.max(0, a * win - Math.floor(sr * 0.05));
+  const end = Math.min(len, (b + 1) * win + Math.floor(sr * 0.12));
+  const seg = mono.slice(start, end);
+  let peak = 0; for(let i = 0; i < seg.length; i++) peak = Math.max(peak, Math.abs(seg[i]));
+  const gain = Math.min(8, 0.89 / (peak || 1));
+  const fade = Math.floor(sr * 0.008);
+  for(let i = 0; i < seg.length; i++){
+    let g = gain;
+    if(i < fade) g *= i / fade;
+    if(i > seg.length - fade) g *= (seg.length - i) / fade;
+    seg[i] *= g;
+  }
+  const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  const oac = new OAC(1, Math.ceil(seg.length * OUT_RATE / sr), OUT_RATE);
+  const inBuf = oac.createBuffer(1, seg.length, sr);
+  inBuf.getChannelData(0).set(seg);
+  const node = oac.createBufferSource(); node.buffer = inBuf; node.connect(oac.destination); node.start();
+  const out = await oac.startRendering();
+  return encodeWav(out.getChannelData(0), OUT_RATE);
+}
+function encodeWav(samples, rate){
+  const buf = new ArrayBuffer(44 + samples.length * 2), v = new DataView(buf);
+  const w = (o, str) => { for(let i = 0; i < str.length; i++) v.setUint8(o + i, str.charCodeAt(i)); };
+  w(0, 'RIFF'); v.setUint32(4, 36 + samples.length * 2, true); w(8, 'WAVE'); w(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  w(36, 'data'); v.setUint32(40, samples.length * 2, true);
+  for(let i = 0, o = 44; i < samples.length; i++, o += 2){
+    const s = Math.max(-1, Math.min(1, samples[i]));
+    v.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+  }
+  return new Uint8Array(buf);
+}
+function playBytes(bytes){
+  try {
+    if(lastAudio){ lastAudio.pause(); URL.revokeObjectURL(lastAudio.src); }
+    const a = new Audio(URL.createObjectURL(new Blob([bytes], {type: 'audio/wav'})));
+    lastAudio = a; a.play().catch(() => {});
+    return a;
+  } catch(e) { return null; }
+}
+async function playCurrent(){
+  const c = clips[cur]; if(!c || !saved.has(c.id)) return;
+  const r = await idbGet(c.id); if(r) playBytes(new Uint8Array(r.wav));
+}
+async function deleteCurrent(){
+  const c = clips[cur]; if(!c) return;
+  await idbDel(c.id); saved.delete(c.id); renderList(); show(); status('지웠어요.');
+}
+
+/* ---- 내보내기: 압축하지 않는 zip ---- */
+const CRC = (() => { const t = new Uint32Array(256); for(let n = 0; n < 256; n++){ let c = n; for(let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8){ let c = 0xFFFFFFFF; for(let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function makeZip(files){
+  const enc = new TextEncoder(), parts = [], central = [];
+  let offset = 0;
+  files.forEach(f => {
+    const name = enc.encode(f.name), crc = crc32(f.data), size = f.data.length;
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true);
+    lh.setUint16(8, 0, true); lh.setUint16(10, 0, true); lh.setUint16(12, 0x21, true);
+    lh.setUint32(14, crc, true); lh.setUint32(18, size, true); lh.setUint32(22, size, true);
+    lh.setUint16(26, name.length, true); lh.setUint16(28, 0, true);
+    parts.push(new Uint8Array(lh.buffer), name, f.data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true);
+    ch.setUint16(10, 0, true); ch.setUint16(12, 0, true); ch.setUint16(14, 0x21, true);
+    ch.setUint32(16, crc, true); ch.setUint32(20, size, true); ch.setUint32(24, size, true);
+    ch.setUint16(28, name.length, true); ch.setUint32(38, 0, true); ch.setUint32(42, offset, true);
+    central.push(new Uint8Array(ch.buffer), name);
+    offset += 30 + name.length + size;
+  });
+  const cdSize = central.reduce((a, b) => a + b.length, 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, cdSize, true); end.setUint32(16, offset, true);
+  return new Blob([...parts, ...central, new Uint8Array(end.buffer)], {type: 'application/zip'});
+}
+async function exportZip(){
+  const all = await idbAll();
+  if(!all.length){ status('아직 녹음한 것이 없어요.', 'bad'); return; }
+  const files = [], map = {}, texts = {};
+  all.forEach(r => { files.push({name: 'audio/' + r.id + '.wav', data: new Uint8Array(r.wav)}); map[r.id] = 1; texts[r.id] = r.text; });
+  const complete = clips.every(c => map[c.id]);
+  const manifest = {version: 1, sampleRate: OUT_RATE, complete, count: all.length, updated: new Date().toISOString(), clips: map, texts};
+  files.push({name: 'audio/manifest.json', data: new TextEncoder().encode(JSON.stringify(manifest, null, 1))});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(makeZip(files)); a.download = 'daltokki-audio.zip';
+  document.body.append(a); a.click(); a.remove();
+  status(all.length + '개를 내려받았어요.' + (complete ? ' 첫째 달 녹음이 다 모였어요.' : ' 아직 녹음이 없는 말은 기기 음성으로 나옵니다.'), 'good');
+}
+
+/* ---- 버튼과 단축키 ---- */
+$('micBtn').addEventListener('click', micOn);
+$('recBtn').addEventListener('click', e => { e.currentTarget.blur(); toggleRec(); });
+$('playBtn').addEventListener('click', e => { e.currentTarget.blur(); playCurrent(); });
+$('prevBtn').addEventListener('click', e => { e.currentTarget.blur(); go(-1); });
+$('nextBtn').addEventListener('click', e => { e.currentTarget.blur(); go(1); });
+$('delBtn').addEventListener('click', e => { e.currentTarget.blur(); deleteCurrent(); });
+$('exportBtn').addEventListener('click', exportZip);
+document.addEventListener('keydown', e => {
+  if(!clips.length || e.target.tagName === 'INPUT') return;
+  if(e.code === 'Space'){ e.preventDefault(); if(document.activeElement) document.activeElement.blur(); if(!e.repeat) toggleRec(); }
+  else if(e.key === 'p' || e.key === 'P'){ playCurrent(); }
+  else if(e.key === 'ArrowRight'){ e.preventDefault(); go(1); }
+  else if(e.key === 'ArrowLeft'){ e.preventDefault(); go(-1); }
+});
+document.addEventListener('keyup', e => { if(e.code === 'Space') e.preventDefault(); });
+
+loadList();
+</script>
+</body>
+</html>

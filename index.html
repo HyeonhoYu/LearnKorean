@@ -109,6 +109,13 @@ a.month:hover{transform:translateY(-3px);box-shadow:0 8px 0 var(--meok)}
 .en p{margin:0 0 8px;font-size:15px}
 .en p:last-child{margin:0}
 
+.envnote{background:#FBF3DC;border-bottom:3px solid var(--meok);border-left:8px solid var(--juhong);padding:12px 18px}
+.envnote b{display:block;font-family:var(--display);font-weight:400;font-size:18px;line-height:1.3}
+.envnote p{margin:2px 0 8px;font-size:14.5px;max-width:48em}
+.envnote .row{display:flex;gap:8px;flex-wrap:wrap}
+.envnote a,.envnote button{font-size:14px;border:2px solid var(--meok);border-radius:999px;background:#fff;
+  padding:5px 14px;color:var(--meok);text-decoration:none;font-family:var(--text);cursor:pointer}
+.envnote .primary{background:var(--hwang)}
 footer{background:var(--gamcheong);color:#B9C8D4;padding:30px 0 40px;font-size:14px}
 footer a{color:var(--dalbit)}
 footer .fb{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:22px;color:var(--dalbit);margin-bottom:6px}
@@ -137,6 +144,8 @@ footer p{margin:4px 0}
 </style>
 </head>
 <body>
+
+<div id="envNote" class="envnote" role="region" aria-label="소리 안내" hidden></div>
 
 <header class="sky">
   <svg class="stars" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 1000 420">
@@ -439,6 +448,42 @@ FRIENDS.forEach(f => {
   el.innerHTML = `<div class="fig">${f.svg}</div><div><h3>${f.name}</h3><p class="role">${f.role}</p><p>${f.line}</p></div>`;
   cast.append(el);
 });
+
+/* ---- 앱 속 브라우저 안내 ----
+   카카오톡, 인스타그램 같은 앱 안에서 링크를 열면 음성 합성이 되지 않습니다.
+   녹음 파일(audio/manifest.json)이 올라가 있으면 앱 안에서도 소리가 나므로 안내하지 않습니다. */
+(function(){
+  const UA = navigator.userAgent || '';
+  const ios = /iPhone|iPad|iPod/.test(UA) || (/Macintosh/.test(UA) && navigator.maxTouchPoints > 1);
+  const kakao = /KAKAOTALK/i.test(UA);
+  const inapp = kakao || /Instagram|FBAN|FBAV|FB_IAB|Line\/|NAVER\(inapp|DaumApps|; wv\)/i.test(UA) || (ios && !/Safari\//.test(UA));
+  if(!inapp) return;
+  const show = () => {
+    const box = document.getElementById('envNote');
+    const el = (tag, attrs, text) => { const e = document.createElement(tag); Object.assign(e, attrs || {}); if(text) e.textContent = text; return e; };
+    const row = el('div', {className:'row'});
+    if(kakao) row.append(el('a', {className:'primary', href:'kakaotalk://web/openExternal?url=' + encodeURIComponent(location.href)}, '다른 브라우저로 열기'));
+    const copy = el('button', {}, '주소 복사');
+    copy.onclick = () => {
+      const done = () => { copy.textContent = '복사했어요'; };
+      const fallback = () => { const t = el('textarea'); t.value = location.href; document.body.append(t); t.select();
+        try { document.execCommand('copy'); done(); } catch(e) { copy.textContent = location.href; } t.remove(); };
+      try { navigator.clipboard.writeText(location.href).then(done, fallback); } catch(e) { fallback(); }
+    };
+    const close = el('button', {}, '닫기'); close.onclick = () => { box.hidden = true; };
+    row.append(copy, close);
+    box.append(el('b', {}, kakao ? '카카오톡 안에서 열려 있어요' : '앱 안의 브라우저에서 열려 있어요'),
+      el('p', {}, kakao
+        ? '카카오톡 안의 브라우저에서는 소리가 나지 않을 수 있어요. 아래 버튼을 누르거나, 오른쪽 위 더보기 메뉴에서 \u2018다른 브라우저로 열기\u2019를 눌러 주세요.'
+        : '이 화면에서는 소리가 나지 않을 수 있어요. 메뉴에서 \u2018브라우저로 열기\u2019를 누르거나, 주소를 복사해서 ' + (ios ? '사파리' : '크롬') + '에 붙여 넣어 주세요.'),
+      row);
+    box.hidden = false;
+  };
+  try {
+    fetch('audio/manifest.json', {cache:'no-cache'}).then(r => r.ok ? r.json() : null)
+      .then(j => { if(!(j && j.clips && j.complete)) show(); }, show);
+  } catch(e) { show(); }
+})();
 
 /* 숙제 링크 예시를 실제 주소로 보여 줍니다 */
 try {
