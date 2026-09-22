@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>달토끼 브랜드 보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* 오방색 기반 (단청과 민화에서 가져옴) */
+    --meok:      #221F1C;  /* 흑 - 먹선 */
+    --hanji:     #EDE3CB;  /* 백 - 한지 바탕 */
+    --hanji-deep:#E0D2B2;  /* 한지 그늘 */
+    --gamcheong: #17324A;  /* 청 - 밤하늘 감청 */
+    --byeok:     #2D6E8E;  /* 청 - 벽색 */
+    --juhong:    #C1403A;  /* 적 - 주홍 */
+    --hwang:     #E3A93C;  /* 황 - 달빛 */
+    --ssuk:      #6E8F58;  /* 녹 - 쑥, 송편 */
+    --dalbit:    #F5E6BD;  /* 달 표면 */
+
+    --font-display: 'Jua', sans-serif;
+    --font-text: 'Noto Sans KR', sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--hanji); color:var(--meok);
+    font-family:var(--font-text); line-height:1.7;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+
+  /* 히어로: 밤하늘 띠 */
+  .sky{background:var(--gamcheong);color:var(--dalbit);padding:56px 0 48px;position:relative;overflow:hidden}
+  .sky .wrap{display:flex;align-items:center;gap:40px;flex-wrap:wrap}
+  .logo-mark{flex:0 0 auto}
+  .logo-type h1{
+    font-family:var(--font-display);font-size:64px;margin:0;letter-spacing:.02em;
+    color:var(--dalbit);font-weight:400;
+  }
+  .logo-type .rom{font-size:15px;letter-spacing:.28em;color:var(--byeok);
+    filter:brightness(1.7);margin-top:4px}
+  .logo-type .tag{font-size:17px;margin-top:14px;color:#CBBD94}
+
+  section{padding:44px 0;border-top:2px solid var(--meok)}
+  h2{font-family:var(--font-display);font-weight:400;font-size:30px;margin:0 0 6px}
+  .lede{margin:0 0 26px;max-width:62ch;color:#4A443C}
+
+  /* 색 */
+  .swatches{display:flex;flex-wrap:wrap;gap:0;border:2px solid var(--meok)}
+  .sw{flex:1 1 130px;padding:66px 12px 12px;font-size:12.5px;line-height:1.45}
+  .sw b{display:block;font-size:14px;font-weight:700}
+  .sw code{font-family:var(--font-text);opacity:.75}
+
+  /* 캐릭터 */
+  .cast{display:flex;gap:22px;flex-wrap:wrap}
+  .who{flex:1 1 260px;border:2px solid var(--meok);background:var(--hanji-deep)}
+  .who .art{display:block;background:var(--dalbit);border-bottom:2px solid var(--meok)}
+  .who .txt{padding:16px 18px 20px}
+  .who h3{font-family:var(--font-display);font-weight:400;font-size:26px;margin:0}
+  .who .role{font-size:13px;color:var(--juhong);font-weight:700;margin:2px 0 10px}
+  .who p{margin:0;font-size:14.5px}
+
+  /* 달 진도 */
+  .moons{background:var(--gamcheong);border:2px solid var(--meok);padding:26px 10px 18px}
+  .moonrow{display:flex;justify-content:space-around;align-items:flex-end;flex-wrap:wrap;gap:14px}
+  .moonitem{text-align:center;color:var(--dalbit);width:96px}
+  .moonitem span{display:block;font-size:13px;margin-top:8px}
+  .moonitem em{display:block;font-style:normal;font-size:11.5px;color:#8FA8BC}
+
+  /* 글꼴 */
+  .type-demo{border:2px solid var(--meok);padding:22px 24px;background:var(--hanji-deep)}
+  .type-demo .d{font-family:var(--font-display);font-size:40px;line-height:1.3}
+  .type-demo .b{font-size:17px;max-width:60ch;margin-top:10px}
+  .rule{border-left:5px solid var(--juhong);padding:10px 0 10px 16px;margin-top:22px;
+    background:#fff4e0;font-size:15px}
+  .rule strong{font-weight:700}
+  .big-jamo{font-size:46px;letter-spacing:.12em;margin-top:6px}
+  footer{padding:34px 0 60px;font-size:13.5px;color:#5A5248;border-top:2px solid var(--meok)}
+</style>
+</head>
+<body>
+
+<header class="sky">
+  <div class="wrap">
+    <div class="logo-mark">
+      <!-- 로고: 보름달 안의 떡방아 찧는 토끼 -->
+      <svg width="190" height="190" viewBox="0 0 200 200" role="img" aria-label="달토끼 로고">
+        <circle cx="100" cy="100" r="74" fill="#F5E6BD"/>
+        <g fill="#17324A">
+          <!-- 절구 -->
+          <path d="M80 140 L132 140 L125 164 L87 164 Z"/>
+          <!-- 몸통 -->
+          <ellipse cx="98" cy="118" rx="19" ry="25"/>
+          <!-- 꼬리 -->
+          <circle cx="78" cy="126" r="7"/>
+          <!-- 머리 -->
+          <circle cx="90" cy="88" r="13"/>
+          <!-- 귀 -->
+          <path d="M83 78 C76 60 74 44 81 38 C88 44 88 62 90 77 Z"/>
+          <path d="M95 78 C93 60 96 44 102 40 C106 48 101 64 99 78 Z"/>
+        </g>
+        <!-- 팔과 절굿공이 -->
+        <g stroke="#17324A" stroke-linecap="round" fill="none">
+          <path d="M105 113 L114 99" stroke-width="9"/>
+          <path d="M108 106 L134 66" stroke-width="7"/>
+        </g>
+        <circle cx="136" cy="62" r="7" fill="#17324A"/>
+        <circle cx="86" cy="86" r="2.4" fill="#F5E6BD"/>
+        <!-- 별 -->
+        <g fill="#F5E6BD" opacity=".75">
+          <circle cx="18" cy="42" r="2.6"/><circle cx="184" cy="150" r="2.2"/>
+          <circle cx="172" cy="28" r="1.8"/><circle cx="30" cy="172" r="2"/>
+        </g>
+      </svg>
+    </div>
+    <div class="logo-type">
+      <h1>달토끼</h1>
+      <div class="rom">DAL TOKKI</div>
+      <div class="tag">할머니가 보는 달, 내가 보는 달</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <h2>이름과 은유</h2>
+  <p class="lede">달토끼는 장식이 아니라 사이트 구조 그 자체입니다. 네 가지 은유가 각각 실제 기능에 붙습니다.</p>
+  <div class="type-demo">
+    <p style="margin:0 0 14px"><strong>떡방아</strong> &nbsp; 절굿공이로 반복해서 찧는 동작이 일일 연습입니다. 받아쓰기실의 하루 목표 이름이 "오늘의 방아"가 됩니다.</p>
+    <p style="margin:0 0 14px"><strong>달의 모양</strong> &nbsp; 한 단계가 한 달입니다. 달 안에서는 밤마다 달이 조금씩 차올라, 보름달이 뜨면 그 달을 마칩니다. 숫자 점수 대신 달이 차오릅니다.</p>
+    <p style="margin:0 0 14px"><strong>송편</strong> &nbsp; 배지와 보상입니다. 추석 문화 트랙과 그대로 이어집니다.</p>
+    <p style="margin:0"><strong>같은 달</strong> &nbsp; 태평양 양쪽에서 같은 달을 봅니다. 가족 레이어와 조부모 인터뷰 과업의 정서적 뿌리입니다.</p>
+  </div>
+</section>
+
+<section>
+  <h2>색</h2>
+  <p class="lede">민화와 단청의 오방색에서 가져왔습니다. 채도를 낮춰 아동용 화면에서 눈이 피로하지 않게 조정했고, 바탕은 흔한 크림색 대신 한지의 누런 기를 남겼습니다.</p>
+  <div class="swatches">
+    <div class="sw" style="background:#17324A;color:#EDE3CB"><b>감청</b><code>#17324A</code>밤하늘, 헤더</div>
+    <div class="sw" style="background:#F5E6BD"><b>달빛</b><code>#F5E6BD</code>달 표면, 강조 면</div>
+    <div class="sw" style="background:#EDE3CB"><b>한지</b><code>#EDE3CB</code>학습 화면 바탕</div>
+    <div class="sw" style="background:#C1403A;color:#EDE3CB"><b>주홍</b><code>#C1403A</code>오답, 중요 표시</div>
+    <div class="sw" style="background:#E3A93C"><b>황</b><code>#E3A93C</code>별, 보상</div>
+    <div class="sw" style="background:#6E8F58;color:#EDE3CB"><b>쑥</b><code>#6E8F58</code>정답, 송편</div>
+    <div class="sw" style="background:#2D6E8E;color:#EDE3CB"><b>벽색</b><code>#2D6E8E</code>링크, 보조</div>
+    <div class="sw" style="background:#221F1C;color:#EDE3CB"><b>먹</b><code>#221F1C</code>본문, 윤곽선</div>
+  </div>
+  <div class="rule"><strong>사용 규칙.</strong> 감청 밤하늘은 헤더, 히어로, 진도 화면에만 씁니다. 학습 본문은 반드시 한지 바탕에 먹 글씨입니다. 어두운 배경 위의 긴 한글 본문은 획이 뭉개져서 자모를 배우는 아이에게 특히 불리합니다.</div>
+</section>
+
+<section>
+  <h2>캐릭터</h2>
+  <p class="lede">민화의 대표 도상인 까치호랑이에 달토끼를 더한 3인조입니다. 셋 다 한국 민담의 핵심 동물이라 문화 트랙과 그대로 연결됩니다. 첫째 달부터 넷째 달(3단계)까지 전면에 나오고, 다섯째 달부터는 로고와 배지에만 남습니다.</p>
+  <div class="cast">
+
+    <div class="who">
+      <svg class="art" width="100%" height="200" viewBox="0 0 240 200" role="img" aria-label="토리, 달토끼 캐릭터">
+        <g stroke="#221F1C" stroke-width="3.2" stroke-linejoin="round">
+          <path d="M96 74 C86 48 84 26 94 20 C106 26 104 54 104 74 Z" fill="#EDE3CB"/>
+          <path d="M97 66 C91 48 90 32 95 28 C101 33 100 52 102 66 Z" fill="#D98B7E" stroke="none"/>
+          <path d="M118 72 C114 48 118 26 129 22 C137 30 128 56 126 73 Z" fill="#EDE3CB"/>
+          <path d="M120 66 C118 48 121 34 127 30 C131 37 124 52 124 66 Z" fill="#D98B7E" stroke="none"/>
+          <ellipse cx="112" cy="140" rx="40" ry="42" fill="#EDE3CB"/>
+          <circle cx="110" cy="92" r="27" fill="#EDE3CB"/>
+          <path d="M150 150 L196 74" stroke-width="11" stroke-linecap="round" fill="none"/>
+          <circle cx="198" cy="70" r="12" fill="#C9A87C"/>
+          <path d="M36 168 L92 168 L86 190 L42 190 Z" fill="#8A6A4A"/>
+        </g>
+        <circle cx="101" cy="90" r="3.6" fill="#221F1C"/>
+        <circle cx="121" cy="90" r="3.6" fill="#221F1C"/>
+        <path d="M107 100 L115 100 L111 105 Z" fill="#C1403A"/>
+        <path d="M104 110 q7 6 14 0" stroke="#221F1C" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div class="txt">
+        <h3>토리</h3>
+        <div class="role">소리와 쓰기</div>
+        <p>귀가 커서 소리를 제일 잘 듣는 달토끼. 소리방, 받아쓰기실, 맞춤법방을 맡습니다. 왜 이 친구가 소리를 담당하는지 아이에게 설명할 필요가 없다는 점이 핵심입니다.</p>
+      </div>
+    </div>
+
+    <div class="who">
+      <svg class="art" width="100%" height="200" viewBox="0 0 240 200" role="img" aria-label="모이, 까치 캐릭터">
+        <g stroke="#221F1C" stroke-width="3.2" stroke-linejoin="round">
+          <path d="M168 118 L222 150 L214 162 L160 136 Z" fill="#2D6E8E"/>
+          <ellipse cx="118" cy="120" rx="52" ry="40" fill="#EDE3CB"/>
+          <path d="M118 82 C150 82 168 100 168 122 C168 138 156 150 140 152 C150 128 142 96 118 82 Z" fill="#221F1C"/>
+          <circle cx="82" cy="88" r="26" fill="#221F1C"/>
+          <path d="M58 86 L32 94 L58 102 Z" fill="#E3A93C"/>
+          <path d="M96 152 L96 172 M124 152 L124 172" stroke-width="5" stroke-linecap="round"/>
+        </g>
+        <circle cx="80" cy="82" r="5.4" fill="#EDE3CB"/>
+        <circle cx="81" cy="82" r="2.6" fill="#221F1C"/>
+        <rect x="96" y="106" width="34" height="24" rx="3" fill="#EDE3CB" stroke="#221F1C" stroke-width="2.6"/>
+        <path d="M96 107 L113 120 L130 107" fill="none" stroke="#221F1C" stroke-width="2.6"/>
+      </svg>
+      <div class="txt">
+        <h3>모이</h3>
+        <div class="role">말 모으기와 소식</div>
+        <p>좋은 소식을 물어다 주는 까치. 어휘창고와 놀이터를 맡고, 한국의 가족과 편지를 주고받는 장치 역할을 합니다. 이름은 새 모이이면서 동시에 모으다에서 왔습니다.</p>
+      </div>
+    </div>
+
+    <div class="who">
+      <svg class="art" width="100%" height="200" viewBox="0 0 240 200" role="img" aria-label="담이, 호랑이 캐릭터">
+        <g stroke="#221F1C" stroke-width="3.2" stroke-linejoin="round">
+          <circle cx="74" cy="60" r="16" fill="#E3A93C"/>
+          <circle cx="146" cy="60" r="16" fill="#E3A93C"/>
+          <ellipse cx="110" cy="112" rx="62" ry="58" fill="#E3A93C"/>
+          <ellipse cx="110" cy="132" rx="34" ry="26" fill="#EDE3CB"/>
+        </g>
+        <g stroke="#221F1C" stroke-width="6" stroke-linecap="round">
+          <path d="M64 92 L84 86"/><path d="M62 108 L82 106"/>
+          <path d="M156 92 L136 86"/><path d="M158 108 L138 106"/>
+          <path d="M100 62 L104 78"/><path d="M120 62 L116 78"/>
+        </g>
+        <circle cx="92" cy="106" r="6" fill="#221F1C"/>
+        <circle cx="128" cy="106" r="6" fill="#221F1C"/>
+        <path d="M102 124 L118 124 L110 133 Z" fill="#221F1C"/>
+        <path d="M110 133 L110 140 M110 140 q-11 10 -19 0 M110 140 q11 10 19 0"
+              stroke="#221F1C" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div class="txt">
+        <h3>담이</h3>
+        <div class="role">이야기와 뿌리</div>
+        <p>호랑이 담배 피우던 시절에서 온 옛날 이야기꾼. 읽기 자료실과 문화 트랙을 맡습니다. 조부모를 대신하는 게 아니라, 아이가 진짜 조부모에게 물어보도록 밀어 주는 역할입니다.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>진도 표시</h2>
+  <p class="lede">한 단계는 한 달입니다. 달 안에서는 밤마다 달이 조금씩 차올라, 보름달이 뜨면 그 달을 마칩니다. 아래는 첫째 달(한글)의 여덟 밤이고, 다 한 밤은 금색이 됩니다. 사이트 전체 진도는 채운 보름달의 개수로 셉니다. 숫자 점수와 백분율은 쓰지 않습니다. 계승어 학습자에게는 수치 비교 자체가 이탈 요인입니다.</p>
+  <div class="moons">
+    <div class="moonrow">
+      <div class="moonitem">
+        <svg width="54" height="54" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="#0E2338"/><path d="M30 6 A24 24 0 0 1 30 54 A18.00 24 0 0 0 30 6 Z" fill="#E3A93C"/><circle cx="30" cy="30" r="24" fill="none" stroke="#F5E6BD" stroke-opacity=".55" stroke-width="2"/></svg>
+        <span>첫째 밤</span><em>다 함</em>
+      </div>
+      <div class="moonitem">
+        <svg width="54" height="54" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="#0E2338"/><path d="M30 6 A24 24 0 0 1 30 54 A12.00 24 0 0 0 30 6 Z" fill="#E3A93C"/><circle cx="30" cy="30" r="24" fill="none" stroke="#F5E6BD" stroke-opacity=".55" stroke-width="2"/></svg>
+        <span>둘째 밤</span><em>다 함</em>
+      </div>
+      <div class="moonitem">
+        <svg width="54" height="54" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="#0E2338"/><path d="M30 6 A24 24 0 0 1 30 54 A6.00 24 0 0 0 30 6 Z" fill="#E3A93C"/><circle cx="30" cy="30" r="24" fill="none" stroke="#F5E6BD" stroke-opacity=".55" stroke-width="2"/></svg>
+        <span>셋째 밤</span><em>다 함</em>
+      </div>
+      <div class="moonitem">
+        <svg width="54" height="54" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="#0E2338"/><path d="M30 6 A24 24 0 0 1 30 54 A0.00 24 0 0 0 30 6 Z" fill="#F5E6BD"/><circle cx="30" cy="30" r="24" fill="none" stroke="#F5E6BD" stroke-opacity=".55" stroke-width="2"/></svg>
+        <span>넷째 밤</span><em></em>
+      </div>
+      <div class="moonitem">
+        <svg width="54" height="54" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="#0E2338"/><path d="M30 6 A24 24 0 0 1 30 54 A6.00 24 0 0 1 30 6 Z" fill="#F5E6BD"/><circle cx="30" cy="30" r="24" fill="none" stroke="#F5E6BD" stroke-opacity=".55" stroke-width="2"/></svg>
+        <span>다섯째 밤</span><em></em>
+      </div>
+      <div class="moonitem">
+        <svg width="54" height="54" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="#0E2338"/><path d="M30 6 A24 24 0 0 1 30 54 A12.00 24 0 0 1 30 6 Z" fill="#F5E6BD"/><circle cx="30" cy="30" r="24" fill="none" stroke="#F5E6BD" stroke-opacity=".55" stroke-width="2"/></svg>
+        <span>여섯째 밤</span><em></em>
+      </div>
+      <div class="moonitem">
+        <svg width="54" height="54" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="#0E2338"/><path d="M30 6 A24 24 0 0 1 30 54 A18.00 24 0 0 1 30 6 Z" fill="#F5E6BD"/><circle cx="30" cy="30" r="24" fill="none" stroke="#F5E6BD" stroke-opacity=".55" stroke-width="2"/></svg>
+        <span>일곱째 밤</span><em></em>
+      </div>
+      <div class="moonitem">
+        <svg width="54" height="54" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="#0E2338"/><circle cx="30" cy="30" r="24" fill="#F5E6BD"/><g fill="#DCC894"><circle cx="23" cy="23" r="4.5"/><circle cx="37" cy="33" r="3.4"/><circle cx="26" cy="39" r="2.6"/><circle cx="38" cy="20" r="2"/></g><circle cx="30" cy="30" r="24" fill="none" stroke="#F5E6BD" stroke-opacity=".55" stroke-width="2"/></svg>
+        <span>여덟째 밤</span><em>보름달</em>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>글꼴</h2>
+  <p class="lede">두 가족만 씁니다. 화면 장식과 학습 내용의 역할을 엄격히 나눕니다.</p>
+  <div class="type-demo">
+    <div class="d">주아체 · Jua</div>
+    <div class="b">제목, 버튼, 캐릭터 대사에만 씁니다. 둥글고 따뜻해서 아이에게 말 거는 목소리 역할을 합니다.</div>
+    <hr style="border:none;border-top:2px solid var(--meok);margin:22px 0">
+    <div class="b" style="font-size:22px;font-weight:700">본고딕 · Noto Sans KR</div>
+    <div class="b">모든 학습 내용, 지문, 어휘, 받아쓰기 정답 표시에 씁니다. 자모의 표준 형태가 정확히 나오는 글꼴이어야 합니다.</div>
+    <div class="big-jamo">ㅅ ㅈ ㅊ ㅇ ㅎ 밖 옷 읽다</div>
+  </div>
+  <div class="rule"><strong>절대 규칙.</strong> 주아체를 한글 학습 내용에 쓰지 않습니다. 둥근 디자인체는 자모의 획을 뭉개고 붙여서, ㅅ과 ㅈ, ㅇ과 ㅎ을 구별해야 하는 아이에게 잘못된 본보기를 줍니다. 화면 장식은 주아체, 가르치는 글자는 본고딕입니다.</div>
+</section>
+
+<footer>
+  <div>달토끼 브랜드 보드 초안. 로고 마크는 단색 1도로 설계되어 파비콘 16px까지 형태가 유지됩니다.</div>
+  <div style="margin-top:8px">확정 후 분리 저장: <code>logo-mark.svg</code>, <code>char-tori.svg</code>, <code>char-moi.svg</code>, <code>char-dami.svg</code>, <code>tokens.css</code></div>
+</footer>
+
+</div>
+</body>
+</html>
