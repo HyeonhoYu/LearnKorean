@@ -85,6 +85,11 @@ a.month:hover{transform:translateY(-3px);box-shadow:0 8px 0 var(--meok)}
 .nights i.on{background:var(--hwang)}
 .nights i.pass{background:var(--dalbit)}
 
+.rooms{padding-top:0}
+.room-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.room .mm{flex:0 0 96px}
+.room .mm svg{display:block;width:96px;height:80px}
+
 /* 세 친구 */
 .friends{background:var(--hanji-deep);border-top:3px solid var(--meok);border-bottom:3px solid var(--meok)}
 .cast{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
@@ -217,6 +222,21 @@ footer p{margin:4px 0}
       <p class="sec-lede">달은 한 달에 한 번 보름달이 돼요. 달을 하나 가득 채울 때마다 한 단계씩 올라가요. 지금은 첫째 달이 열려 있어요.</p>
       <div class="month-grid" id="monthGrid">
         <noscript><a class="month" href="first-moon/"><span><span class="mlabel">첫째 달</span><b>한글</b><span class="topics">모음, 자음, 받침, 겹받침</span></span></a></noscript>
+      </div>
+    </div>
+  </section>
+
+  <section class="rooms" aria-labelledby="roomsTitle">
+    <div class="wrap">
+      <h2 id="roomsTitle">연습실</h2>
+      <p class="sec-lede">마친 밤의 말로 매일 조금씩 연습해요. 틀린 말은 다음 날 다시 나와서, 잊기 전에 한 번 더 만나요.</p>
+      <div class="room-grid">
+        <a class="month room" href="first-moon/?dict=1" id="roomDict">
+          <div class="mm" id="roomDictFig"></div>
+          <div><span class="mlabel">하루 5분</span><b>받아쓰기실</b>
+            <span class="topics">오늘의 방아. 다섯 개만 듣고 써 봐요. 틀리면 토리와 담이가 왜 틀렸는지 알려 줘요.</span>
+            <span class="status" id="dictStatus"></span></div>
+        </a>
       </div>
     </div>
   </section>
@@ -483,6 +503,21 @@ FRIENDS.forEach(f => {
     fetch('audio/manifest.json', {cache:'no-cache'}).then(r => r.ok ? r.json() : null)
       .then(j => { if(!(j && j.clips && j.complete)) show(); }, show);
   } catch(e) { show(); }
+})();
+
+/* ---- 받아쓰기실 카드 ---- */
+(function(){
+  const fig = document.getElementById('roomDictFig');
+  if(fig && FRIENDS[0]) fig.innerHTML = FRIENDS[0].svg;
+  let d = null;
+  try { d = JSON.parse(window.localStorage.getItem('daltokki:v1:dictation') || 'null'); } catch(e) {}
+  const now = new Date();
+  const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  const st = document.getElementById('dictStatus');
+  if(!st) return;
+  if(d && d.last === today) st.textContent = '오늘 방아를 찧었어요. 지금까지 ' + (Number(d.days) || 1) + '번.';
+  else if(d && Number(d.days) > 0) st.textContent = '지금까지 ' + Number(d.days) + '번 방아를 찧었어요. 오늘도 해 볼까요?';
+  else st.textContent = '아직 시작하기 전이에요.';
 })();
 
 /* 숙제 링크 예시를 실제 주소로 보여 줍니다 */
