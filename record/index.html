@@ -167,7 +167,7 @@ function loadList(){
       clips = f.contentWindow.listClips();
       if(!Array.isArray(clips) || !clips.length) throw new Error('empty');
     } catch(e) {
-      $('loadErr').innerHTML = '<div class="err">녹음 목록을 읽지 못했어요. 이 도구는 파일을 직접 열면 동작하지 않고, 사이트 주소(예: https://daltokki.github.io/record/)에서 열어야 합니다.</div>';
+      $('loadErr').innerHTML = '<div class="err">녹음 목록을 읽지 못했어요. 이 도구는 파일을 직접 열면 동작하지 않고, 사이트 주소(예: https://hyeonhoyu.github.io/daltokki/record/)에서 열어야 합니다.</div>';
       return;
     }
     try { (await idbAll()).forEach(r => saved.add(r.id)); } catch(e) {
