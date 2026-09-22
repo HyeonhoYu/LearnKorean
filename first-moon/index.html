@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>한글 첫 달 - 달토끼</title>
+<meta property="og:title" content="한글 첫 달 - 달토끼">
+<meta property="og:description" content="여덟 밤 동안 달을 채우며 한글을 읽어요. 무료, 광고 없음, 가입 없음.">
+<meta property="og:type" content="website">
+<meta name="description" content="달토끼 한글 첫 달. 여덟 밤 동안 기본 모음부터 겹받침까지 소리 중심으로 한글 떼기를 합니다. 무료, 광고 없음, 가입 없음.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20200%20200'%3E%3Ccircle%20cx='100'%20cy='100'%20r='96'%20fill='%2317324A'/%3E%3Ccircle%20cx='100'%20cy='100'%20r='74'%20fill='%23F5E6BD'/%3E%3Cg%20fill='%2317324A'%3E%3Cpath%20d='M80%20140%20L132%20140%20L125%20164%20L87%20164%20Z'/%3E%3Cellipse%20cx='98'%20cy='118'%20rx='19'%20ry='25'/%3E%3Ccircle%20cx='90'%20cy='88'%20r='13'/%3E%3Cpath%20d='M83%2078%20C76%2060%2074%2044%2081%2038%20C88%2044%2088%2062%2090%2077%20Z'/%3E%3Cpath%20d='M95%2078%20C93%2060%2096%2044%20102%2040%20C106%2048%20101%2064%2099%2078%20Z'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --meok:#221F1C; --hanji:#EDE3CB; --hanji-deep:#E0D2B2;
+  --gamcheong:#17324A; --byeok:#2D6E8E; --juhong:#C1403A;
+  --hwang:#E3A93C; --ssuk:#6E8F58; --dalbit:#F5E6BD;
+  --display:'Jua',sans-serif; --text:'Noto Sans KR',sans-serif;
+}
+*{box-sizing:border-box}
+body{word-break:keep-all;overflow-wrap:anywhere;margin:0;background:var(--hanji);color:var(--meok);font-family:var(--text);
+  line-height:1.65;min-height:100vh;display:flex;flex-direction:column}
+button{font-family:inherit;cursor:pointer;color:var(--meok)}
+header button.back{color:#9DB4C6}
+input[type=checkbox]{accent-color:var(--byeok)}
+#audioNote{display:none;position:fixed;left:12px;right:12px;bottom:74px;z-index:9;
+  background:var(--juhong);color:#fff;font-size:14px;line-height:1.5;
+  border:3px solid var(--meok);border-radius:12px;padding:10px 14px}
+button:focus-visible,a:focus-visible{outline:3px solid var(--byeok);outline-offset:3px}
+
+header{background:var(--gamcheong);color:var(--dalbit);padding:12px 20px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header .back{color:#9DB4C6;text-decoration:none;font-size:14px;background:none;border:none;padding:0}
+header .title{font-family:var(--display);font-size:22px;flex:1}
+.moonbar{display:flex;align-items:center;gap:8px;font-size:13px;color:#9DB4C6}
+.track{width:130px;height:10px;background:#0E2338;border-radius:6px;overflow:hidden}
+.track i{display:block;height:100%;width:0;background:var(--hwang);transition:width .35s}
+
+main{flex:1;display:flex;justify-content:center;padding:26px 18px 124px}
+.card{width:100%;max-width:780px}
+h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
+.sub{margin:0 0 20px;color:#5A5248;font-size:15px}
+
+/* 모듈 선택 */
+.modgrid{display:flex;flex-wrap:wrap;gap:16px}
+.modcard{flex:1 1 220px;border:3px solid var(--meok);border-radius:16px;
+  background:var(--dalbit);padding:16px;text-align:left;display:flex;gap:14px;align-items:center}
+.modcard:hover{background:var(--hwang)}
+.modcard b{font-family:var(--display);font-weight:400;font-size:21px;display:block}
+.modcard span{font-size:13px;color:#5A5248;display:block}
+.modcard .jm{font-size:19px;margin-top:4px;letter-spacing:.08em}
+.modcard .night{font-size:12.5px;color:var(--juhong);font-weight:700;display:block}
+.modcard.next{border-color:var(--juhong);box-shadow:0 0 0 3px var(--juhong)}
+.modcard .here{display:inline-block;font-size:11.5px;background:var(--juhong);color:#fff;
+  border-radius:999px;padding:1px 9px;margin-left:6px;font-weight:700;vertical-align:1px}
+.parents{margin-top:26px;border-top:2px dashed #B9AB88;padding-top:14px;font-size:14px;color:#5A5248}
+.parents b{color:var(--meok)}
+.parents button{font-size:13px;border:2px solid var(--meok);border-radius:8px;background:#fff;
+  padding:4px 12px;margin-top:8px}
+
+/* 자모 타일 */
+.grid{display:flex;flex-wrap:wrap;gap:11px}
+.tile{background:var(--dalbit);border:3px solid var(--meok);border-radius:14px;
+  width:92px;height:100px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;font-size:42px;line-height:1;transition:transform .12s}
+.tile:hover{transform:translateY(-3px)}
+.tile small{font-size:12px;color:#6B6256;min-height:14px}
+.tile.vowel{background:#FBF3DC}
+.tile.playing{background:var(--hwang)}
+.grouplabel{font-size:13px;color:#6B6256;margin:0 0 7px}
+
+/* 획순 */
+.strokes{display:flex;flex-wrap:wrap;gap:12px}
+.strokebox{border:3px solid var(--meok);border-radius:14px;background:var(--dalbit);
+  padding:6px;text-align:center;cursor:pointer}
+.strokebox svg{display:block}
+.strokebox span{font-size:13px;color:#6B6256}
+.animpath{stroke:var(--meok);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;fill:none}
+
+/* 따라쓰기 */
+.tracewrap{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+#pad{border:3px solid var(--meok);border-radius:14px;background:var(--dalbit);touch-action:none}
+.tracepick{display:flex;flex-wrap:wrap;gap:8px;max-width:300px}
+.tracepick button{width:58px;height:58px;font-size:27px;border:3px solid var(--meok);
+  border-radius:12px;background:#fff}
+.tracepick button[aria-pressed="true"]{background:var(--hwang)}
+
+/* 조립 */
+.assembly{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.slot{width:78px;height:78px;border:3px dashed var(--meok);border-radius:14px;
+  display:flex;align-items:center;justify-content:center;font-size:40px;background:#FBF3DC}
+.slot.filled{border-style:solid;background:var(--dalbit)}
+.slot.optional{border-color:#A99C7E}
+.eq{font-size:26px;color:#6B6256}
+.result-syl{width:104px;height:104px;border:3px solid var(--meok);border-radius:14px;
+  display:flex;align-items:center;justify-content:center;font-size:58px;background:var(--ssuk);
+  color:var(--hanji)}
+.pickrow{margin-bottom:12px}
+.pickrow b{display:block;font-size:13px;color:#6B6256;margin-bottom:6px;font-weight:500}
+.chip{font-size:26px;min-width:58px;height:58px;border:3px solid var(--meok);border-radius:12px;
+  background:#fff;margin:0 7px 7px 0;padding:0 8px}
+.chip[aria-pressed="true"]{background:var(--hwang)}
+.chip.new{background:#FBF3DC;border-color:var(--juhong)}
+
+/* 문제 */
+.qbig{font-size:20px;margin:0 0 8px}
+.qhint{font-size:15px;color:var(--byeok);margin:0 0 16px}
+.opts{display:flex;gap:13px;flex-wrap:wrap}
+.opt{font-size:42px;min-width:104px;height:104px;border:3px solid var(--meok);
+  border-radius:14px;background:var(--dalbit);padding:0 10px}
+.opt.right{background:var(--ssuk);color:var(--hanji)}
+.opt.wrong{background:var(--juhong);color:var(--hanji)}
+
+/* 단어 */
+.words{display:flex;flex-wrap:wrap;gap:14px}
+.word{border:3px solid var(--meok);border-radius:14px;background:var(--dalbit);
+  padding:10px;width:162px;text-align:center;cursor:pointer}
+.word svg{display:block;margin:0 auto}
+.word .w{font-size:34px;margin-top:4px;line-height:1.25}
+.word .en{font-size:13px;color:#6B6256;min-height:18px}
+.word .noimg{height:96px;display:flex;align-items:center;justify-content:center;
+  font-size:52px;color:#C3B48C}
+
+/* 소리와 글자 대조 */
+.cmp{width:100%;border-collapse:collapse;border:3px solid var(--meok);background:var(--dalbit)}
+.cmp th,.cmp td{border:2px solid var(--meok);padding:10px 12px;text-align:center}
+.cmp th{background:var(--hanji-deep);font-size:14px;font-weight:500}
+.cmp td.sp{font-size:34px}
+.cmp td.so{font-size:34px;color:var(--juhong)}
+.cmp td.nt{font-size:14px;text-align:left;color:#5A5248}
+.cmp button{font-size:13px;border:2px solid var(--meok);border-radius:8px;
+  background:#fff;padding:4px 10px}
+
+/* 받아쓰기 */
+.dictbox{border:3px solid var(--meok);border-radius:14px;background:var(--dalbit);padding:18px}
+.answer{min-height:82px;font-size:48px;letter-spacing:.05em;background:#FBF3DC;
+  border:3px solid var(--meok);border-radius:12px;display:flex;align-items:center;
+  padding:0 16px;margin:12px 0;flex-wrap:wrap}
+.answer.right{background:#D8E6CC;border-color:var(--ssuk)}
+.answer.wrong{background:#F3D9D6;border-color:var(--juhong)}
+.diff{color:var(--juhong)}
+
+.btn{font-family:var(--display);font-size:19px;padding:12px 26px;border-radius:999px;
+  border:3px solid var(--meok);background:var(--hwang);color:var(--meok)}
+.btn.quiet{background:#fff}
+.btn.play{font-size:16px;padding:9px 18px}
+.footbar{position:fixed;left:0;right:0;bottom:0;background:var(--hanji-deep);
+  border-top:3px solid var(--meok);padding:12px 20px;display:flex;align-items:center;
+  gap:14px;justify-content:space-between}
+.feedback{font-size:16px;min-height:24px;font-weight:500}
+.feedback.ok{color:#4E6B3C}
+.feedback.no{color:var(--juhong)}
+.toggle{font-size:13px;color:#5A5248;display:flex;align-items:center;gap:6px}
+.note{border-left:5px solid var(--juhong);padding:10px 0 10px 15px;margin-top:18px;
+  background:#FBF3DC;font-size:15px}
+.stars{font-size:60px;color:var(--hwang);letter-spacing:.1em}
+/* 캐릭터 안내 */
+.guide{display:flex;align-items:flex-end;gap:10px;margin:4px 0 22px}
+.guide-fig{flex:0 0 96px}
+.guide-fig svg{display:block;width:96px;height:80px}
+.bubble{position:relative;background:#fff;border:3px solid var(--meok);border-radius:16px;
+  padding:9px 14px 11px;font-size:15.5px;line-height:1.6;max-width:560px}
+.bubble::before{content:'';position:absolute;left:-15px;bottom:16px;
+  border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:12px solid var(--meok)}
+.bubble::after{content:'';position:absolute;left:-9px;bottom:19px;
+  border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #fff}
+.bubble b{display:block;font-family:var(--display);font-weight:400;font-size:15px;color:var(--juhong);line-height:1.3}
+.guide.side{margin-top:18px}
+.guide.side .guide-fig{flex-basis:76px}
+.guide.side .guide-fig svg{width:76px;height:64px}
+.guide.side .bubble{background:#FBF3DC}
+.guide.side .bubble::after{border-right-color:#FBF3DC}
+.bubble.solo{margin:0 0 12px}
+.bubble.solo::before,.bubble.solo::after{display:none}
+.guide.happy .guide-fig{animation:hop .6s ease}
+.guide.oops .guide-fig{animation:tilt .7s ease}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-14px)}}
+@keyframes tilt{0%,100%{transform:rotate(0)}30%{transform:rotate(-9deg)}65%{transform:rotate(6deg)}}
+.trio{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 14px}
+.trio-one{text-align:center;width:104px}
+.trio-one svg{display:block;width:104px;height:88px}
+.trio-one b{font-family:var(--display);font-weight:400;font-size:19px;display:block;line-height:1.2}
+.trio-one span{font-size:12.5px;color:#6B6256}
+.scene{position:relative;width:240px;height:220px;margin:0 auto 4px}
+.scene .moon{position:absolute;left:40px;top:0}
+.scene .tori{position:absolute;left:0;bottom:0}
+.scene .tori svg{display:block;width:240px;height:200px}
+.scene .pestle{animation:pound .45s ease-in-out 5}
+@keyframes pound{0%,100%{transform:translateY(0)}50%{transform:translateY(12px)}}
+@media (max-width:560px){
+  .guide-fig{flex-basis:72px}
+  .guide-fig svg{width:72px;height:60px}
+  .bubble{font-size:14.5px}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important}}
+@media (max-width:560px){
+  header{padding:10px 14px;row-gap:6px}
+  header .back{order:1}
+  .moonbar{order:2;margin-left:auto}
+  header .title{order:3;flex-basis:100%;font-size:19px;line-height:1.3}
+  .track{width:100px}
+  .tile{width:74px;height:86px;font-size:34px}
+  .opt{min-width:84px;height:84px;font-size:36px}
+  h2{font-size:25px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back" id="siteHome" href="../">달토끼 처음으로</a>
+  <button class="back" id="homeBtn">밤 고르기</button>
+  <div class="title" id="hdrTitle">한글 첫 달</div>
+  <div class="moonbar">
+    <span id="stepLabel"></span>
+    <div class="track"><i id="trackFill"></i></div>
+  </div>
+</header>
+
+<main><div class="card" id="card"></div></main>
+
+<div id="audioNote" role="status">이 기기에서는 소리가 안 나와요. 글자와 뜻으로 먼저 해 보고, 소리는 다른 기기에서 들어 보세요.</div>
+
+<div class="footbar">
+  <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <label class="toggle"><input type="checkbox" id="hintToggle"> 소리 힌트</label>
+    <button class="btn" id="nextBtn">다음</button>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   내용 층
+   저장소에서는 이 블록 전체를 content/hangeul.js 로 떼어 냅니다.
+   아래 엔진 층은 건드리지 않고 밤(모듈)만 추가할 수 있습니다.
+   ══════════════════════════════════════════════════════════════ */
+
+/* 자모 사전. s는 획순 경로, hint는 소리 힌트. */
+const JAMO = {
+  /* 기본 모음 */
+  'ㅏ':{h:'ah', s:['M45 14 L45 86','M45 50 L80 50']},
+  'ㅓ':{h:'eo', s:['M20 50 L55 50','M55 14 L55 86']},
+  'ㅗ':{h:'oh', s:['M50 22 L50 56','M14 56 L86 56']},
+  'ㅜ':{h:'oo', s:['M14 44 L86 44','M50 44 L50 78']},
+  'ㅡ':{h:'eu', s:['M14 50 L86 50']},
+  'ㅣ':{h:'ee', s:['M50 14 L50 86']},
+  /* 기본 자음 */
+  'ㄱ':{h:'g',  s:['M20 22 L78 22 L70 82']},
+  'ㄴ':{h:'n',  s:['M26 18 L26 76 L82 76']},
+  'ㅁ':{h:'m',  s:['M26 22 L26 78','M26 22 L78 22 L78 78','M26 78 L78 78']},
+  'ㅅ':{h:'s',  s:['M50 18 L24 82','M50 40 L78 82']},
+  'ㅇ':{h:'ng', s:['M50 20 A30 30 0 1 1 49.9 20']},
+  /* 남은 자음 */
+  'ㄷ':{h:'d',  s:['M22 22 L78 22','M22 22 L22 78 L78 78']},
+  'ㄹ':{h:'r/l',s:['M22 18 L74 18 L74 46','M74 46 L24 46','M24 46 L24 78 L78 78']},
+  'ㅂ':{h:'b',  s:['M26 18 L26 80','M76 18 L76 80','M26 52 L76 52','M26 80 L76 80']},
+  'ㅈ':{h:'j',  s:['M22 26 L78 26','M50 26 L26 82','M50 44 L78 82']},
+  'ㅊ':{h:'ch', s:['M50 10 L50 22','M22 34 L78 34','M50 34 L26 84','M50 50 L78 84']},
+  'ㅋ':{h:'k',  s:['M20 22 L78 22 L70 82','M32 52 L74 46']},
+  'ㅌ':{h:'t',  s:['M22 20 L78 20','M22 50 L78 50','M22 20 L22 80 L78 80']},
+  'ㅍ':{h:'p',  s:['M20 26 L80 26','M38 26 L38 74','M62 26 L62 74','M20 74 L80 74']},
+  'ㅎ':{h:'h',  s:['M38 14 L62 14','M24 34 L76 34','M50 44 A20 20 0 1 1 49.9 44']},
+  /* 길어진 모음 */
+  'ㅑ':{h:'ya', s:['M45 14 L45 86','M45 38 L80 38','M45 62 L80 62']},
+  'ㅕ':{h:'yeo',s:['M20 38 L55 38','M20 62 L55 62','M55 14 L55 86']},
+  'ㅛ':{h:'yo', s:['M38 22 L38 56','M62 22 L62 56','M14 56 L86 56']},
+  'ㅠ':{h:'yu', s:['M14 44 L86 44','M38 44 L38 78','M62 44 L62 78']},
+  /* 어려운 모음 */
+  'ㅐ':{h:'ae', s:['M32 14 L32 86','M32 50 L60 50','M64 14 L64 86']},
+  'ㅔ':{h:'e',  s:['M14 50 L40 50','M40 14 L40 86','M68 14 L68 86']},
+  'ㅒ':{h:'yae',s:['M28 14 L28 86','M28 38 L54 38','M28 62 L54 62','M66 14 L66 86']},
+  'ㅖ':{h:'ye', s:['M10 38 L38 38','M10 62 L38 62','M38 14 L38 86','M66 14 L66 86']},
+  'ㅘ':{h:'wa', s:['M26 26 L26 52','M6 52 L48 52','M62 14 L62 86','M62 48 L86 48']},
+  'ㅝ':{h:'wo', s:['M6 44 L48 44','M26 44 L26 74','M56 48 L76 48','M76 14 L76 86']},
+  'ㅚ':{h:'oe', s:['M26 26 L26 52','M6 52 L48 52','M68 14 L68 86']},
+  'ㅟ':{h:'wi', s:['M6 44 L48 44','M26 44 L26 74','M68 14 L68 86']},
+  'ㅢ':{h:'ui', s:['M6 50 L48 50','M68 14 L68 86']},
+  /* 쌍둥이 자음 */
+  'ㄲ':{h:'kk', s:['M10 24 L44 24 L40 78','M54 24 L88 24 L84 78']},
+  'ㄸ':{h:'tt', s:['M10 24 L44 24','M10 24 L10 76 L44 76','M56 24 L90 24','M56 24 L56 76 L90 76']},
+  'ㅃ':{h:'pp', s:['M10 20 L10 80 L42 80 L42 20','M10 50 L42 50','M58 20 L58 80 L90 80 L90 20','M58 50 L90 50']},
+  'ㅆ':{h:'ss', s:['M30 22 L10 80','M30 42 L48 80','M72 22 L52 80','M72 42 L90 80']},
+  'ㅉ':{h:'jj', s:['M8 28 L46 28','M28 28 L10 82','M28 46 L46 82','M54 28 L92 28','M74 28 L56 82','M74 46 L92 82']},
+  /* 겹받침은 구성 자모를 이어 붙여 보여 줍니다. */
+  'ㄳ':{h:'', s:null}, 'ㄵ':{h:'', s:null}, 'ㄶ':{h:'', s:null},
+  'ㄺ':{h:'', s:null}, 'ㄻ':{h:'', s:null}, 'ㄼ':{h:'', s:null},
+  'ㅀ':{h:'', s:null}, 'ㅄ':{h:'', s:null}
+};
+
+/* 그림. 없는 단어는 글자 카드로 넘어갑니다. */
+const PIC = {
+  tree:`<svg viewBox="0 0 120 100" width="118" height="96" aria-hidden="true">
+    <rect x="52" y="58" width="16" height="38" fill="#8A6A4A"/>
+    <circle cx="60" cy="44" r="32" fill="#6E8F58"/><circle cx="38" cy="55" r="19" fill="#6E8F58"/>
+    <circle cx="82" cy="55" r="19" fill="#6E8F58"/></svg>`,
+  cucumber:`<svg viewBox="0 0 120 100" width="118" height="96" aria-hidden="true">
+    <g transform="rotate(-28 60 50)"><rect x="44" y="10" width="32" height="78" rx="16" fill="#6E8F58"/>
+    <g fill="#4F6B3E"><circle cx="55" cy="28" r="3"/><circle cx="67" cy="42" r="3"/>
+    <circle cx="54" cy="56" r="3"/><circle cx="66" cy="72" r="3"/></g></g></svg>`,
+  cow:`<svg viewBox="0 0 120 100" width="118" height="96" aria-hidden="true">
+    <ellipse cx="60" cy="68" rx="38" ry="25" fill="#EDE3CB" stroke="#221F1C" stroke-width="3"/>
+    <circle cx="43" cy="64" r="8" fill="#221F1C"/><circle cx="77" cy="76" r="6" fill="#221F1C"/>
+    <circle cx="60" cy="32" r="21" fill="#EDE3CB" stroke="#221F1C" stroke-width="3"/>
+    <path d="M43 18 q-11 -9 -6 -15" stroke="#221F1C" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M77 18 q11 -9 6 -15" stroke="#221F1C" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <circle cx="53" cy="30" r="3" fill="#221F1C"/><circle cx="67" cy="30" r="3" fill="#221F1C"/>
+    <ellipse cx="60" cy="41" rx="10" ry="6" fill="#D98B7E"/></svg>`,
+  baby:`<svg viewBox="0 0 120 100" width="118" height="96" aria-hidden="true">
+    <ellipse cx="60" cy="84" rx="28" ry="16" fill="#2D6E8E"/>
+    <circle cx="60" cy="46" r="28" fill="#F0D9BE" stroke="#221F1C" stroke-width="3"/>
+    <path d="M42 26 q18 -13 36 0" stroke="#221F1C" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <circle cx="51" cy="44" r="3.2" fill="#221F1C"/><circle cx="69" cy="44" r="3.2" fill="#221F1C"/>
+    <path d="M53 57 q7 6 14 0" stroke="#221F1C" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+  mosquito:`<svg viewBox="0 0 120 100" width="118" height="96" aria-hidden="true">
+    <ellipse cx="70" cy="54" rx="25" ry="10" fill="#5A5248" transform="rotate(20 70 54)"/>
+    <circle cx="44" cy="43" r="11" fill="#5A5248"/>
+    <path d="M36 41 L14 32" stroke="#5A5248" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="62" cy="35" rx="21" ry="7" fill="#9DB4C6" opacity=".7" transform="rotate(-22 62 35)"/>
+    <ellipse cx="72" cy="39" rx="19" ry="6" fill="#9DB4C6" opacity=".7" transform="rotate(-6 72 39)"/>
+    <g stroke="#5A5248" stroke-width="3" stroke-linecap="round">
+    <path d="M62 62 L56 84"/><path d="M74 66 L74 88"/><path d="M86 66 L94 86"/></g></svg>`
+};
+
+const MODULES = [
+{ n:1, title:'첫 소리', why:'모음 여섯 개랑 자음 다섯 개만 알아도 서른 글자를 읽을 수 있어. 같이 해 보자.',
+  add:{cho:['ㄱ','ㄴ','ㅁ','ㅅ','ㅇ'], jung:['ㅏ','ㅓ','ㅗ','ㅜ','ㅡ','ㅣ'], jong:[]},
+  listen:[{a:'가',o:['가','거','고']},{a:'누',o:['나','누','느']},
+          {a:'미',o:['모','무','미']},{a:'소',o:['서','소','수']}],
+  words:[{w:'나무',en:'tree',p:'tree'},{w:'오이',en:'cucumber',p:'cucumber'},
+         {w:'소',en:'cow',p:'cow'},{w:'아기',en:'baby',p:'baby'},{w:'모기',en:'mosquito',p:'mosquito'}],
+  dict:['아기','나무','오이'] },
+
+{ n:2, title:'남은 자음', why:'자음 아홉 개가 더 오면 읽을 수 있는 말이 확 늘어나. 포도, 하마 같은 말도 읽게 돼.',
+  add:{cho:['ㄷ','ㄹ','ㅂ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'], jung:[], jong:[]},
+  listen:[{a:'도',o:['도','조','포']},{a:'리',o:['리','디','비']},
+          {a:'차',o:['자','차','타']},{a:'하',o:['하','파','카']}],
+  words:[{w:'다리',en:'leg, bridge'},{w:'바지',en:'pants'},{w:'포도',en:'grape'},
+         {w:'치마',en:'skirt'},{w:'하마',en:'hippo'}],
+  dict:['다리','포도','하마'] },
+
+{ n:3, title:'길어진 모음', why:'획 하나만 더 그으면 소리가 달라져. ㅏ에 획을 하나 더 그으면 ㅑ가 돼.',
+  add:{cho:[], jung:['ㅑ','ㅕ','ㅛ','ㅠ'], jong:[]},
+  listen:[{a:'야',o:['아','야','여']},{a:'유',o:['우','유','요']},
+          {a:'여',o:['어','여','요']},{a:'교',o:['고','교','구']}],
+  words:[{w:'여우',en:'fox'},{w:'우유',en:'milk'},{w:'요리',en:'cooking'},
+         {w:'야구',en:'baseball'},{w:'유리',en:'glass'}],
+  dict:['여우','우유','요리'] },
+
+{ n:4, title:'어려운 모음', why:'모양이 닮은 모음은 헷갈리기 쉬워. 여기서 실수가 제일 많이 나오니까 천천히 가자.',
+  add:{cho:[], jung:['ㅐ','ㅔ','ㅒ','ㅖ','ㅘ','ㅝ','ㅚ','ㅟ','ㅢ'], jong:[]},
+  listen:[{a:'개',o:['개','게','거']},{a:'게',o:['개','게','기']},
+          {a:'과',o:['고','과','구']},{a:'위',o:['우','위','외']}],
+  words:[{w:'사과',en:'apple'},{w:'가게',en:'store'},{w:'시계',en:'clock'},
+         {w:'의자',en:'chair'},{w:'귀',en:'ear'}],
+  dict:['사과','가게','의자'],
+  note:{w:'tori', t:'참, 요즘 서울말에서는 ㅐ랑 ㅔ 소리가 거의 똑같아. 내 큰 귀로도 구별하기 어려워. 그래서 개랑 게는 뜻으로 기억해야 해.'} },
+
+{ n:5, title:'쌍둥이 자음', why:'똑같은 글자가 둘이면 목에 힘을 꽉 주고 세게 소리 내. 가, 까 하고 해 봐.',
+  add:{cho:['ㄲ','ㄸ','ㅃ','ㅆ','ㅉ'], jung:[], jong:[]},
+  listen:[{a:'까',o:['가','까','카']},{a:'따',o:['다','따','타']},
+          {a:'빠',o:['바','빠','파']},{a:'짜',o:['자','짜','차']}],
+  words:[{w:'토끼',en:'rabbit'},{w:'꼬리',en:'tail'},{w:'아빠',en:'dad'},
+         {w:'뿌리',en:'root'},{w:'쓰레기',en:'trash'}],
+  dict:['토끼','꼬리','아빠'] },
+
+{ n:6, title:'받침이 왔어요', why:'이제 글자 아래에 자음이 하나 더 들어가. 이걸 받침이라고 해. 대표 받침 일곱 개부터 배우자.',
+  add:{cho:[], jung:[], jong:['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅇ']},
+  listen:[{a:'산',o:['사','산','상']},{a:'밥',o:['바','밥','밤']},
+          {a:'공',o:['고','곤','공']},{a:'물',o:['무','물','문']}],
+  words:[{w:'산',en:'mountain'},{w:'공',en:'ball'},{w:'물',en:'water'},
+         {w:'곰',en:'bear'},{w:'밥',en:'rice, meal'}],
+  dict:['산','공','물'],
+  note:{w:'tori', t:'받침은 소리를 끝에서 막아 줘. 사는 열려 있고, 산은 코로 막히고, 상은 목 안쪽에서 막혀. 입 모양이랑 혀 위치를 같이 느껴 봐.'} },
+
+{ n:7, title:'소리는 같은데', why:'소리가 똑같아도 글자가 다를 수 있어. 여기가 한글 쓰기에서 제일 높은 언덕이야. 담이가 도와줄 거야.',
+  add:{cho:[], jung:[], jong:['ㅋ','ㄲ','ㅅ','ㅆ','ㅈ','ㅊ','ㅌ','ㅍ','ㅎ']},
+  cmp:[{s:'밖',d:'박',n:'ㄲ 받침은 ㄱ 소리가 나요'},
+       {s:'옷',d:'옫',n:'ㅅ 받침은 ㄷ 소리가 나요'},
+       {s:'꽃',d:'꼳',n:'ㅊ 받침도 ㄷ 소리가 나요'},
+       {s:'같',d:'갇',n:'ㅌ 받침도 ㄷ 소리가 나요'},
+       {s:'잎',d:'입',n:'ㅍ 받침은 ㅂ 소리가 나요'},
+       {s:'부엌',d:'부억',n:'ㅋ 받침은 ㄱ 소리가 나요'}],
+  listen:[{a:'옷',o:['옫','옷','옺'],hint:'몸에 입는 것'},
+          {a:'꽃',o:['꼳','꽃','꽅'],hint:'봄에 피는 것'},
+          {a:'잎',o:['입','잎','잇'],hint:'나무에 달린 것'},
+          {a:'밖',o:['박','밖','밬'],hint:'집 안이 아닌 곳'}],
+  words:[{w:'옷',en:'clothes'},{w:'꽃',en:'flower'},{w:'밖',en:'outside'},
+         {w:'잎',en:'leaf'},{w:'부엌',en:'kitchen'}],
+  dict:['옷','꽃','밖'],
+  note:{w:'dami', t:'왜 꼳이라고 안 쓰고 꽃이라고 쓰는지 알려 주마. “꽃이 피어요”라고 하면 [꼬치 피어요]라고 소리 난단다. 숨어 있던 ㅊ이 나타나지. 그래서 한글은 소리가 아니라 말의 뿌리를 적는단다.'} },
+
+{ n:8, title:'겹받침', why:'받침이 두 개나 있어. 그런데 소리는 보통 하나만 나. 어느 쪽이 소리 나는지 같이 찾아보자.',
+  add:{cho:[], jung:[], jong:['ㄳ','ㄵ','ㄶ','ㄺ','ㄻ','ㄼ','ㅀ','ㅄ']},
+  cmp:[{s:'값',d:'갑',n:'ㅄ에서 ㅂ만 소리 나요'},
+       {s:'닭',d:'닥',n:'ㄺ에서 ㄱ만 소리 나요'},
+       {s:'삶',d:'삼',n:'ㄻ에서 ㅁ만 소리 나요'},
+       {s:'여덟',d:'여덜',n:'ㄼ에서 ㄹ만 소리 나요'},
+       {s:'많다',d:'만타',n:'ㄶ의 ㅎ이 뒤 글자와 합쳐져요'},
+       {s:'앉다',d:'안따',n:'ㄵ의 ㅈ이 뒤 소리를 세게 만들어요'}],
+  listen:[{a:'값',o:['갑','값','갓'],hint:'얼마인지 말할 때'},
+          {a:'삶',o:['삼','삷','삶'],hint:'사는 것'},
+          {a:'여덟',o:['여덜','여덟','여덞'],hint:'일곱 다음 숫자'},
+          {a:'닭',o:['닥','닭','달'],hint:'꼬꼬 하는 동물'}],
+  words:[{w:'값',en:'price'},{w:'삶',en:'life'},{w:'여덟',en:'eight'},
+         {w:'닭',en:'chicken'},{w:'흙',en:'soil'}],
+  dict:['값','삶','닭'],
+  note:{w:'dami', t:'겹받침은 뒤에 무엇이 오느냐에 따라 소리가 달라진단다. 닭 혼자 있으면 [닥]이지만, “닭이 울어요”라고 하면 [달기 우러요]가 된단다. 숨어 있던 ㄹ이 살아나는 게야. 3단계 맞춤법방에서 더 자세히 알려 주마.'} }
+];
+
+/* ══════════════════════════════════════════════════════════════
+   엔진 층
+   ══════════════════════════════════════════════════════════════ */
+
+const CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+const JUNG = ['ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ','ㅚ','ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ'];
+const JONG = ['','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+
+function compose(cho, jung, jong){
+  const ci = CHO.indexOf(cho), ji = JUNG.indexOf(jung), ki = jong ? JONG.indexOf(jong) : 0;
+  if(ci < 0 || ji < 0 || ki < 0) return '';
+  return String.fromCharCode(0xAC00 + ci*588 + ji*28 + ki);
+}
+/* 이미 만든 음절에 받침만 얹습니다. */
+function addJong(syl, jong){
+  const c = syl.charCodeAt(0);
+  if(c < 0xAC00 || c > 0xD7A3) return syl;
+  const ki = JONG.indexOf(jong);
+  if(ki < 1) return syl;
+  return String.fromCharCode(c - ((c - 0xAC00) % 28) + ki);
+}
+
+/* ---- 조사 선택 ----------------------------------------------
+   자모는 글자 모양이 아니라 이름의 받침을 따릅니다.
+   ㄱ은 기역이라 받침이 있고(ㄱ과), ㅓ는 어라 받침이 없습니다(ㅓ와). */
+const JAMO_NAME = {
+  'ㄱ':'기역','ㄲ':'쌍기역','ㄴ':'니은','ㄷ':'디귿','ㄸ':'쌍디귿','ㄹ':'리을',
+  'ㅁ':'미음','ㅂ':'비읍','ㅃ':'쌍비읍','ㅅ':'시옷','ㅆ':'쌍시옷','ㅇ':'이응',
+  'ㅈ':'지읒','ㅉ':'쌍지읒','ㅊ':'치읓','ㅋ':'키읔','ㅌ':'티읕','ㅍ':'피읖','ㅎ':'히읗',
+  'ㄳ':'기역시옷','ㄵ':'니은지읒','ㄶ':'니은히읗','ㄺ':'리을기역','ㄻ':'리을미음',
+  'ㄼ':'리을비읍','ㅀ':'리을히읗','ㅄ':'비읍시옷',
+  'ㅏ':'아','ㅐ':'애','ㅑ':'야','ㅒ':'얘','ㅓ':'어','ㅔ':'에','ㅕ':'여','ㅖ':'예',
+  'ㅗ':'오','ㅘ':'와','ㅙ':'왜','ㅚ':'외','ㅛ':'요','ㅜ':'우','ㅝ':'워','ㅞ':'웨',
+  'ㅟ':'위','ㅠ':'유','ㅡ':'으','ㅢ':'의','ㅣ':'이'
+};
+function jongseong(word){
+  if(!word) return -1;
+  let last = word[word.length - 1];
+  if(JAMO_NAME[last]){ const nm = JAMO_NAME[last]; last = nm[nm.length - 1]; }
+  const c = last.charCodeAt(0);
+  if(c < 0xAC00 || c > 0xD7A3) return -1;
+  return (c - 0xAC00) % 28;
+}
+const JOSA_PAIR = {
+  '은':['는','은'],'는':['는','은'],'이':['가','이'],'가':['가','이'],
+  '을':['를','을'],'를':['를','을'],'와':['와','과'],'과':['와','과'],
+  '이에요':['예요','이에요'],'예요':['예요','이에요'],'이라':['라','이라']
+};
+function josa(word, type){
+  const j = jongseong(word);
+  if(type === '으로' || type === '로') return word + ((j === 0 || j === 8) ? '로' : '으로');
+  const p = JOSA_PAIR[type];
+  if(!p || j < 0) return word + type;
+  return word + (j > 0 ? p[1] : p[0]);
+}
+
+/* ---- 누적 자모 ---- */
+function poolUpTo(n){
+  const pool = {cho:[], jung:[], jong:[]};
+  MODULES.slice(0, n).forEach(m => {
+    pool.cho.push(...m.add.cho);
+    pool.jung.push(...m.add.jung);
+    pool.jong.push(...m.add.jong);
+  });
+  return pool;
+}
+
+/* ---- 소리 --------------------------------------------------
+   음성 합성은 기기와 브라우저에 따라 예외를 던집니다.
+   특히 iOS 는 샌드박스 안에서 접근 자체가 막히기도 하고,
+   사용자가 화면을 한 번 누르기 전에는 소리를 내 주지 않습니다.
+   그래서 모든 접근을 safe() 로 감싸고, 실패하면 조용히 끕니다.   */
+let voiceKo = null, ttsOK = false, ttsUnlocked = false, ttsWarned = false;
+function safe(fn){
+  try { return fn(); }
+  catch(e) { ttsOK = false; return null; }
+}
+try { ttsOK = typeof speechSynthesis !== 'undefined' && !!speechSynthesis; }
+catch(e) { ttsOK = false; }
+
+function loadVoice(){
+  safe(() => {
+    const vs = speechSynthesis.getVoices() || [];
+    voiceKo = vs.find(v => v.lang && v.lang.toLowerCase().startsWith('ko')) || null;
+  });
+}
+if(ttsOK){
+  loadVoice();
+  safe(() => speechSynthesis.addEventListener('voiceschanged', loadVoice));
+}
+/* 첫 손가락 터치에서 소리 잠금을 풀어 둡니다. */
+function unlockAudio(){
+  if(ttsUnlocked || !ttsOK) return;
+  ttsUnlocked = true;
+  safe(() => {
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0;
+    speechSynthesis.speak(u);
+  });
+}
+document.addEventListener('pointerdown', unlockAudio);
+document.addEventListener('keydown', unlockAudio);
+
+function audioWarn(){
+  if(ttsWarned) return;
+  ttsWarned = true;
+  const n = document.getElementById('audioNote');
+  if(n){
+    n.style.display = 'block';
+    setTimeout(() => { n.style.display = 'none'; }, 8000);
+  }
+}
+function speak(text){
+  if(!ttsOK || !text) return;
+  const done = safe(() => {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ko-KR';
+    u.rate = .8;
+    if(voiceKo) u.voice = voiceKo;
+    u.onerror = ev => { if(ev && ev.error !== 'interrupted' && ev.error !== 'canceled') audioWarn(); };
+    speechSynthesis.speak(u);
+    return true;
+  });
+  if(!done) audioWarn();
+}
+
+/* ---- 기초 도구 ---- */
+function h(tag, attrs, ...kids){
+  const el = document.createElement(tag);
+  for(const k in (attrs||{})){
+    if(k === 'class') el.className = attrs[k];
+    else if(k === 'html') el.innerHTML = attrs[k];
+    else if(k.startsWith('on')) el.addEventListener(k.slice(2), attrs[k]);
+    else el.setAttribute(k, attrs[k]);
+  }
+  kids.flat().forEach(x => el.append(x));
+  return el;
+}
+const card = document.getElementById('card');
+const fb = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const hintToggle = document.getElementById('hintToggle');
+const hdrTitle = document.getElementById('hdrTitle');
+function setFeedback(msg, kind){
+  fb.textContent = msg || '';
+  fb.className = 'feedback' + (kind ? ' ' + kind : '');
+}
+const hintsOn = () => hintToggle.checked;
+hintToggle.addEventListener('change', () => {
+  document.querySelectorAll('[data-hint]').forEach(el => {
+    el.textContent = hintsOn() ? el.dataset.hint : '';
+  });
+});
+
+/* ---- 캐릭터 -------------------------------------------------
+   토리(토끼)  소리와 쓰기: 소리 듣기, 획순, 따라 쓰기, 듣고 고르기, 받아쓰기
+   모이(까치)  말 모으기: 글자 조립, 단어 읽기, 모은 말 세기
+   담이(호랑이) 이야기와 뿌리: 소리와 글자가 다른 이유
+   캐릭터는 반말(담이는 옛날 어른 말투), 화면 안내는 해요체로 씁니다.   */
+const NAME = {tori:'토리', moi:'모이', dami:'담이'};
+const CHAR = {
+  tori(m){
+    const mouth = m === 'happy'
+      ? '<path d="M101 107 q10 13 20 0 Z" fill="#C1403A" stroke="#221F1C" stroke-width="2.4" stroke-linejoin="round"/>'
+      : m === 'oops'
+      ? '<ellipse cx="111" cy="112" rx="4" ry="5" fill="#221F1C"/>'
+      : '<path d="M104 110 q7 6 14 0" stroke="#221F1C" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+    return `<svg viewBox="0 0 240 200" aria-hidden="true">
+      <g stroke="#221F1C" stroke-width="3.2" stroke-linejoin="round">
+        <path d="M96 74 C86 48 84 26 94 20 C106 26 104 54 104 74 Z" fill="#EDE3CB"/>
+        <path d="M97 66 C91 48 90 32 95 28 C101 33 100 52 102 66 Z" fill="#D98B7E" stroke="none"/>
+        <path d="M118 72 C114 48 118 26 129 22 C137 30 128 56 126 73 Z" fill="#EDE3CB"/>
+        <path d="M120 66 C118 48 121 34 127 30 C131 37 124 52 124 66 Z" fill="#D98B7E" stroke="none"/>
+        <ellipse cx="112" cy="140" rx="40" ry="42" fill="#EDE3CB"/>
+        <circle cx="110" cy="92" r="27" fill="#EDE3CB"/>
+        <path d="M36 168 L92 168 L86 190 L42 190 Z" fill="#8A6A4A"/>
+      </g>
+      <g class="pestle" stroke="#221F1C" stroke-width="3.2">
+        <path d="M150 150 L196 74" stroke-width="11" stroke-linecap="round" fill="none"/>
+        <circle cx="198" cy="70" r="12" fill="#C9A87C"/>
+      </g>
+      <circle cx="101" cy="90" r="3.6" fill="#221F1C"/>
+      <circle cx="121" cy="90" r="3.6" fill="#221F1C"/>
+      <path d="M107 100 L115 100 L111 105 Z" fill="#C1403A"/>
+      ${mouth}
+    </svg>`;
+  },
+  moi(m){
+    const eye = m === 'happy'
+      ? '<path d="M74 85 q6 -8 12 0" stroke="#EDE3CB" stroke-width="3.4" fill="none" stroke-linecap="round"/>'
+      : '<circle cx="80" cy="82" r="5.4" fill="#EDE3CB"/><circle cx="81" cy="82" r="2.6" fill="#221F1C"/>';
+    return `<svg viewBox="0 0 240 200" aria-hidden="true">
+      <g stroke="#221F1C" stroke-width="3.2" stroke-linejoin="round">
+        <path d="M168 118 L222 150 L214 162 L160 136 Z" fill="#2D6E8E"/>
+        <ellipse cx="118" cy="120" rx="52" ry="40" fill="#EDE3CB"/>
+        <path d="M118 82 C150 82 168 100 168 122 C168 138 156 150 140 152 C150 128 142 96 118 82 Z" fill="#221F1C"/>
+        <circle cx="82" cy="88" r="26" fill="#221F1C"/>
+        <path d="M58 86 L32 94 L58 102 Z" fill="#E3A93C"/>
+        <path d="M96 152 L96 172 M124 152 L124 172" stroke-width="5" stroke-linecap="round"/>
+      </g>
+      ${eye}
+      <rect x="96" y="106" width="34" height="24" rx="3" fill="#EDE3CB" stroke="#221F1C" stroke-width="2.6"/>
+      <path d="M96 107 L113 120 L130 107" fill="none" stroke="#221F1C" stroke-width="2.6"/>
+    </svg>`;
+  },
+  dami(m){
+    const mouth = m === 'happy'
+      ? '<path d="M94 137 q16 20 32 0 Z" fill="#C1403A" stroke="#221F1C" stroke-width="3" stroke-linejoin="round"/>'
+      : m === 'oops'
+      ? '<path d="M99 143 L121 143" stroke="#221F1C" stroke-width="3" stroke-linecap="round"/>'
+      : '<path d="M110 133 L110 140 M110 140 q-11 10 -19 0 M110 140 q11 10 19 0" stroke="#221F1C" stroke-width="3" fill="none" stroke-linecap="round"/>';
+    return `<svg viewBox="0 0 240 200" aria-hidden="true">
+      <g stroke="#221F1C" stroke-width="3.2" stroke-linejoin="round">
+        <circle cx="74" cy="60" r="16" fill="#E3A93C"/>
+        <circle cx="146" cy="60" r="16" fill="#E3A93C"/>
+        <ellipse cx="110" cy="112" rx="62" ry="58" fill="#E3A93C"/>
+        <ellipse cx="110" cy="132" rx="34" ry="26" fill="#EDE3CB"/>
+      </g>
+      <g stroke="#221F1C" stroke-width="6" stroke-linecap="round">
+        <path d="M64 92 L84 86"/><path d="M62 108 L82 106"/>
+        <path d="M156 92 L136 86"/><path d="M158 108 L138 106"/>
+        <path d="M100 62 L104 78"/><path d="M120 62 L116 78"/>
+      </g>
+      <circle cx="92" cy="106" r="6" fill="#221F1C"/>
+      <circle cx="128" cy="106" r="6" fill="#221F1C"/>
+      <path d="M102 124 L118 124 L110 133 Z" fill="#221F1C"/>
+      ${mouth}
+    </svg>`;
+  }
+};
+
+/* 화면마다 주 안내 캐릭터가 하나 있고, 정답과 오답에 반응합니다. */
+let curGuide = null;
+function guide(who, text, side){
+  const wrap = h('div', {class:'guide' + (side ? ' side' : ''), 'data-who':who});
+  wrap.append(h('div', {class:'guide-fig', html: CHAR[who]('')}),
+              h('div', {class:'bubble'}, h('b', {}, NAME[who]), h('span', {}, text)));
+  if(!side) curGuide = wrap;
+  return wrap;
+}
+function say(who, text){
+  return h('div', {class:'bubble solo'}, h('b', {}, NAME[who]), h('span', {}, text));
+}
+function react(mood){
+  if(!curGuide) return;
+  const g = curGuide, who = g.dataset.who;
+  g.querySelector('.guide-fig').innerHTML = CHAR[who](mood);
+  g.classList.remove('happy', 'oops');
+  void g.offsetWidth;
+  g.classList.add(mood);
+  clearTimeout(react.t);
+  react.t = setTimeout(() => {
+    g.classList.remove('happy', 'oops');
+    g.querySelector('.guide-fig').innerHTML = CHAR[who]('');
+  }, 1200);
+}
+function trio(){
+  const t = h('div', {class:'trio'});
+  [['tori','소리와 쓰기'], ['moi','말 모으기'], ['dami','옛날 이야기']].forEach(([w, role]) => {
+    t.append(h('div', {class:'trio-one'},
+      h('div', {html: CHAR[w]('')}), h('b', {}, NAME[w]), h('span', {}, role)));
+  });
+  return t;
+}
+
+/* ---- 진도 (모듈별 별 개수) ---- */
+/* ---- 진도 저장 ----------------------------------------------
+   계정 없이 이 기기의 브라우저에만 저장합니다. 이름이나 개인정보는 저장하지 않습니다.
+   저장소가 막힌 환경(시크릿 모드, 일부 앱 속 브라우저)에서는 메모리로만 동작합니다.
+   키에 버전을 붙여 두어 나중에 형식이 바뀌어도 옛 기록과 충돌하지 않게 합니다.   */
+const STORE_KEY = 'daltokki:v1:first-moon';
+let canStore = false;
+try {
+  localStorage.setItem('daltokki:probe', '1');
+  localStorage.removeItem('daltokki:probe');
+  canStore = true;
+} catch(e) { canStore = false; }
+
+function loadStars(){
+  const out = {};
+  if(!canStore) return out;
+  try {
+    const data = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    if(data && data.stars && typeof data.stars === 'object'){
+      for(const k in data.stars){
+        const n = Number(k), v = Number(data.stars[k]);
+        if(n >= 1 && n <= MODULES.length && v >= 1 && v <= 3) out[n] = Math.round(v);
+      }
+    }
+  } catch(e) {}
+  return out;
+}
+function saveStars(){
+  if(!canStore) return;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({stars, updated: Date.now()})); } catch(e) {}
+}
+function resetStars(){
+  for(const k in stars) delete stars[k];
+  if(canStore){ try { localStorage.removeItem(STORE_KEY); } catch(e) {} }
+}
+const stars = loadStars();
+
+/* 밤 이름 */
+const ORD = ['첫째','둘째','셋째','넷째','다섯째','여섯째','일곱째','여덟째'];
+const nightName = n => ORD[n - 1] + ' 밤';
+/* 밤을 셀 때는 고유어 수사를 씁니다. 2밤이 아니라 두 밤. */
+const COUNT = ['한','두','세','네','다섯','여섯','일곱','여덟'];
+
+/* ---- 상태 ---- */
+let mod = null, pool = null, steps = [], step = 0, score = 0, maxScore = 0;
+
+document.getElementById('homeBtn').addEventListener('click', showPicker);
+/* 밤 고르기 화면에서는 사이트 처음으로, 밤 안에서는 밤 고르기로 돌아갑니다. */
+function setNav(inNight){
+  document.getElementById('homeBtn').style.display = inNight ? '' : 'none';
+  document.getElementById('siteHome').style.display = inNight ? 'none' : '';
+}
+nextBtn.addEventListener('click', () => {
+  if(step < steps.length - 1){ step++; render(); }
+  else showPicker();
+});
+
+/* ---- 모듈 선택 화면 ---- */
+function showPicker(){
+  mod = null;
+  curGuide = null;
+  hdrTitle.textContent = '한글 첫 달';
+  document.getElementById('stepLabel').textContent = '';
+  document.getElementById('trackFill').style.width = '0%';
+  nextBtn.style.visibility = 'hidden';
+  setNav(false);
+  setFeedback('');
+  card.innerHTML = '';
+  card.append(
+    h('h2', {}, '한글 첫 달'),
+    trio(),
+    guide('tori', '안녕, 나는 토리야. 달은 밤마다 조금씩 차올라. 여덟 밤이 지나면 보름달이 뜨고, 그때는 한글을 다 읽을 수 있어. 모이랑 담이랑 같이 가자.')
+  );
+  const nextUp = (MODULES.find(m => !stars[m.n]) || {}).n;
+  const g = h('div', {class:'modgrid'});
+  MODULES.forEach(m => {
+    const got = stars[m.n] || 0;
+    const jm = [...m.add.jung, ...m.add.cho, ...m.add.jong].join(' ');
+    const isNext = m.n === nextUp && Object.keys(stars).length > 0;
+    const label = h('span', {class:'night'}, nightName(m.n));
+    if(isNext) label.append(h('span', {class:'here'}, '여기부터'));
+    g.append(h('button', {class:'modcard' + (isNext ? ' next' : ''),
+        'aria-label': nightName(m.n) + ', ' + m.title + (got ? ', 별 ' + got + '개' : ', 아직 안 했어요'),
+        onclick: () => startModule(m.n)},
+      h('div', {html: moonSVG(m.n, 56, !!stars[m.n])}),
+      h('div', {style:'flex:1'},
+        label,
+        h('b', {}, m.title),
+        h('span', {}, got ? '★'.repeat(got) + '☆'.repeat(3-got) : '아직 안 했어요'),
+        h('div', {class:'jm'}, jm || '받침 연습')
+      )
+    ));
+  });
+  card.append(g);
+
+  const done = Object.keys(stars).length;
+  const resetBtn = h('button', {}, '처음부터 다시 하기');
+  let armed = false;
+  resetBtn.addEventListener('click', () => {
+    if(!armed){ armed = true; resetBtn.textContent = '기록이 모두 지워져요. 한 번 더 누르면 지웁니다'; return; }
+    resetStars(); showPicker();
+  });
+  card.append(h('div', {class:'parents'},
+    h('b', {}, '부모님께. '),
+    '한글 첫 달은 기본 모음에서 겹받침까지 여덟 밤에 걸쳐 한글 떼기를 돕습니다. 순서대로 하는 게 좋지만 아이가 이미 아는 밤은 건너뛰어도 됩니다. ',
+    canStore
+      ? '진도는 이 기기의 브라우저에만 저장되고, 이름이나 개인정보는 저장하지 않습니다. ' + (done ? '지금까지 ' + COUNT[done - 1] + ' 밤을 마쳤습니다.' : '아직 시작하기 전입니다.')
+      : '이 브라우저에서는 진도가 저장되지 않습니다. 창을 닫으면 기록이 사라집니다.',
+    done && canStore ? h('div', {}, resetBtn) : ''
+  ));
+}
+
+/* 달 모양 ----------------------------------------------------
+   n번째 모듈은 전체의 n/8 만큼 찬 달입니다. 모듈 1은 초승달, 모듈 8은 보름달.
+   한국과 미국(북반구)에서 차오르는 달은 오른쪽부터 밝아지므로
+   밝은 부분 = 오른쪽 반원 + 명암 경계선(타원 호)으로 직접 그립니다.
+   가리개 원을 덮는 방식은 바탕색이 바뀌면 테두리 밖으로 삐져나와서 쓰지 않습니다.
+   다 한 모듈은 밝은 부분이 금색이 됩니다.                                   */
+function moonSVG(n, size, done){
+  const f = Math.max(0, Math.min(1, n / MODULES.length));
+  const cx = 30, cy = 30, r = 24;
+  const litColor = done ? '#E3A93C' : '#F5E6BD';
+  let lit;
+  if(f >= 1){
+    const crater = done ? '#C98E26' : '#DCC894';
+    lit = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${litColor}"/>
+      <g fill="${crater}"><circle cx="23" cy="23" r="4.5"/><circle cx="37" cy="33" r="3.4"/>
+      <circle cx="26" cy="39" r="2.6"/><circle cx="38" cy="20" r="2"/></g>`;
+  } else {
+    const rx = (r * Math.abs(1 - 2 * f)).toFixed(2);
+    const sweep = f > 0.5 ? 1 : 0;   /* 반달 전에는 경계선이 오른쪽으로, 이후에는 왼쪽으로 부풉니다 */
+    lit = `<path d="M${cx} ${cy - r} A${r} ${r} 0 0 1 ${cx} ${cy + r} A${rx} ${r} 0 0 ${sweep} ${cx} ${cy - r} Z" fill="${litColor}"/>`;
+  }
+  return `<svg width="${size}" height="${size}" viewBox="0 0 60 60" aria-hidden="true">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="#17324A"/>
+    ${lit}
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#221F1C" stroke-width="2.5"/>
+  </svg>`;
+}
+
+/* ---- 모듈 시작 ---- */
+function startModule(n){
+  mod = MODULES.find(m => m.n === n);
+  pool = poolUpTo(n);
+  score = 0;
+  maxScore = mod.listen.length + mod.dict.length;
+  steps = [intro, soundScreen, strokeScreen, traceScreen, buildScreen, listenScreen, wordScreen];
+  if(mod.cmp) steps.push(compareScreen);
+  steps.push(dictationScreen, resultScreen);
+  step = 0;
+  setNav(true);
+  render();
+}
+
+function render(){
+  card.innerHTML = '';
+  setFeedback('');
+  hdrTitle.textContent = nightName(mod.n) + '. ' + mod.title;
+  nextBtn.textContent = step === steps.length - 1 ? '밤 고르기' : '다음';
+  nextBtn.style.visibility = 'visible';
+  document.getElementById('stepLabel').textContent = (step+1) + ' / ' + steps.length;
+  document.getElementById('trackFill').style.width = (step/(steps.length-1)*100) + '%';
+  curGuide = null;
+  steps[step]();
+  window.scrollTo(0,0);
+}
+
+/* ---- 1. 들어가기 ---- */
+function intro(){
+  const newJamo = [...mod.add.jung, ...mod.add.cho, ...mod.add.jong];
+  card.append(
+    h('h2', {}, mod.title),
+    guide('tori', mod.why + (mod.note && !mod.cmp && mod.note.w === 'tori' ? ' ' + mod.note.t : '')),
+    h('div', {class:'strokebox', style:'display:inline-block;padding:18px 26px;cursor:default'},
+      h('div', {style:'font-size:44px;line-height:1.5;letter-spacing:.06em'},
+        newJamo.length ? newJamo.join(' ') : '지금까지 배운 받침으로 연습해요')
+    ),
+  );
+  if(mod.note && !mod.cmp && mod.note.w !== 'tori') card.append(guide(mod.note.w, mod.note.t, true));
+}
+
+/* ---- 2. 소리 듣기 ---- */
+function soundScreen(){
+  card.append(h('h2', {}, '소리를 들어 봐요'),
+              guide('tori', '내 귀는 아주 커서 소리를 잘 들어. 글자를 누르면 내가 소리 내 줄게. 빨간 테두리가 오늘 새로 만나는 글자야.'));
+  const make = (list, cls, label) => {
+    if(!list.length) return null;
+    const wrap = h('div', {});
+    wrap.append(h('p', {class:'grouplabel'}, label));
+    const g = h('div', {class:'grid', style:'margin-bottom:20px'});
+    list.forEach(j => {
+      const meta = JAMO[j] || {h:''};
+      const isNew = [...mod.add.cho, ...mod.add.jung, ...mod.add.jong].includes(j);
+      const hintEl = h('small', {'data-hint':meta.h}, hintsOn() ? meta.h : '');
+      g.append(h('button', {
+        class:'tile ' + cls, style: isNew ? 'border-color:var(--juhong)' : '',
+        'aria-label': j + ' 소리 듣기',
+        onclick: e => {
+          speak(j);
+          /* currentTarget 은 핸들러가 끝나면 null 이 됩니다.
+             지연 실행 안에서 쓰려면 지금 붙잡아 둬야 합니다. */
+          const el = e.currentTarget;
+          el.classList.add('playing');
+          setTimeout(() => el.classList.remove('playing'), 500);
+        }
+      }, j, hintEl));
+    });
+    wrap.append(g);
+    return wrap;
+  };
+  [make(pool.jung, 'vowel', '모음'),
+   make(pool.cho, '', '자음'),
+   make(pool.jong, '', '받침')].forEach(x => x && card.append(x));
+}
+
+/* ---- 3. 획순 ---- */
+function strokeScreen(){
+  const list = [...mod.add.jung, ...mod.add.cho, ...mod.add.jong].filter(j => JAMO[j] && JAMO[j].s);
+  card.append(h('h2', {}, '어떻게 쓰는지 봐요'),
+              guide('tori', list.length ? '글자는 쓰는 순서가 정해져 있어. 글자를 누르면 순서를 다시 보여 줄게.'
+                : '이번에는 새로 쓰는 글자가 없어. 겹받침은 이미 아는 자음 두 개를 나란히 쓰면 돼.'));
+  if(!list.length){
+    const l2 = [...mod.add.jong];
+    const g = h('div', {class:'grid'});
+    l2.forEach(j => g.append(h('div', {class:'tile', style:'cursor:default'}, j)));
+    card.append(g);
+    return;
+  }
+  const box = h('div', {class:'strokes'});
+  list.forEach(j => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('viewBox','0 0 100 100');
+    svg.setAttribute('width','88'); svg.setAttribute('height','88');
+    JAMO[j].s.forEach(d => {
+      const p = document.createElementNS('http://www.w3.org/2000/svg','path');
+      p.setAttribute('d', d); p.setAttribute('class','animpath');
+      svg.append(p);
+    });
+    const b = h('button', {class:'strokebox', 'aria-label': j + ' 쓰는 순서 보기',
+      onclick: () => { animate(svg); speak(j); }});
+    b.append(svg, h('span', {}, j));
+    box.append(b);
+    animate(svg);
+  });
+  card.append(box);
+  function animate(svg){
+    let delay = 0;
+    [...svg.querySelectorAll('path')].forEach(p => {
+      const len = p.getTotalLength();
+      p.style.transition = 'none';
+      p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+      setTimeout(() => {
+        p.style.transition = 'stroke-dashoffset .5s linear';
+        p.style.strokeDashoffset = 0;
+      }, delay + 60);
+      delay += 560;
+    });
+  }
+}
+
+/* ---- 4. 따라 쓰기 ---- */
+function traceScreen(){
+  card.append(h('h2', {}, '따라 써 봐요'),
+              guide('tori', '옅은 글자 위를 손가락으로 따라 그어 봐. 아까 본 순서대로 쓰면 더 좋아.'));
+  const all = [...mod.add.jung, ...mod.add.cho, ...mod.add.jong];
+  const list = all.length ? all : pool.jong;
+  let current = list[0];
+  const canvas = h('canvas', {id:'pad', width:300, height:300, 'aria-label':'따라 쓰기 연습판'});
+  const pick = h('div', {class:'tracepick'});
+  list.forEach(j => {
+    const b = h('button', {'aria-pressed': j === current ? 'true' : 'false', onclick: () => {
+      current = j;
+      [...pick.children].forEach(c => c.setAttribute('aria-pressed','false'));
+      b.setAttribute('aria-pressed','true');
+      drawTraceBase(); speak(j);
+    }}, j);
+    pick.append(b);
+  });
+  card.append(h('div', {class:'tracewrap'}, canvas, pick),
+    h('button', {class:'btn quiet play', style:'margin-top:14px', onclick: drawTraceBase}, '지우기'));
+
+  const ctx = canvas.getContext('2d');
+  function drawTraceBase(){
+    ctx.clearRect(0,0,300,300);
+    ctx.fillStyle = '#F5E6BD'; ctx.fillRect(0,0,300,300);
+    ctx.strokeStyle = '#D5C69C'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(150,10); ctx.lineTo(150,290);
+    ctx.moveTo(10,150); ctx.lineTo(290,150); ctx.stroke();
+    ctx.fillStyle = '#CBBB90';
+    ctx.font = '220px "Noto Sans KR", sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(current, 150, 158);
+  }
+  drawTraceBase();
+  let drawing = false;
+  const pos = e => { const r = canvas.getBoundingClientRect();
+    return [(e.clientX-r.left)*(300/r.width), (e.clientY-r.top)*(300/r.height)]; };
+  canvas.addEventListener('pointerdown', e => {
+    drawing = true;
+    try { canvas.setPointerCapture(e.pointerId); } catch(err) {}
+    const [x,y] = pos(e);
+    ctx.strokeStyle = '#221F1C'; ctx.lineWidth = 15;
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(x,y);
+  });
+  canvas.addEventListener('pointermove', e => {
+    if(!drawing) return; const [x,y] = pos(e); ctx.lineTo(x,y); ctx.stroke();
+  });
+  canvas.addEventListener('pointerup', () => drawing = false);
+  canvas.addEventListener('pointerleave', () => drawing = false);
+}
+
+/* ---- 5. 글자 조립 ---- */
+function buildScreen(){
+  const useJong = pool.jong.length > 0;
+  card.append(h('h2', {}, '글자를 만들어 봐요'),
+    guide('moi', useJong
+      ? '나는 모으는 걸 좋아해. 자음이랑 모음을 모으면 글자가 되고, 받침을 누르면 아래에 붙어.'
+      : '나는 모으는 걸 좋아해. 자음 하나랑 모음 하나를 모으면 글자가 돼. 골라 봐.'));
+  let cho = null, jung = null, jong = null;
+  const sC = h('div', {class:'slot'}, ''), sV = h('div', {class:'slot'}, '');
+  const sJ = h('div', {class:'slot optional'}, '');
+  const out = h('div', {class:'result-syl'}, '');
+  const asm = h('div', {class:'assembly'}, sC, h('span',{class:'eq'},'+'), sV);
+  if(useJong) asm.append(h('span',{class:'eq'},'+'), sJ);
+  asm.append(h('span',{class:'eq'},'='), out);
+  card.append(asm);
+
+  card.append(row('자음', pool.cho, mod.add.cho, j => { cho = j; sC.textContent = j; sC.classList.add('filled'); update(); }));
+  card.append(row('모음', pool.jung, mod.add.jung, j => { jung = j; sV.textContent = j; sV.classList.add('filled'); update(); }));
+  if(useJong){
+    const r = row('받침 (없어도 돼요)', pool.jong, mod.add.jong, j => {
+      jong = (jong === j) ? null : j;
+      sJ.textContent = jong || ''; sJ.classList.toggle('filled', !!jong); update();
+    });
+    card.append(r);
+  }
+
+  function row(label, list, newList, onPick){
+    const r = h('div', {class:'pickrow'}, h('b', {}, label));
+    list.forEach(j => {
+      const b = h('button', {class:'chip' + (newList.includes(j) ? ' new' : ''),
+        'aria-pressed':'false', onclick: () => {
+          [...r.querySelectorAll('button')].forEach(x => x.setAttribute('aria-pressed','false'));
+          b.setAttribute('aria-pressed','true');
+          onPick(j);
+        }}, j);
+      r.append(b);
+    });
+    return r;
+  }
+  function update(){
+    if(cho && jung){
+      const syl = compose(cho, jung, jong);
+      out.textContent = syl;
+      speak(syl);
+      const parts = jong
+        ? josa(cho,'와') + ' ' + josa(jung,'와') + ' ' + josa(jong,'이')
+        : josa(cho,'와') + ' ' + josa(jung,'이');
+      setFeedback(parts + ' 만나면 ' + josa(syl,'이에요') + '.', 'ok');
+      react('happy');
+    }
+  }
+}
+
+/* ---- 6. 듣고 고르기 ---- */
+function listenScreen(){
+  card.append(h('h2', {}, '듣고 골라요'),
+    guide('tori', '내가 소리를 낼 테니까 잘 듣고 맞는 글자를 골라 봐. 모두 ' + mod.listen.length + '문제야.'));
+  let qi = 0, locked = false;
+  const box = h('div', {});
+  card.append(box);
+  nextBtn.style.visibility = 'hidden';
+  draw();
+  function draw(){
+    box.innerHTML = ''; locked = false;
+    const q = mod.listen[qi];
+    box.append(h('p', {class:'qbig'}, (qi+1) + '번. 어떤 글자일까요?'));
+    if(q.hint) box.append(h('p', {class:'qhint'}, '힌트. ' + q.hint));
+    box.append(h('button', {class:'btn play', style:'margin-bottom:18px',
+      onclick: () => speak(q.a)}, '다시 듣기'));
+    const opts = h('div', {class:'opts'});
+    q.o.forEach(o => opts.append(h('button', {class:'opt', onclick: e => {
+      if(locked) return; locked = true;
+      const btns = [...opts.querySelectorAll('button')];
+      btns.forEach(b => b.disabled = true);
+      if(o === q.a){
+        e.currentTarget.classList.add('right'); score++;
+        setFeedback('맞았어요.', 'ok');
+        react('happy');
+      } else {
+        e.currentTarget.classList.add('wrong');
+        const good = btns.find(b => b.textContent === q.a);
+        if(good) good.classList.add('right');
+        setFeedback('이건 ' + josa(q.a,'이에요') + '.', 'no');
+        react('oops');
+      }
+      setTimeout(() => {
+        qi++;
+        if(qi < mod.listen.length) draw();
+        else { setFeedback('다 풀었어요.', 'ok'); nextBtn.style.visibility = 'visible'; }
+      }, 1200);
+    }}, o)));
+    box.append(opts);
+    setTimeout(() => speak(q.a), 300);
+  }
+}
+
+/* ---- 7. 단어 읽기 ---- */
+function wordScreen(){
+  card.append(h('h2', {}, '배운 글자로 만든 말'),
+    guide('moi', '내가 모아 온 말들이야. 카드를 누르면 소리가 나고, 뜻 보기를 누르면 영어 뜻이 나와.'));
+  const box = h('div', {class:'words'});
+  mod.words.forEach(item => {
+    const el = h('div', {class:'word', onclick: () => speak(item.w)});
+    el.innerHTML = item.p && PIC[item.p] ? PIC[item.p] : `<div class="noimg">${item.w}</div>`;
+    const en = h('div', {class:'en'}, '');
+    el.append(h('div', {class:'w'}, item.w), en,
+      h('button', {onclick: e => { e.stopPropagation(); en.textContent = item.en; }}, '뜻 보기'));
+    box.append(el);
+  });
+  card.append(box);
+}
+
+/* ---- 8. 소리와 글자 대조 (7, 8번 모듈) ---- */
+function compareScreen(){
+  card.append(h('h2', {}, '소리와 글자가 달라요'),
+    guide('dami', '옛날 이야기 하나 해 주마. 왼쪽은 쓰는 모양이고, 오른쪽은 실제로 나는 소리란다. 듣기를 눌러서 귀로도 확인해 보거라.'));
+  const t = h('table', {class:'cmp'});
+  t.append(h('tr', {}, h('th',{},'이렇게 써요'), h('th',{},'이렇게 들려요'), h('th',{},'왜'), h('th',{},'')));
+  mod.cmp.forEach(c => {
+    t.append(h('tr', {},
+      h('td', {class:'sp'}, c.s),
+      h('td', {class:'so'}, '[' + c.d + ']'),
+      h('td', {class:'nt'}, c.n),
+      h('td', {}, h('button', {onclick: () => speak(c.s)}, '듣기'))
+    ));
+  });
+  card.append(t);
+  if(mod.note) card.append(guide(mod.note.w, mod.note.t, true));
+}
+
+/* ---- 9. 받아쓰기 ---- */
+function dictationScreen(){
+  const useJong = pool.jong.length > 0;
+  card.append(h('h2', {}, '듣고 써 봐요'),
+    guide('tori', '내가 말하는 걸 듣고 써 봐. 한국어 자판이 없어도 괜찮아. 자음이랑 모음을 눌러서 글자를 만들면 돼.'
+      + (useJong ? ' 받침은 글자를 다 만든 다음에 눌러.' : '')));
+  let qi = 0;
+  const box = h('div', {class:'dictbox'});
+  card.append(box);
+  nextBtn.style.visibility = 'hidden';
+  draw();
+
+  function draw(){
+    box.innerHTML = '';
+    let pendingCho = null, typed = '';
+    const target = mod.dict[qi];
+    box.append(h('p', {class:'qbig', style:'margin-bottom:10px'},
+      (qi+1) + '번. 들리는 말을 써 보세요.'),
+      h('button', {class:'btn play', onclick: () => speak(target)}, '다시 듣기'));
+    const ans = h('div', {class:'answer', 'aria-live':'polite'}, '');
+    box.append(ans);
+
+    const rC = h('div', {class:'pickrow'}, h('b', {}, '자음'));
+    pool.cho.forEach(j => rC.append(h('button', {class:'chip', onclick: () => {
+      pendingCho = j; setFeedback(''); paint();
+    }}, j)));
+    const rV = h('div', {class:'pickrow'}, h('b', {}, '모음'));
+    pool.jung.forEach(j => rV.append(h('button', {class:'chip', onclick: () => {
+      if(!pendingCho){ setFeedback('자음을 먼저 눌러요.', 'no'); return; }
+      typed += compose(pendingCho, j); pendingCho = null; setFeedback(''); paint();
+    }}, j)));
+    box.append(rC, rV);
+
+    if(useJong){
+      const rJ = h('div', {class:'pickrow'}, h('b', {}, '받침'));
+      pool.jong.forEach(j => rJ.append(h('button', {class:'chip', onclick: () => {
+        if(!typed){ setFeedback('먼저 글자를 만들어요.', 'no'); return; }
+        typed = typed.slice(0,-1) + addJong(typed[typed.length-1], j);
+        setFeedback(''); paint();
+      }}, j)));
+      box.append(rJ);
+    }
+
+    const ctrl = h('div', {style:'display:flex;gap:10px;margin-top:6px'},
+      h('button', {class:'btn quiet play', onclick: () => {
+        pendingCho = null; typed = typed.slice(0,-1); paint();
+      }}, '지우기'),
+      h('button', {class:'btn play', onclick: check}, '확인'));
+    box.append(ctrl);
+
+    function paint(){ ans.textContent = typed + (pendingCho || ''); }
+    function check(){
+      if(typed === target){
+        ans.classList.add('right'); score++;
+        setFeedback('맞았어요.', 'ok');
+        react('happy');
+      } else {
+        ans.classList.add('wrong');
+        ans.innerHTML = '';
+        ans.append(h('span', {class:'diff'}, typed || '(빈칸)'),
+          h('span', {style:'font-size:26px;margin:0 14px;color:#6B6256'}, '→'),
+          h('span', {}, target));
+        setFeedback('어디가 다른지 보세요.', 'no');
+        react('oops');
+      }
+      ctrl.remove();
+      setTimeout(() => {
+        qi++;
+        if(qi < mod.dict.length) draw();
+        else { setFeedback('받아쓰기 끝.', 'ok'); nextBtn.style.visibility = 'visible'; }
+      }, 2000);
+    }
+    setTimeout(() => speak(target), 400);
+  }
+}
+
+/* ---- 10. 결과 ---- */
+function resultScreen(){
+  const s = score >= maxScore - 1 ? 3 : score >= Math.ceil(maxScore * .6) ? 2 : 1;
+  stars[mod.n] = Math.max(stars[mod.n] || 0, s);
+  saveStars();
+  const next = MODULES.find(m => m.n === mod.n + 1);
+  card.append(h('div', {style:'text-align:center;padding-top:10px'},
+    h('div', {class:'scene'},
+      h('div', {class:'moon', html: moonSVG(mod.n, 160, true)}),
+      h('div', {class:'tori', html: CHAR.tori(s === 3 ? 'happy' : '')})),
+    h('h2', {}, next ? '오늘 밤 달이 조금 차올랐어요' : '보름달이 떴어요'),
+    h('div', {class:'stars'}, '★'.repeat(s) + '☆'.repeat(3-s)),
+    h('p', {class:'sub'}, '맞힌 문제 ' + score + ' / ' + maxScore),
+    h('div', {style:'max-width:520px;margin:0 auto 22px;text-align:left'},
+      say('tori', s === 3
+        ? (next ? '떡방아 잘 찧었어. 이제 ' + nightName(next.n) + '으로 가자.' : '여덟 밤을 다 지났어. 이제 한글을 다 읽을 수 있어. 다음은 둘째 달이야.')
+        : '괜찮아. 떡은 방아를 여러 번 찧어야 만들어져. 한 번 더 해 볼까?'),
+      guide('moi', '오늘 새 말을 ' + mod.words.length + '개 모았어.', true)),
+    h('div', {style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'},
+      h('button', {class:'btn quiet', onclick: () => startModule(mod.n)}, '다시 하기'),
+      next ? h('button', {class:'btn', onclick: () => startModule(next.n)}, '다음 밤')
+           : h('button', {class:'btn', onclick: showPicker}, '밤 고르기')
+    )
+  ));
+  nextBtn.style.visibility = 'hidden';
+}
+
+/* 주소에 ?night=7 처럼 붙이면 그 밤으로 바로 들어갑니다.
+   홈 화면의 이어서 하기와, 선생님이 보내는 숙제 링크가 이걸 씁니다. */
+const qNight = Number(new URLSearchParams(location.search).get('night'));
+if(Number.isInteger(qNight) && qNight >= 1 && qNight <= MODULES.length) startModule(qNight);
+else showPicker();
+</script>
+</body>
+</html>
