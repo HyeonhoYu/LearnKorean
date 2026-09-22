@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>받아쓰기실 - 달토끼</title>
+<meta property="og:title" content="받아쓰기실 - 달토끼">
+<meta property="og:description" content="여덟 밤 동안 달을 채우며 한글을 읽어요. 무료, 광고 없음, 가입 없음.">
+<meta property="og:type" content="website">
+<meta name="description" content="달토끼 받아쓰기실. 하루 다섯 낱말, 틀린 말은 다음 날 다시 나오고, 틀리면 왜 틀렸는지 알려 줍니다.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20200%20200'%3E%3Ccircle%20cx='100'%20cy='100'%20r='96'%20fill='%2317324A'/%3E%3Ccircle%20cx='100'%20cy='100'%20r='74'%20fill='%23F5E6BD'/%3E%3Cg%20fill='%2317324A'%3E%3Cpath%20d='M80%20140%20L132%20140%20L125%20164%20L87%20164%20Z'/%3E%3Cellipse%20cx='98'%20cy='118'%20rx='19'%20ry='25'/%3E%3Ccircle%20cx='90'%20cy='88'%20r='13'/%3E%3Cpath%20d='M83%2078%20C76%2060%2074%2044%2081%2038%20C88%2044%2088%2062%2090%2077%20Z'/%3E%3Cpath%20d='M95%2078%20C93%2060%2096%2044%20102%2040%20C106%2048%20101%2064%2099%2078%20Z'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/dal.css">
+</head>
+<body>
+
+<header>
+  <a class="back" id="siteHome" href="../">달토끼 처음으로</a>
+  <button class="back" id="homeBtn">밤 고르기</button>
+  <div class="title" id="hdrTitle">받아쓰기실</div>
+  <div class="moonbar">
+    <span id="stepLabel"></span>
+    <div class="track"><i id="trackFill"></i></div>
+  </div>
+</header>
+
+<div id="envNote" class="envnote" role="region" aria-label="소리 안내" hidden></div>
+
+<main><div class="card" id="card"></div></main>
+
+<div id="audioNote" role="status">이 기기에서는 소리가 안 나와요. 글자와 뜻으로 먼저 해 보고, 소리는 다른 기기에서 들어 보세요. <u>눌러서 닫기</u></div>
+
+<div class="footbar">
+  <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <label class="toggle"><input type="checkbox" id="hintToggle"> 소리 힌트</label>
+    <button class="btn" id="nextBtn">다음</button>
+  </div>
+</div>
+
+<script src="../assets/dal.js"></script>
+<script src="../content/first-moon.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   받아쓰기실 페이지
+   여러 달의 낱말을 한곳에서 연습합니다. 달이 늘어나면 MONTHS 에 등록만 하면 됩니다.
+   아이가 마친 밤(또는 빠른 확인으로 통과한 밤)의 낱말만 나옵니다.
+   ══════════════════════════════════════════════════════════════ */
+const MONTHS = [FIRST_MOON];
+let pool = null;
+const goNights = () => { location.href = '../' + MONTHS[0].path; };
+
+function monthProgress(M){
+  let st = {}, start = 1;
+  if(canStore){
+    try {
+      const d = JSON.parse(localStorage.getItem(M.store) || 'null');
+      if(d && d.stars && typeof d.stars === 'object') st = d.stars;
+      const v = Number(d && d.start);
+      if(Number.isInteger(v) && v >= 1) start = v;
+    } catch(e) {}
+  }
+  return {stars: st, start};
+}
+/* 마친 밤 목록: [{M, n}] */
+function reached(){
+  const out = [];
+  MONTHS.forEach(M => {
+    const p = monthProgress(M);
+    M.units.forEach(u => { if(Number(p.stars[u.n]) >= 1 || u.n < p.start) out.push({M, n: u.n}); });
+  });
+  return out;
+}
+function dictBank(){
+  let r = reached();
+  if(!r.length) r = [{M: MONTHS[0], n: 1}];
+  const on = new Set(r.map(x => x.M.key + ':' + x.n)), out = [], seen = new Set();
+  MONTHS.forEach(M => {
+    const add = (w, en, n) => { if(!w || seen.has(w) || !on.has(M.key + ':' + n)) return; seen.add(w); out.push({w, en, n, month: M.key}); };
+    M.units.forEach(u => (u.words || []).forEach(x => add(x.w, x.en, u.n)));
+    (M.extra || []).forEach(x => add(x.w, x.en, x.n));
+  });
+  return out;
+}
+/* 자모 버튼: 첫째 달에서 마친 밤까지의 자모. 첫째 달을 넘어가면 모든 자모. */
+function inputPool(){
+  const r = reached();
+  const first = r.filter(x => x.M === FIRST_MOON).map(x => x.n);
+  const beyond = r.some(x => x.M !== FIRST_MOON);
+  if(beyond || first.length === FIRST_MOON.units.length) return FIRST_MOON.pool(FIRST_MOON.units.length);
+  return FIRST_MOON.pool(first.length ? Math.max(...first) : 1);
+}
+
+function startDictation(){
+  curGuide = null;
+  pool = inputPool();
+  setNav(false);
+  hdrTitle.textContent = '받아쓰기실';
+  setFeedback('');
+  nextBtn.style.visibility = 'hidden';
+  const bar = (k, n) => {
+    document.getElementById('stepLabel').textContent = n ? (k + 1) + ' / ' + n : '';
+    document.getElementById('trackFill').style.width = n ? Math.round(k / n * 100) + '%' : '0%';
+  };
+  lobby();
+
+  function lobby(){
+    card.innerHTML = ''; curGuide = null; bar(0, 0); setFeedback('');
+    const bank = dictBank(), today = todayStr(), W = dstate.words;
+    const did = dstate.last === today;
+    const due = bank.filter(it => W[it.w] && W[it.w].due <= today).length;
+    const good = bank.filter(it => (W[it.w] || {}).b >= 3).length;
+    card.append(h('h2', {}, '받아쓰기실'),
+      guide('tori', did ? '오늘 방아는 벌써 찧었어. 더 하고 싶으면 한 번 더 해도 돼.'
+        : '오늘의 방아를 찧어 볼까? 다섯 개만 듣고 써 보자.' + (due ? ' 전에 헷갈렸던 말도 다시 나올 거야.' : '')),
+      h('div', {class:'dstats'},
+        h('div', {}, h('b', {}, String(dstate.days)), h('span', {}, '번 방아를 찧었어요')),
+        h('div', {}, h('b', {}, good + ' / ' + bank.length), h('span', {}, '잘 쓰는 말'))));
+    if(!reached().length)
+      card.append(h('p', {class:'sub'}, '아직 마친 밤이 없어서 첫째 밤의 말만 나와요. 밤을 하나씩 마칠 때마다 나오는 말이 늘어나요.'));
+    card.append(h('div', {class:'dbtns'},
+      h('button', {class:'btn', onclick: () => run(pickSession())}, did ? '한 번 더 하기' : '오늘의 방아 시작하기'),
+      h('button', {class:'btn quiet', onclick: goNights}, '밤 고르기')));
+    const errs = Object.entries(dstate.errs).filter(e => DERR[e[0]] && e[0] !== 'blank').sort((a, b) => b[1] - a[1]).slice(0, 3);
+    card.append(h('div', {class:'parents'}, h('b', {}, '부모님께. '),
+      errs.length ? '자주 나오는 실수는 ' + errs.map(([k, v]) => DERR[k].parent + ' ' + v + '번').join(', ') + '입니다. '
+                  : '아직 기록된 실수가 없습니다. ',
+      '받아쓰기실은 아이가 마친 밤의 낱말로만 문제를 냅니다. 틀린 말은 다음 날, 맞힌 말은 며칠 뒤에 다시 나옵니다.'));
+    window.scrollTo(0, 0);
+  }
+
+  /* 다시 볼 때가 된 말 → 처음 보는 말 → 나머지 순으로 다섯 개를 고릅니다. */
+  function pickSession(){
+    const bank = dictBank(), today = todayStr(), W = dstate.words;
+    const due = shuffled(bank.filter(it => W[it.w] && W[it.w].due <= today)).sort((a, b) => W[a.w].b - W[b.w].b);
+    const fresh = shuffled(bank.filter(it => !W[it.w]));
+    const later = shuffled(bank.filter(it => W[it.w] && W[it.w].due > today)).sort((a, b) => W[a.w].due < W[b.w].due ? -1 : 1);
+    const pick = [];
+    [...due.slice(0, 3), ...fresh, ...due.slice(3), ...later].forEach(it => { if(pick.length < 5 && !pick.includes(it)) pick.push(it); });
+    return shuffled(pick);
+  }
+
+  function record(w, result, err){
+    const cur = dstate.words[w];
+    const b = result === 'first' ? (cur ? Math.min(5, cur.b + 1) : 2) : 1;
+    dstate.words[w] = {b, due: todayStr(BOX_DAYS[b]), seen: (cur ? cur.seen : 0) + 1, miss: (cur ? cur.miss : 0) + (result === 'first' ? 0 : 1)};
+    if(err) dstate.errs[err] = (dstate.errs[err] || 0) + 1;
+    saveDict();
+  }
+
+  function run(items){
+    let k = 0, firstTry = 0, missed = 0;
+    ask();
+
+    function ask(){
+      if(k >= items.length) return finish();
+      const it = items[k];
+      let attempt = 0, typed = '', pendingCho = null, firstErr = null, locked = false;
+      card.innerHTML = ''; curGuide = null; bar(k, items.length); setFeedback('');
+      card.dataset.word = it.w;
+      card.append(h('h2', {}, '오늘의 방아'),
+        guide('tori', k === 0 ? '잘 듣고 써 봐. 뜻을 같이 보면 도움이 돼.' : '좋아, 다음 말이야.'));
+      const box = h('div', {class:'dictbox'});
+      const ans = h('div', {class:'answer', 'aria-live':'polite'}, '');
+      const help = h('div', {});
+      box.append(h('div', {class:'drow'},
+        h('button', {class:'btn play', onclick: () => speak(it.w)}, '다시 듣기'),
+        h('span', {class:'dmean'}, '뜻: ' + it.en)), ans, help);
+      const paint = () => { ans.className = 'answer'; ans.textContent = typed + (pendingCho || ''); };
+      const rC = h('div', {class:'pickrow'}, h('b', {}, '자음'));
+      pool.cho.forEach(j => rC.append(h('button', {class:'chip', onclick: () => { if(locked) return; pendingCho = j; setFeedback(''); paint(); }}, j)));
+      const rV = h('div', {class:'pickrow'}, h('b', {}, '모음'));
+      pool.jung.forEach(j => rV.append(h('button', {class:'chip', onclick: () => {
+        if(locked) return;
+        if(!pendingCho){ setFeedback('자음을 먼저 눌러요.', 'no'); return; }
+        typed += compose(pendingCho, j); pendingCho = null; setFeedback(''); paint();
+      }}, j)));
+      box.append(rC, rV);
+      if(pool.jong.length){
+        const rJ = h('div', {class:'pickrow'}, h('b', {}, '받침'));
+        pool.jong.forEach(j => rJ.append(h('button', {class:'chip', onclick: () => {
+          if(locked) return;
+          if(!typed){ setFeedback('먼저 글자를 만들어요.', 'no'); return; }
+          typed = typed.slice(0, -1) + addJong(typed[typed.length - 1], j); setFeedback(''); paint();
+        }}, j)));
+        box.append(rJ);
+      }
+      /* 한국어 자판이 있는 아이는 자판으로 써도 됩니다. */
+      const kbd = h('input', {type:'text', lang:'ko', autocomplete:'off', autocapitalize:'off', spellcheck:'false', 'aria-label':'자판으로 쓰기'});
+      const kbdRow = h('div', {class:'kbdrow', hidden:''}, kbd);
+      kbd.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); check(false); } });
+      const ctrl = h('div', {style:'display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;align-items:center'},
+        h('button', {class:'btn quiet play', onclick: () => { if(locked) return; pendingCho = null; typed = typed.slice(0, -1); paint(); }}, '지우기'),
+        h('button', {class:'btn quiet play', onclick: () => check(true)}, '모르겠어요'),
+        h('button', {class:'btn play', onclick: () => check(false)}, '확인'),
+        h('button', {class:'linkbtn', onclick: () => { kbdRow.hidden = !kbdRow.hidden; if(!kbdRow.hidden) kbd.focus(); }}, '자판으로 쓸래요'));
+      box.append(kbdRow, ctrl);
+      card.append(box);
+      setTimeout(() => speak(it.w), 400);
+      window.scrollTo(0, 0);
+
+      function syllables(el, word, marks, cls){
+        [...word].forEach((ch, i) => el.append(h('span', {class: marks.has(i) || marks.has(-1) ? cls : ''}, ch)));
+      }
+      function check(giveUp){
+        if(locked) return;
+        const val = (kbd.value || '').replace(/\s+/g, '') || typed;
+        if(!giveUp && val === it.w){
+          locked = true;
+          ans.className = 'answer right'; ans.textContent = it.w;
+          react('happy');
+          setFeedback(attempt === 0 ? '한 번에 맞았어요.' : '고쳐서 맞았어요.', 'ok');
+          if(attempt === 0) firstTry++; else missed++;
+          record(it.w, attempt === 0 ? 'first' : 'retry', firstErr);
+          setTimeout(() => { k++; ask(); }, 1300);
+          return;
+        }
+        const errs = giveUp ? [{type:'blank', pos:-1}] : diagnose(val, it.w);
+        if(!firstErr) firstErr = errs[0].type;
+        attempt++;
+        const marks = new Set(errs.map(e => e.pos));
+        if(attempt === 1 && !giveUp){
+          ans.className = 'answer'; ans.innerHTML = '';
+          syllables(ans, val, marks, 'diff');
+          help.innerHTML = '';
+          help.append(guide(DERR[errs[0].type].who, DERR[errs[0].type].hint(errs[0], it.w), true));
+          react('oops');
+          setFeedback('어디가 다른지 보고 한 번 더 써 봐요.', 'no');
+          typed = ''; pendingCho = null; kbd.value = '';
+          return;
+        }
+        locked = true; missed++;
+        ans.className = 'answer wrong'; ans.innerHTML = '';
+        if(val){ syllables(ans, val, marks, 'diff'); ans.append(h('span', {class:'arrow'}, '\u2192')); }
+        syllables(ans, it.w, giveUp ? new Set() : marks, 'fix');
+        const type = giveUp && attempt === 1 ? 'blank' : errs[0].type;
+        help.innerHTML = '';
+        help.append(guide(DERR[type].who, revealLine(type, it.w), true));
+        setFeedback('');
+        record(it.w, 'wrong', firstErr);
+        /* 답을 보여 준 뒤에는 입력 버튼을 치워서 다음 버튼이 설명 바로 아래 오게 합니다. */
+        box.querySelectorAll('.pickrow, .kbdrow').forEach(el => el.remove());
+        ctrl.innerHTML = '';
+        ctrl.append(h('button', {class:'btn', onclick: () => { k++; ask(); }}, k + 1 < items.length ? '다음 말' : '끝내기'));
+      }
+    }
+
+    function finish(){
+      const today = todayStr();
+      if(dstate.last !== today){ dstate.days++; dstate.last = today; }
+      saveDict();
+      card.innerHTML = ''; curGuide = null; bar(items.length, items.length); setFeedback('');
+      const n = items.length;
+      const msg = firstTry === n ? COUNT[n - 1] + ' 개를 모두 한 번에 썼어. 떡이 아주 쫄깃하겠다.'
+        : firstTry === 0 ? '오늘은 어려웠지? 그래도 끝까지 방아를 찧었어. 내일은 더 쉬울 거야.'
+        : COUNT[n - 1] + ' 개 가운데 ' + COUNT[firstTry - 1] + ' 개를 한 번에 썼어. 잘했어.';
+      card.append(h('div', {style:'text-align:center;padding-top:6px'},
+        h('div', {class:'scene'},
+          h('div', {class:'moon', html: moonSVG(Math.round(firstTry / n * 8), 160, firstTry === n, 8)}),
+          h('div', {class:'tori', html: CHAR.tori('happy')})),
+        h('h2', {}, '오늘의 방아 끝'),
+        h('div', {style:'max-width:520px;margin:0 auto 12px;text-align:left'},
+          say('tori', msg),
+          guide('moi', missed ? '헷갈린 말은 내가 모아 뒀다가 내일 다시 가져올게.' : '잘 쓴 말은 며칠 뒤에 다시 가져올게. 잊지 않게.', true)),
+        h('div', {style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'},
+          h('button', {class:'btn', onclick: () => run(pickSession())}, '한 번 더 하기'),
+          h('button', {class:'btn quiet', onclick: lobby}, '받아쓰기실'),
+          h('button', {class:'btn quiet', onclick: goNights}, '밤 고르기'))));
+      window.scrollTo(0, 0);
+    }
+  }
+}
+
+/* 이 페이지에는 밤 고르기가 없으므로 사이트 처음으로 가는 길만 보입니다. */
+document.querySelector('.toggle').hidden = true;
+document.getElementById('homeBtn').addEventListener('click', goNights);
+startDictation();
+</script>
+</body>
+</html>
