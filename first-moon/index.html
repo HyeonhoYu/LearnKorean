@@ -25,7 +25,7 @@ body{word-break:keep-all;overflow-wrap:anywhere;margin:0;background:var(--hanji)
 button{font-family:inherit;cursor:pointer;color:var(--meok)}
 header button.back{color:#9DB4C6}
 input[type=checkbox]{accent-color:var(--byeok)}
-#audioNote{display:none;position:fixed;left:12px;right:12px;bottom:74px;z-index:9;
+#audioNote{cursor:pointer;display:none;position:fixed;left:12px;right:12px;bottom:74px;z-index:9;
   background:var(--juhong);color:#fff;font-size:14px;line-height:1.5;
   border:3px solid var(--meok);border-radius:12px;padding:10px 14px}
 button:focus-visible,a:focus-visible{outline:3px solid var(--byeok);outline-offset:3px}
@@ -156,6 +156,12 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
 .note{border-left:5px solid var(--juhong);padding:10px 0 10px 15px;margin-top:18px;
   background:#FBF3DC;font-size:15px}
 .stars{font-size:60px;color:var(--hwang);letter-spacing:.1em}
+/* 빠른 확인 */
+.checkcta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-8px 0 22px}
+.checkcta span{font-size:13.5px;color:#5A5248}
+.modcard .pass{color:#4E6B3C;font-weight:700}
+.checknote{font-size:13.5px;color:#5A5248;max-width:520px;margin:0 auto 20px;text-align:left}
+
 /* 캐릭터 안내 */
 .guide{display:flex;align-items:flex-end;gap:10px;margin:4px 0 22px}
 .guide-fig{flex:0 0 96px}
@@ -221,7 +227,7 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
 
 <main><div class="card" id="card"></div></main>
 
-<div id="audioNote" role="status">이 기기에서는 소리가 안 나와요. 글자와 뜻으로 먼저 해 보고, 소리는 다른 기기에서 들어 보세요.</div>
+<div id="audioNote" role="status">이 기기에서는 소리가 안 나와요. 글자와 뜻으로 먼저 해 보고, 소리는 다른 기기에서 들어 보세요. <u>눌러서 닫기</u></div>
 
 <div class="footbar">
   <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
@@ -519,6 +525,7 @@ function audioWarn(){
   const n = document.getElementById('audioNote');
   if(n){
     n.style.display = 'block';
+    n.onclick = () => { n.style.display = 'none'; };
     setTimeout(() => { n.style.display = 'none'; }, 8000);
   }
 }
@@ -703,15 +710,28 @@ function loadStars(){
   } catch(e) {}
   return out;
 }
+/* start 는 빠른 확인이 정한 시작할 밤입니다. 그 앞의 밤에는 별을 주지 않고,
+   "확인으로 통과"로만 표시합니다. 9 는 여덟 밤을 모두 통과했다는 뜻입니다. */
+function loadStart(){
+  if(!canStore) return 1;
+  try {
+    const data = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    const v = Number(data && data.start);
+    if(Number.isInteger(v) && v >= 1 && v <= MODULES.length + 1) return v;
+  } catch(e) {}
+  return 1;
+}
 function saveStars(){
   if(!canStore) return;
-  try { localStorage.setItem(STORE_KEY, JSON.stringify({stars, updated: Date.now()})); } catch(e) {}
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({stars, start: startNight, updated: Date.now()})); } catch(e) {}
 }
 function resetStars(){
   for(const k in stars) delete stars[k];
+  startNight = 1;
   if(canStore){ try { localStorage.removeItem(STORE_KEY); } catch(e) {} }
 }
 const stars = loadStars();
+let startNight = loadStart();
 
 /* 밤 이름 */
 const ORD = ['첫째','둘째','셋째','넷째','다섯째','여섯째','일곱째','여덟째'];
@@ -749,22 +769,29 @@ function showPicker(){
     trio(),
     guide('tori', '안녕, 나는 토리야. 달은 밤마다 조금씩 차올라. 여덟 밤이 지나면 보름달이 뜨고, 그때는 한글을 다 읽을 수 있어. 모이랑 담이랑 같이 가자.')
   );
-  const nextUp = (MODULES.find(m => !stars[m.n]) || {}).n;
+  const started = Object.keys(stars).length > 0 || startNight > 1;
+  card.append(h('div', {class:'checkcta'},
+    h('button', {class:'btn quiet play', onclick: startCheck},
+      started ? '빠른 확인 다시 하기' : '한글을 조금 읽을 줄 알아요'),
+    h('span', {}, '몇 문제만 풀면 시작할 밤을 찾아 줘요.')));
+  const nextUp = (MODULES.find(m => !stars[m.n] && m.n >= startNight) || {}).n;
   const g = h('div', {class:'modgrid'});
   MODULES.forEach(m => {
     const got = stars[m.n] || 0;
+    const passed = !got && m.n < startNight;
     const jm = [...m.add.jung, ...m.add.cho, ...m.add.jong].join(' ');
-    const isNext = m.n === nextUp && Object.keys(stars).length > 0;
+    const isNext = m.n === nextUp && started;
     const label = h('span', {class:'night'}, nightName(m.n));
     if(isNext) label.append(h('span', {class:'here'}, '여기부터'));
     g.append(h('button', {class:'modcard' + (isNext ? ' next' : ''),
-        'aria-label': nightName(m.n) + ', ' + m.title + (got ? ', 별 ' + got + '개' : ', 아직 안 했어요'),
+        'aria-label': nightName(m.n) + ', ' + m.title + (got ? ', 별 ' + got + '개' : passed ? ', 확인으로 통과' : ', 아직 안 했어요'),
         onclick: () => startModule(m.n)},
       h('div', {html: moonSVG(m.n, 56, !!stars[m.n])}),
       h('div', {style:'flex:1'},
         label,
         h('b', {}, m.title),
-        h('span', {}, got ? '★'.repeat(got) + '☆'.repeat(3-got) : '아직 안 했어요'),
+        got ? h('span', {}, '★'.repeat(got) + '☆'.repeat(3-got))
+            : passed ? h('span', {class:'pass'}, '확인으로 통과') : h('span', {}, '아직 안 했어요'),
         h('div', {class:'jm'}, jm || '받침 연습')
       )
     ));
@@ -772,6 +799,11 @@ function showPicker(){
   card.append(g);
 
   const done = Object.keys(stars).length;
+  const passedCount = MODULES.filter(m => !stars[m.n] && m.n < startNight).length;
+  const progressText = [
+    done ? '지금까지 ' + COUNT[done - 1] + ' 밤을 마쳤습니다.' : '',
+    passedCount ? '빠른 확인으로 ' + COUNT[passedCount - 1] + ' 밤을 통과했습니다.' : ''
+  ].filter(Boolean).join(' ') || '아직 시작하기 전입니다.';
   const resetBtn = h('button', {}, '처음부터 다시 하기');
   let armed = false;
   resetBtn.addEventListener('click', () => {
@@ -782,9 +814,9 @@ function showPicker(){
     h('b', {}, '부모님께. '),
     '한글 첫 달은 기본 모음에서 겹받침까지 여덟 밤에 걸쳐 한글 떼기를 돕습니다. 순서대로 하는 게 좋지만 아이가 이미 아는 밤은 건너뛰어도 됩니다. ',
     canStore
-      ? '진도는 이 기기의 브라우저에만 저장되고, 이름이나 개인정보는 저장하지 않습니다. ' + (done ? '지금까지 ' + COUNT[done - 1] + ' 밤을 마쳤습니다.' : '아직 시작하기 전입니다.')
+      ? '진도는 이 기기의 브라우저에만 저장되고, 이름이나 개인정보는 저장하지 않습니다. ' + progressText
       : '이 브라우저에서는 진도가 저장되지 않습니다. 창을 닫으면 기록이 사라집니다.',
-    done && canStore ? h('div', {}, resetBtn) : ''
+    (done || startNight > 1) && canStore ? h('div', {}, resetBtn) : ''
   ));
 }
 
@@ -1221,10 +1253,163 @@ function resultScreen(){
   nextBtn.style.visibility = 'hidden';
 }
 
+/* ══════════════════════════════════════════════════════════════
+   빠른 확인
+   한글을 조금 읽는 아이가 몇째 밤부터 시작할지 찾습니다.
+   밤마다 그 밤에 새로 배우는 글자가 꼭 들어간 문제를 두 개씩 냅니다.
+   두 문제를 다 맞혀야 그 밤을 통과합니다. 찍어서 통과할 확률은 9분의 1입니다.
+   처음 막힌 밤이 시작할 밤입니다. 여덟 밤을 다 통과하면 받아쓰기로 한 번 더 봅니다.
+   알아보기는 되는데 쓰지는 못하는 계승어 학습자를 걸러 내기 위해서입니다.
+   확인 중에는 맞고 틀림을 보여 주지 않습니다. 가르치는 시간이 아니라 재는 시간이라서입니다.
+   ㅐ와 ㅔ처럼 귀로 구별되지 않는 짝은 일부러 문제로 내지 않습니다.
+   ══════════════════════════════════════════════════════════════ */
+const CHECK = [
+  {n:1, a:'너',   o:['나','너','노']},
+  {n:1, a:'무',   o:['모','무','므']},
+  {n:2, a:'바다', o:['마다','바다','파다']},
+  {n:2, a:'치',   o:['지','치','티']},
+  {n:3, a:'요',   o:['오','요','여']},
+  {n:3, a:'휴지', o:['후지','휴지','효지']},
+  {n:4, a:'화',   o:['하','화','훠']},
+  {n:4, a:'쥐',   o:['주','쥐','죄']},
+  {n:5, a:'뿌',   o:['부','뿌','푸']},
+  {n:5, a:'싸',   o:['사','싸','차']},
+  {n:6, a:'강',   o:['가','간','강']},
+  {n:6, a:'달',   o:['다','달','담']},
+  {n:7, a:'밭',   o:['받','밭','밧'], hint:'채소를 기르는 곳'},
+  {n:7, a:'빛',   o:['빋','빛','빗'], hint:'해에서 나오는 밝은 것'},
+  {n:8, a:'흙',   o:['흑','흙','흘'], hint:'화분에 담아 꽃을 심는 것'},
+  {n:8, a:'앉다', o:['안다','앉다','않다'], hint:'일어서다의 반대'}
+];
+/* 받아쓰기는 소리만 듣고도 표기가 하나로 정해지는 말만 씁니다. 밖(박)이나 잎(입)은 뺍니다. */
+const CHECK_DICT = [{w:'옷', n:7}, {w:'부엌', n:7}, {w:'닭', n:8}];
+const REASON = ['',
+  '남은 자음 아홉 개를 만나는 밤이야.',
+  '길어진 모음 ㅑ ㅕ ㅛ ㅠ를 만나는 밤이야.',
+  '헷갈리기 쉬운 모음을 정리하는 밤이야.',
+  '쌍둥이 자음을 세게 소리 내는 밤이야.',
+  '받침을 처음 만나는 밤이야.',
+  '소리는 같은데 글자가 다른 말을 배우는 밤이야. 첫째 달에서 제일 중요한 밤이야.',
+  '받침이 두 개인 겹받침을 배우는 밤이야.'];
+
+function shuffled(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+function startCheck(){
+  mod = null; curGuide = null;
+  pool = poolUpTo(MODULES.length);
+  setNav(true);
+  hdrTitle.textContent = '빠른 확인';
+  setFeedback('');
+  nextBtn.style.visibility = 'hidden';
+  document.getElementById('stepLabel').textContent = '';
+  const total = CHECK.length + CHECK_DICT.length;
+  const bar = p => { document.getElementById('trackFill').style.width = Math.round(p / total * 100) + '%'; };
+  let i = 0, stopAt = null;
+  intro();
+
+  function intro(){
+    card.innerHTML = ''; curGuide = null; bar(0);
+    card.append(
+      h('h2', {}, '빠른 확인'),
+      guide('tori', '한글을 조금 읽을 줄 알아? 몇 문제만 풀어 보면 어느 밤부터 하면 좋을지 알려 줄게. 모르면 모르겠어요를 눌러도 돼. 틀려도 괜찮아.'),
+      h('p', {class:'sub'}, '5분이 채 안 걸려요. 소리를 듣고 맞는 글자를 고르면 돼요.'),
+      h('button', {class:'btn', onclick: ask}, '시작하기'));
+    window.scrollTo(0,0);
+  }
+
+  function ask(){
+    if(i >= CHECK.length) return dictAsk(0);
+    const q = CHECK[i];
+    card.innerHTML = ''; curGuide = null; bar(i);
+    let locked = false;
+    const pick = ok => {
+      if(locked) return; locked = true;
+      if(ok){ i++; ask(); }
+      else { stopAt = q.a; result(q.n); }
+    };
+    card.append(h('h2', {}, '듣고 골라요'),
+      guide('tori', i === 0 ? '잘 듣고 맞는 글자를 골라 봐.' : '좋아, 다음 문제야.'));
+    if(q.hint) card.append(h('p', {class:'qhint'}, '힌트. ' + q.hint));
+    card.append(h('button', {class:'btn play', style:'margin-bottom:18px', onclick: () => speak(q.a)}, '다시 듣기'));
+    const opts = h('div', {class:'opts'});
+    shuffled(q.o).forEach(o => opts.append(h('button', {class:'opt', onclick: () => pick(o === q.a)}, o)));
+    card.append(opts, h('div', {style:'margin-top:16px'},
+      h('button', {class:'btn quiet play', onclick: () => pick(false)}, '모르겠어요')));
+    setTimeout(() => speak(q.a), 300);
+    window.scrollTo(0,0);
+  }
+
+  function dictAsk(k){
+    if(k >= CHECK_DICT.length) return result(MODULES.length + 1);
+    const item = CHECK_DICT[k];
+    card.innerHTML = ''; curGuide = null; bar(CHECK.length + k);
+    let pendingCho = null, typed = '';
+    card.append(h('h2', {}, '듣고 써 봐요'),
+      guide('tori', k === 0 ? '거의 다 왔어. 이번엔 들리는 말을 직접 써 봐. 받침은 글자를 다 만든 다음에 눌러.' : '좋아, 하나 더.'));
+    const box = h('div', {class:'dictbox'});
+    const ans = h('div', {class:'answer', 'aria-live':'polite'}, '');
+    const paint = () => { ans.textContent = typed + (pendingCho || ''); };
+    box.append(h('button', {class:'btn play', onclick: () => speak(item.w)}, '다시 듣기'), ans);
+    const rC = h('div', {class:'pickrow'}, h('b', {}, '자음'));
+    pool.cho.forEach(j => rC.append(h('button', {class:'chip', onclick: () => { pendingCho = j; setFeedback(''); paint(); }}, j)));
+    const rV = h('div', {class:'pickrow'}, h('b', {}, '모음'));
+    pool.jung.forEach(j => rV.append(h('button', {class:'chip', onclick: () => {
+      if(!pendingCho){ setFeedback('자음을 먼저 눌러요.', 'no'); return; }
+      typed += compose(pendingCho, j); pendingCho = null; setFeedback(''); paint();
+    }}, j)));
+    const rJ = h('div', {class:'pickrow'}, h('b', {}, '받침'));
+    pool.jong.forEach(j => rJ.append(h('button', {class:'chip', onclick: () => {
+      if(!typed){ setFeedback('먼저 글자를 만들어요.', 'no'); return; }
+      typed = typed.slice(0, -1) + addJong(typed[typed.length - 1], j); setFeedback(''); paint();
+    }}, j)));
+    const stop = () => { stopAt = item.w; result(item.n); };
+    box.append(rC, rV, rJ, h('div', {style:'display:flex;gap:10px;margin-top:6px;flex-wrap:wrap'},
+      h('button', {class:'btn quiet play', onclick: () => { pendingCho = null; typed = typed.slice(0, -1); paint(); }}, '지우기'),
+      h('button', {class:'btn quiet play', onclick: stop}, '모르겠어요'),
+      h('button', {class:'btn play', onclick: () => { setFeedback(''); typed === item.w ? dictAsk(k + 1) : stop(); }}, '확인')));
+    card.append(box);
+    setTimeout(() => speak(item.w), 400);
+    window.scrollTo(0,0);
+  }
+
+  function result(s){
+    startNight = s;
+    saveStars();
+    card.innerHTML = ''; curGuide = null; bar(total); setFeedback('');
+    const all = s > MODULES.length;
+    const msg = s === 1
+      ? '첫째 밤부터 같이 하자. 소리부터 차근차근 익히면 금방 읽게 될 거야.'
+      : all
+      ? '첫째 달은 벌써 다 알고 있구나. 둘째 달이 열리면 거기서 만나. 그동안 받아쓰기를 더 해 보고 싶으면 일곱째 밤이나 여덟째 밤을 골라 봐.'
+      : '벌써 ' + COUNT[s - 2] + ' 밤만큼 달이 차 있어. ' + nightName(s) + '부터 하면 좋겠어. ' + REASON[s - 1];
+    const btns = h('div', {style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'});
+    if(!all) btns.append(h('button', {class:'btn', onclick: () => startModule(s)}, nightName(s) + ' 시작하기'));
+    if(s > 1 && !all) btns.append(h('button', {class:'btn quiet', onclick: () => { startNight = 1; saveStars(); startModule(1); }}, '첫째 밤부터 할래요'));
+    btns.append(h('button', {class: all ? 'btn' : 'btn quiet', onclick: showPicker}, '밤 고르기'));
+    card.append(h('div', {style:'text-align:center;padding-top:6px'},
+      h('div', {class:'scene'},
+        h('div', {class:'moon', html: moonSVG(Math.min(s - 1, MODULES.length), 160, false)}),
+        h('div', {class:'tori', html: CHAR.tori('happy')})),
+      h('h2', {}, all ? '첫째 달을 다 알고 있어요' : nightName(s) + '부터 해요'),
+      h('div', {style:'max-width:520px;margin:0 auto 12px;text-align:left'}, say('tori', msg)),
+      h('p', {class:'checknote'}, '부모님께. 빠른 확인은 참고용입니다. 아이가 어려워하면 앞의 밤으로 돌아가도 괜찮습니다.'
+        + (stopAt ? ' 확인이 멈춘 문제는 ' + josa(stopAt, '이에요') + '.' : '')),
+      btns));
+    window.scrollTo(0,0);
+  }
+}
+
 /* 주소에 ?night=7 처럼 붙이면 그 밤으로 바로 들어갑니다.
-   홈 화면의 이어서 하기와, 선생님이 보내는 숙제 링크가 이걸 씁니다. */
-const qNight = Number(new URLSearchParams(location.search).get('night'));
-if(Number.isInteger(qNight) && qNight >= 1 && qNight <= MODULES.length) startModule(qNight);
+   홈 화면의 이어서 하기와, 선생님이 보내는 숙제 링크가 이걸 씁니다.
+   ?check=1 이면 빠른 확인으로 들어갑니다. */
+const params = new URLSearchParams(location.search);
+const qNight = Number(params.get('night'));
+if(params.get('check')) startCheck();
+else if(Number.isInteger(qNight) && qNight >= 1 && qNight <= MODULES.length) startModule(qNight);
 else showPicker();
 </script>
 </body>
