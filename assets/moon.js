@@ -906,6 +906,7 @@ function listClips(){
 /* 주소에 ?night=2 처럼 붙이면 그 밤으로 바로 들어갑니다. */
 const params = new URLSearchParams(location.search);
 const qNight = Number(params.get('night'));
-if(params.get('check')) startCheck();
+/* 빠른 확인이 아직 없는 달에서는 ?check=1 을 무시하고 밤 고르기를 보여 줍니다. */
+if(params.get('check') && MOON.check.length) startCheck();
 else if(Number.isInteger(qNight) && OPEN.includes(qNight)) startNight(qNight);
 else showPicker();
