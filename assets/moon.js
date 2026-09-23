@@ -671,6 +671,51 @@ SCREENS.tense = S => {
   if(S.note) card.append(guide('dami', S.note, true));
 };
 
+/* ---- 한자어 수와 날짜 ----
+   sino(23) = 이십삼. 달 이름은 6월과 10월이 유월, 시월로 바뀝니다. 날짜는 붙여 씁니다(오일). */
+const SINO = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+function sino(n){
+  const t = Math.floor(n / 10), o = n % 10;
+  return (t ? (t > 1 ? SINO[t] : '') + '십' : '') + SINO[o];
+}
+const monthName = m => m === 6 ? '유월' : m === 10 ? '시월' : sino(m) + '월';
+const dayName = d => sino(d) + '일';
+/* 여러 조각을 이어 말합니다. 조각마다 녹음이 있으면 녹음을 차례로, 하나라도 없으면 기기 음성으로 한 번에 말합니다. */
+function sayParts(parts){
+  if(parts.every(p => clipAudio(plain(p)))){
+    let i = 0;
+    const next = () => { if(i < parts.length) talkThen(parts[i++], next); };
+    next();
+  } else talk(parts.join(' '));
+}
+
+/* ---- 내 생일: 달과 날을 고르면 "제 생일은 삼월 오일이에요."가 만들어집니다. 고른 것은 저장하지 않습니다. ---- */
+const DAYS_IN = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+SCREENS.birthday = S => {
+  head2(S);
+  hideNext();
+  let mo = 0, dd = 0;
+  const out = h('div', {class:'bdout', 'aria-live':'polite'});
+  const mGrid = h('div', {class:'bdgrid'}), dGrid = h('div', {class:'bdgrid days'});
+  const parts = () => ['제 생일은', monthName(mo), dayName(dd) + '이에요'];
+  const show = speakIt => {
+    [...mGrid.children].forEach(b => b.classList.toggle('on', Number(b.dataset.v) === mo));
+    [...dGrid.children].forEach(b => { const v = Number(b.dataset.v); b.classList.toggle('on', v === dd); b.disabled = mo && v > DAYS_IN[mo - 1]; });
+    out.innerHTML = '';
+    if(mo && dd){
+      const line = parts().join(' ') + '.';
+      out.append(h('button', {class:'saybtn big', onclick: () => sayParts(parts())}, line));
+      if(speakIt) sayParts(parts());
+      showNext();
+    } else out.append(h('p', {class:'sub'}, mo ? monthName(mo) + '이에요. 이제 날을 골라요.' : '먼저 태어난 달을 골라요.'));
+  };
+  for(let m = 1; m <= 12; m++) mGrid.append(h('button', {class:'chip', 'data-v': m, onclick: () => { mo = m; if(dd > DAYS_IN[m - 1]) dd = 0; talk(monthName(m)); show(!!dd); }}, monthName(m)));
+  for(let d = 1; d <= 31; d++) dGrid.append(h('button', {class:'chip', 'data-v': d, onclick: () => { dd = d; if(mo) show(true); else { talk(dayName(d)); show(false); } }}, String(d)));
+  card.append(h('p', {class:'rhead'}, '태어난 달'), mGrid, h('p', {class:'rhead', style:'margin-top:14px'}, '태어난 날'), dGrid, out);
+  show(false);
+  if(S.tip) card.append(guide(S.tip.who, S.tip.t, true));
+};
+
 /* ---- 소리와 글자 (담이) ---- */
 SCREENS.sound = S => {
   head2(S);
@@ -889,6 +934,8 @@ function listClips(){
     if(S.type === 'rule') [...S.yes, ...S.no].forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙'));
     if(S.type === 'josa') S.names.forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙 고르기'));
     if(S.type === 'shrink') S.rows.forEach(([full, short]) => { add(full, n, '세는 말'); S.units.forEach(u => add(short + ' ' + u, n, '줄어드는 숫자')); });
+    if(S.type === 'birthday'){ add('제 생일은', n, '생일 앞부분'); for(let m = 1; m <= 12; m++) add(monthName(m), n, '달 이름');
+      for(let d = 1; d <= 31; d++) add(dayName(d) + '이에요', n, '날짜 끝'); }
     if(S.type === 'tense') S.groups.forEach(G => G.rows.forEach(([a, b]) => { add(a, n, '지금'); add(b, n, '지난 일'); }));
     if(S.type === 'likes') S.items.forEach(x => ['좋아해요', '싫어해요'].forEach(v => add(likeLine(x.w, v), n, '좋아해요와 싫어해요')));
     if(S.type === 'clock') for(let i = 1; i <= 12; i++) add(hourWord(i) + '예요', n, '시계');

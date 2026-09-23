@@ -415,3 +415,13 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
 /* ---- 넷째 달: 지금과 지난 일 ---- */
 .cmp.tense td .saybtn{font-size:22px;min-width:5em}
 .cmp.tense td.vw{font-size:26px;color:var(--juhong);font-weight:500}
+
+/* ---- 넷째 달: 내 생일 ---- */
+.bdgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;max-width:560px}
+.bdgrid.days{grid-template-columns:repeat(7,minmax(0,1fr))}
+.bdgrid .chip{font-size:16px;padding:6px 4px;min-width:0;white-space:nowrap}
+.bdgrid .chip.on{background:var(--hwang)}
+.bdgrid .chip:disabled{opacity:.35}
+.bdout{margin:16px 0 8px}
+.bdout .saybtn.big{font-size:24px}
+@media (max-width:520px){.bdgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
