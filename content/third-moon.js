@@ -241,6 +241,66 @@ function m3Face(mood){
 ['rice', 'soup', 'kimchi', 'tteok', 'gimbap', 'bread', 'milk', 'water', 'hungry', 'drink'].forEach(k => { M3_ONLY['f_' + k] = m3Food(k); });
 ['yum', 'spicy', 'like', 'dislike'].forEach(k => { M3_ONLY['m_' + k] = m3Face(k); });
 
+/* ---- 넷째 묶음 그림: 날씨와 계절 ---- */
+function m3Weather(kind){
+  const S = '#221F1C';
+  const cloud = (x, y, k, fill) => `<g transform="translate(${x} ${y}) scale(${k || 1})"><path d="M-30 10 Q-34 -8 -16 -10 Q-12 -26 6 -22 Q20 -32 30 -16 Q44 -14 40 2 Q46 14 30 14 L-24 14 Q-36 14 -30 10 Z" fill="${fill || '#FBF7EC'}" stroke="${S}" stroke-width="2.6" stroke-linejoin="round"/></g>`;
+  const sun = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#F2C14E" stroke="${S}" stroke-width="2.6"/>
+    <g stroke="#E3A93C" stroke-width="3.4" stroke-linecap="round">${[0, 45, 90, 135, 180, 225, 270, 315].map(a => { const t = a * Math.PI / 180;
+      return `<path d="M${x + Math.cos(t) * (r + 6)} ${y + Math.sin(t) * (r + 6)} L${x + Math.cos(t) * (r + 13)} ${y + Math.sin(t) * (r + 13)}"/>`; }).join('')}</g>`;
+  const ground = c => `<rect x="0" y="108" width="200" height="22" fill="${c || '#B7A57A'}"/>`;
+  const tree = (x, leaf) => `<rect x="${x - 4}" y="80" width="8" height="30" fill="#8A6A4A" stroke="${S}" stroke-width="2"/><circle cx="${x}" cy="70" r="20" fill="${leaf}" stroke="${S}" stroke-width="2.6"/>`;
+  const g = {
+    sunny:  `<rect width="200" height="130" rx="6" fill="#BFE0F0"/>${sun(100, 50, 22)}${ground()}`,
+    cloudy: `<rect width="200" height="130" rx="6" fill="#C9CFD3"/>${cloud(70, 40, 1.1, '#E7E4DC')}${cloud(136, 62, 1, '#DAD6CC')}${ground()}`,
+    rain:   `<rect width="200" height="130" rx="6" fill="#A9B6BF"/>${cloud(100, 34, 1.3, '#DAD6CC')}
+      <g stroke="#2D6E8E" stroke-width="3" stroke-linecap="round">${[[60, 64], [84, 76], [108, 64], [132, 78], [150, 62], [72, 92], [120, 94]].map(([x, y]) => `<path d="M${x} ${y} L${x - 4} ${y + 10}"/>`).join('')}</g>${ground('#8C9A7A')}`,
+    snow:   `<rect width="200" height="130" rx="6" fill="#C9D6DE"/>${cloud(100, 30, 1.3, '#EFEFEA')}
+      <g fill="#FBF7EC" stroke="#8C9AA6" stroke-width="1.2">${[[56, 62], [84, 78], [110, 60], [136, 76], [154, 58], [70, 94], [124, 96], [96, 90]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4"/>`).join('')}</g>
+      <path d="M0 110 Q50 100 100 108 Q150 116 200 104 L200 130 L0 130 Z" fill="#FBF7EC" stroke="${S}" stroke-width="2"/>`,
+    wind:   `<rect width="200" height="130" rx="6" fill="#CFE0EA"/>
+      <g stroke="#5A7A8E" stroke-width="3.4" fill="none" stroke-linecap="round"><path d="M20 44 L120 44 Q140 44 140 30 Q140 18 128 20"/><path d="M34 64 L150 64 Q170 64 170 78 Q170 90 158 88"/><path d="M20 84 L96 84"/></g>
+      <g transform="rotate(20 150 100)">${tree(150, '#6E8F58')}</g><path d="M40 30 l8 -4 l2 8 Z M70 96 l8 -4 l2 8 Z" fill="#6E8F58"/>${ground()}`,
+    hot:    `<rect width="200" height="130" rx="6" fill="#F5D9A8"/>${sun(160, 32, 16)}${m2Person('kid', 90, 'stand', 1)}
+      <path d="M112 52 q-3 7 0 9 q3 -2 0 -9 M68 58 q-3 7 0 9 q3 -2 0 -9" fill="#9DB4C6" stroke="${S}" stroke-width="1.4"/>
+      <g stroke="#E0703C" stroke-width="2.6" fill="none"><path d="M30 60 q6 -6 0 -12 q-6 -6 0 -12"/><path d="M44 70 q6 -6 0 -12 q-6 -6 0 -12"/></g>${ground()}`,
+    cold:   `<rect width="200" height="130" rx="6" fill="#D6E2EA"/>${m2Person('kid', 100, 'stand', 1)}
+      <path d="M89 65 L111 65 L111 72 L89 72 Z" fill="#C1403A" stroke="${S}" stroke-width="2"/><path d="M105 72 L109 88" stroke="#C1403A" stroke-width="7" stroke-linecap="round"/>
+      <g stroke="#5A7A8E" stroke-width="2.4" stroke-linecap="round"><path d="M74 40 l-8 -4 M74 50 l-10 0 M126 40 l8 -4 M126 50 l10 0"/></g>
+      <g fill="#FBF7EC" stroke="#8C9AA6" stroke-width="1.2"><circle cx="40" cy="30" r="3.4"/><circle cx="160" cy="44" r="3.4"/><circle cx="30" cy="80" r="3.4"/><circle cx="170" cy="90" r="3.4"/></g>${ground('#E7EAEC')}`,
+    umbrella: `<rect width="200" height="130" rx="6" fill="#A9B6BF"/>
+      <g stroke="#2D6E8E" stroke-width="2.4" stroke-linecap="round">${[[30, 20], [50, 40], [160, 24], [176, 50], [24, 70], [180, 80]].map(([x, y]) => `<path d="M${x} ${y} L${x - 3} ${y + 8}"/>`).join('')}</g>
+      <path d="M50 58 Q100 0 150 58 Q138 50 125 58 Q112 50 100 58 Q88 50 75 58 Q62 50 50 58 Z" fill="#E3A93C" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M100 58 L100 104 Q100 114 90 112" stroke="${S}" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+    hat: `<path d="M56 96 Q54 40 100 34 Q146 40 144 96 Z" fill="#C1403A" stroke="${S}" stroke-width="3"/>
+      <rect x="48" y="90" width="104" height="18" rx="6" fill="#FBF7EC" stroke="${S}" stroke-width="2.6"/>
+      <circle cx="100" cy="30" r="10" fill="#FBF7EC" stroke="${S}" stroke-width="2.6"/>
+      <path d="M72 70 L128 70 M68 82 L132 82" stroke="#FBF7EC" stroke-width="3" opacity=".7"/>`,
+    snowman: `<rect width="200" height="130" rx="6" fill="#C9D6DE"/><path d="M0 112 Q100 102 200 112 L200 130 L0 130 Z" fill="#FBF7EC" stroke="${S}" stroke-width="2"/>
+      <circle cx="100" cy="88" r="28" fill="#FBF7EC" stroke="${S}" stroke-width="3"/><circle cx="100" cy="46" r="20" fill="#FBF7EC" stroke="${S}" stroke-width="3"/>
+      <circle cx="93" cy="42" r="3" fill="${S}"/><circle cx="107" cy="42" r="3" fill="${S}"/><path d="M100 48 L114 51 L100 53 Z" fill="#E0703C" stroke="${S}" stroke-width="1.4"/>
+      <path d="M80 70 L120 70" stroke="#C1403A" stroke-width="7" stroke-linecap="round"/><circle cx="100" cy="84" r="2.6" fill="${S}"/><circle cx="100" cy="96" r="2.6" fill="${S}"/>
+      <path d="M72 80 L50 66 M128 80 L150 66" stroke="#8A6A4A" stroke-width="3" stroke-linecap="round"/>`,
+    spring: `<rect width="200" height="130" rx="6" fill="#DCEBD6"/>${tree(56, '#F2B8C6')}
+      ${[[110, 100], [132, 96], [154, 102], [176, 98]].map(([x, y]) => `<path d="M${x} ${y + 10} L${x} ${y}" stroke="#6E8F58" stroke-width="2.4"/><circle cx="${x}" cy="${y - 4}" r="6" fill="#E3A93C" stroke="${S}" stroke-width="1.8"/>`).join('')}${ground('#9DBA7E')}`,
+    summer: `<rect width="200" height="130" rx="6" fill="#9DD0E6"/>${sun(40, 32, 16)}
+      <path d="M0 84 Q25 78 50 84 T100 84 T150 84 T200 84 L200 130 L0 130 Z" fill="#2D6E8E" stroke="${S}" stroke-width="2"/>
+      <path d="M0 104 Q60 96 120 106 L200 100 L200 130 L0 130 Z" fill="#E7D2A8" stroke="${S}" stroke-width="2"/>`,
+    autumn: `<rect width="200" height="130" rx="6" fill="#F3DDB7"/>${tree(70, '#E0703C')}${tree(140, '#E3A93C')}
+      <path d="M100 40 l6 -4 l2 8 Z M168 70 l6 -4 l2 8 Z M30 60 l6 -4 l2 8 Z" fill="#C1403A"/>${ground('#C9A87C')}`,
+    winter: `<rect width="200" height="130" rx="6" fill="#D6E2EA"/>
+      <g fill="#FBF7EC" stroke="#8C9AA6" stroke-width="1.2">${[[30, 24], [70, 40], [120, 20], [168, 36], [150, 70], [44, 70]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3.6"/>`).join('')}</g>
+      <path d="M0 106 Q100 96 200 106 L200 130 L0 130 Z" fill="#FBF7EC" stroke="${S}" stroke-width="2"/>
+      <circle cx="100" cy="92" r="16" fill="#FBF7EC" stroke="${S}" stroke-width="2.6"/><circle cx="100" cy="68" r="11" fill="#FBF7EC" stroke="${S}" stroke-width="2.6"/>
+      <circle cx="96" cy="66" r="1.8" fill="${S}"/><circle cx="104" cy="66" r="1.8" fill="${S}"/>`
+  }[kind];
+  const label = {sunny:'맑아요', cloudy:'흐려요', rain:'비가 와요', snow:'눈이 와요', wind:'바람이 불어요', hot:'더워요', cold:'추워요',
+    umbrella:'우산', hat:'모자', snowman:'눈사람', spring:'봄', summer:'여름', autumn:'가을', winter:'겨울'}[kind];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
+}
+['sunny', 'cloudy', 'rain', 'snow', 'wind', 'hot', 'cold', 'umbrella', 'hat', 'snowman', 'spring', 'summer', 'autumn', 'winter']
+  .forEach(k => { M3_ONLY['w_' + k] = m3Weather(k); });
+
 /* 셋째 달 화면에서는 둘째 달 그림도 함께 씁니다. */
 const M3_PIC = Object.assign({}, M2_PIC, M3_ONLY);
 
@@ -249,7 +309,7 @@ const M3_BUNDLES = [
   {k:1, title:'아침에 일어나요', topic:'하루 일과와 시계', nights:[1, 2, 3], after:'그동안 가족에게 안녕히 주무세요, 하고 밤 인사를 해 봐.'},
   {k:2, title:'학교에 가요', topic:'학교와 주말 한글학교', nights:[4, 5, 6], after:'그동안 한글학교에서, 아니면 집에서 가족과 선생님 놀이를 하며 세 마디 인사를 해 봐.'},
   {k:3, title:'맛있어요', topic:'음식, 좋아해요와 먹고 싶어요', nights:[7, 8, 9], after:'그동안 밥 먹기 전에는 잘 먹겠습니다, 먹고 나서는 잘 먹었습니다를 말해 봐.'},
-  {k:4, title:'오늘 날씨', topic:'날씨와 계절', nights:[10, 11, 12]},
+  {k:4, title:'오늘 날씨', topic:'날씨와 계절', nights:[10, 11, 12], after:'그동안 아침마다 창밖을 보고 오늘 날씨를 가족에게 알려 줘.'},
   {k:5, title:'토리의 하루', topic:'요일과 하루 이야기', nights:[13, 14, 15]}
 ];
 
@@ -664,6 +724,142 @@ const M3_NIGHTS = [
        {when:'다 먹은 뒤에', say:'잘 먹었습니다.', sub:'음식을 해 주신 분께 말해요.'},
        {when:'좋아하는 음식을 말해요', say:'저는 ______을 좋아해요.', sub:'받침이 없으면 를: 저는 김치를 좋아해요.'}],
      parent:'"잘 먹겠습니다"와 "잘 먹었습니다"는 한국 가정에서 매일 쓰는 인사라, 한동안 식사 때마다 해 주시면 금방 자리 잡습니다. 한국 음식을 드시는 날에는 음식 이름을 한국어로 불러 주세요. 김치, 국, 밥처럼 짧은 이름부터 시작하면 좋습니다. 아이가 물이나 반찬이 필요할 때 영어 대신 "물 주세요"라고 말하면 바로 건네주시면 됩니다. 한국 음식을 자주 드시지 않는 가정이라면 빵, 우유, 사과처럼 이미 배운 말로 해도 충분합니다.'}
+  ],
+  dictWords:[] },
+
+/* ---- 넷째 묶음: 오늘 날씨 ---------------------------------------
+   날씨(맑아요, 흐려요, 비가 와요, 눈이 와요, 바람이 불어요, 더워요, 추워요)와 봄, 여름, 가을, 겨울.
+   비가 와요, 눈이 와요는 둘째 달의 이/가를 그대로 씁니다. 눈(snow)과 둘째 달의 눈(eye), 써요(write)와
+   우산을 써요, 모자를 써요처럼 같은 글자 다른 뜻을 짚습니다. 추워요, 더워요는 규칙 없이 말 덩어리로 익힙니다. */
+{ n:10, bundle:4, title:'비가 와요',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'창밖을 봐! 오늘은 날씨를 말하는 말을 모아 왔어. 아침마다 쓸 수 있는 말이야.',
+     big:'오늘 날씨'},
+    {type:'pairs', title:'하늘을 봐요', who:'moi',
+     t:'하늘이 어떤지 말하는 말이야. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'맑아요', pic:'w_sunny', en:"it's clear, sunny"}, {w:'흐려요', pic:'w_cloudy', en:"it's cloudy"},
+       {w:'비가 와요', pic:'w_rain', en:"it's raining"}, {w:'눈이 와요', pic:'w_snow', en:"it's snowing"},
+       {w:'바람이 불어요', pic:'w_wind', en:"it's windy"}],
+     tip:{who:'dami', t:'눈이 와요의 눈은 하늘에서 오는 눈이란다. 둘째 달에 배운 얼굴의 눈과 글자가 같지. 그림과 문장을 보면 어느 눈인지 알 수 있단다.'}},
+    {type:'pairs', title:'덥고 추워요', who:'moi',
+     t:'몸으로 느끼는 날씨와 비 올 때 쓰는 물건이야.',
+     singles:[
+       {w:'더워요', pic:'w_hot', en:"it's hot"}, {w:'추워요', pic:'w_cold', en:"it's cold"},
+       {w:'날씨', pic:'w_sunny', en:'weather'}, {w:'우산', pic:'w_umbrella', en:'umbrella'}, {w:'모자', pic:'w_hat', en:'hat'}],
+     tip:{who:'tori', t:'우산은 써요, 모자도 써요. 학교에서 배운 글씨를 써요와 같은 말이야. 머리 위에 쓰는 건 써요라고 해.'}},
+    {type:'choose', title:'오늘 날씨는 어때요?', who:'tori',
+     t:'그림을 보고 날씨를 골라 봐.',
+     qs:[
+       {pic:'w_rain', o:['비가 와요','눈이 와요','맑아요'], a:'비가 와요'},
+       {pic:'w_cloudy', o:['맑아요','흐려요','더워요'], a:'흐려요'},
+       {pic:'w_wind', o:['바람이 불어요','비가 와요','추워요'], a:'바람이 불어요'},
+       {pic:'w_cold', o:['더워요','추워요','맑아요'], a:'추워요'},
+       {pic:'w_umbrella', o:['모자','우산','눈'], a:'우산'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 날씨를 찾아 봐.',
+     qs:[
+       {say:'눈이 와요', o:['w_rain','w_snow','w_cloudy'], a:'w_snow'},
+       {say:'맑아요', o:['w_sunny','w_wind','w_cloudy'], a:'w_sunny'},
+       {say:'더워요', o:['w_cold','w_hot','w_snow'], a:'w_hot'},
+       {say:'모자', o:['w_umbrella','w_hat','w_snowman'], a:'w_hat'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'날씨 말을 써 봐. 뜻을 같이 보면 도움이 돼.',
+     items:[{w:'비', en:'rain'}, {w:'눈', en:'snow'}, {w:'우산', en:'umbrella'}]}
+  ],
+  dictWords:[{w:'비', en:'rain'}, {w:'눈', en:'snow'}, {w:'날씨', en:'weather'}, {w:'우산', en:'umbrella'},
+             {w:'모자', en:'hat'}, {w:'더워요', en:"it's hot"}, {w:'추워요', en:"it's cold"}, {w:'흐려요', en:"it's cloudy"}] },
+
+{ n:11, bundle:4, title:'겨울에 눈이 와요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 네 계절을 배워. 봄, 여름, 가을, 겨울. 계절 뒤에도 아침에, 주말에처럼 ‘에’를 붙여.',
+     big:'겨울에 눈이 와요'},
+    {type:'pairs', title:'네 계절', who:'moi',
+     t:'계절마다 모습이 달라. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'봄', pic:'w_spring', en:'spring'}, {w:'여름', pic:'w_summer', en:'summer'},
+       {w:'가을', pic:'w_autumn', en:'fall, autumn'}, {w:'겨울', pic:'w_winter', en:'winter'},
+       {w:'오늘', pic:'w_sunny', en:'today'}],
+     tip:{who:'dami', t:'한국에도 봄, 여름, 가을, 겨울이 뚜렷하단다. 여기 미국과 한국은 같은 때 같은 계절이지. 그러니 할머니 할아버지께 전화로 날씨를 물어보면 비슷한 대답이 돌아올 게야.'}},
+    {type:'choose', title:'어느 계절이에요?', who:'tori',
+     t:'그림을 보고 계절을 골라 봐.',
+     qs:[
+       {pic:'w_autumn', o:['봄','가을','여름'], a:'가을'},
+       {pic:'w_winter', o:['겨울','여름','봄'], a:'겨울'},
+       {pic:'w_spring', o:['가을','겨울','봄'], a:'봄'},
+       {pic:'w_summer', o:['여름','가을','겨울'], a:'여름'}]},
+    {type:'choose', title:'계절과 날씨', who:'moi',
+     t:'계절에 맞는 말을 골라 봐. 이와 가, 그리고 ‘에’를 잘 봐.',
+     qs:[
+       {pic:'w_winter', o:['겨울에 눈이 와요.','겨울에 눈가 와요.'], a:'겨울에 눈이 와요.', en:'It snows in winter.', why:'‘눈’에 받침 ㄴ이 있어서 ‘이’예요.'},
+       {pic:'w_summer', o:['여름에 추워요.','여름에 더워요.'], a:'여름에 더워요.', en:"It's hot in summer."},
+       {pic:'w_rain', o:['비가 와요.','비이 와요.'], a:'비가 와요.', en:"It's raining.", why:'‘비’에는 받침이 없어서 ‘가’예요.'},
+       {pic:'w_umbrella', o:['우산을 써요.','우산를 써요.'], a:'우산을 써요.', en:'I use an umbrella.', why:'‘산’에 받침이 있어서 ‘을’이에요.'},
+       {pic:'w_wind', o:['바람이 불어요.','바람가 불어요.'], a:'바람이 불어요.', en:"It's windy."}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'오늘 날씨가 어때요?', tiles:['오늘','날씨가','어때요?'], en:"How's the weather today?"},
+       {s:'오늘은 비가 와요.', tiles:['오늘은','비가','와요.'], extra:['비이'], en:"It's raining today.", hint:'‘비’에는 받침이 없어요.'},
+       {s:'겨울에 눈이 와요.', tiles:['겨울에','눈이','와요.'], extra:['눈가'], en:'It snows in winter.'},
+       {s:'모자를 써요.', tiles:['모자를','써요.'], extra:['모자을'], en:'I wear a hat.', hint:'‘자’에는 받침이 없어요.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'날씨 말에도 소리 비밀이 있단다. 맑아요는 읽어요처럼 받침이 둘이지.',
+     cmp:[
+       {s:'맑아요', d:'말가요', n:'ㄺ 가운데 ㄱ이 뒤로 건너가요'},
+       {s:'눈이 와요', d:'누니 와요', n:'ㄴ 받침이 뒤로 건너가요'},
+       {s:'겨울에', d:'겨우레', n:'ㄹ 받침이 뒤로 건너가요'},
+       {s:'바람이', d:'바라미', n:'ㅁ 받침이 뒤로 건너가요'}],
+     note:'맑아요의 ‘맑’에는 ㄹ과 ㄱ이 함께 있단다. 읽어요에서 만난 바로 그 받침이지. 한 번 만난 받침은 또 만나면 반가운 법이란다.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'맑아요', en:"it's clear", hint:{who:'dami', t:'소리는 [말가요]지만 ‘맑’에는 ㄹ과 ㄱ이 함께 있단다. 받침 줄에서 ㄺ을 찾아보거라.'}},
+       {w:'겨울', en:'winter'},
+       {w:'여름', en:'summer'}]}
+  ],
+  dictWords:[{w:'봄', en:'spring'}, {w:'여름', en:'summer'}, {w:'가을', en:'fall'}, {w:'겨울', en:'winter'},
+             {w:'맑아요', en:"it's clear"}, {w:'오늘', en:'today'}] },
+
+{ n:12, bundle:4, title:'첫눈 오는 날',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'밖을 봐, 하얀 게 내려! 먼저 글자 없이 귀로만 들어 보고, 그다음에 글자를 같이 보자.',
+     big:'눈이 와!'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 누가 무슨 말을 하는지 귀로만 먼저 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'moi', t:'토리야, 창문 봐! 눈이 와!', en:"Tori, look out the window! It's snowing!"},
+       {who:'tori', t:'와, 첫눈이야! 밖에 나가자.', en:"Wow, it's the first snow! Let's go outside."},
+       {who:'dami', t:'허허, 밖은 아주 춥단다. 모자를 쓰거라.', en:"Ho ho, it's very cold outside. Put on a hat."},
+       {who:'tori', t:'네, 할아버지. 모자를 써요.', en:"Okay, Grandpa. I'm putting on my hat."},
+       {who:'moi', t:'우리 눈사람을 만들자!', en:"Let's make a snowman!"},
+       {who:'tori', t:'눈사람 눈은 까만 돌이야.', en:"The snowman's eyes are black stones."},
+       {who:'dami', t:'허허, 눈사람에게도 눈이 있구나.', en:'Ho ho, even the snowman has eyes.'},
+       {who:'moi', t:'나는 겨울이 좋아!', en:'I love winter!'}],
+     note:{who:'dami', t:'눈사람 눈이라니, 하늘의 눈으로 만든 사람에게 얼굴의 눈을 달았구나. 같은 글자라도 문장 안에서 뜻이 정해진단다. 그리고 토리가 모자를 쓸 때도 ‘써요’라고 했지?'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'창밖에 무엇이 와요?', o:['비','눈','바람'], a:'눈', why:'모이는 ‘눈이 와!’라고 했어요.'},
+       {t:'밖은 어때요?', o:['더워요','추워요','맑아요'], a:'추워요', why:'할아버지는 ‘밖은 아주 춥단다’라고 하셨어요.'},
+       {t:'토리는 무엇을 써요?', o:['우산','모자','안경'], a:'모자', why:'토리는 ‘모자를 써요’라고 했어요.'},
+       {t:'눈사람 눈은 무엇이에요?', o:['까만 돌','사과','연필'], a:'까만 돌', why:'토리는 ‘눈사람 눈은 까만 돌이야’라고 했어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {pic:'w_rain', line:{who:'moi', t:'토리야, 오늘 날씨 어때?'}, en:"Tori, how's the weather today?", o:['비가 와.','비가 와요.'], a:'비가 와.', why:'모이는 친구라서 편한 말로 대답해요.'},
+       {pic:'w_snow', line:{who:'dami', t:'토리야, 밖이 춥느냐?'}, en:'Tori, is it cold outside?', o:['응, 추워.','네, 추워요.'], a:'네, 추워요.', why:'할아버지는 어른이라서 ‘네, 추워요’라고 해요.'},
+       {pic:'w_sunny', t:'할머니께 전화로 오늘 날씨를 알려 드려요.', en:"Tell Grandma today's weather on the phone.", o:['할머니, 오늘은 맑아요.','할머니, 오늘은 비가 와요.'], a:'할머니, 오늘은 맑아요.', why:'해가 떠 있으니 맑아요.'}]},
+    {type:'task', title:'오늘의 날씨 알림이', who:'moi',
+     t:'사흘 동안 아침마다 날씨 알림이가 되어 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'아침에 창밖을 보고 가족에게', say:'오늘은 ______.', sub:'맑아요, 흐려요, 비가 와요, 눈이 와요, 바람이 불어요 가운데 하나.'},
+       {when:'덥거나 추우면 하나 더', say:'오늘은 추워요.', sub:'더우면 더워요.'},
+       {when:'할머니 할아버지와 통화할 때 물어봐요', say:'할머니, 오늘 날씨가 어때요?', sub:'대답을 잘 듣고 여기 날씨와 비교해 봐요.'}],
+     parent:'사흘 정도 아침 식사 전에 아이에게 창밖을 보고 날씨를 말하게 해 주세요. 한국에 계신 조부모님과 통화하신다면 "오늘 날씨가 어때요?"를 여쭤 보게 하시면 좋습니다. 한국과 미국은 계절이 같아도 날씨가 다를 때가 많아서 아이가 흥미를 느낍니다. 첫눈이 오는 날에는 이 밤의 이야기를 다시 들려주셔도 좋습니다.'}
   ],
   dictWords:[] }
 ];
