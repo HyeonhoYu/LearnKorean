@@ -301,6 +301,40 @@ function m3Weather(kind){
 ['sunny', 'cloudy', 'rain', 'snow', 'wind', 'hot', 'cold', 'umbrella', 'hat', 'snowman', 'spring', 'summer', 'autumn', 'winter']
   .forEach(k => { M3_ONLY['w_' + k] = m3Weather(k); });
 
+/* ---- 다섯째 묶음 그림: 요일 ----
+   요일 이름에 숨은 것(월 달, 화 불, 수 물, 목 나무, 금 쇠, 토 흙, 일 해)을 그림으로 보여 줍니다.
+   글자를 넣지 않아 듣고 고르기에서 답이 보이지 않습니다. 윗부분의 점은 한 주에서 몇째 날인지 알려 줍니다. */
+function m3Day(i){
+  const S = '#221F1C';
+  const col = ['#E3DDF0', '#F6D0C4', '#D3E6F2', '#D7E8CE', '#F4E6B6', '#E8D9C2', '#F9D9A8'][i];
+  const icon = [
+    `<path d="M112 46 A26 26 0 1 0 124 86 A20 20 0 1 1 112 46 Z" fill="#F5E6BD" stroke="${S}" stroke-width="2.6"/>`,
+    `<path d="M100 40 Q124 62 116 84 Q112 96 100 96 Q86 96 84 84 Q80 70 92 60 Q92 72 98 74 Q94 58 100 40 Z" fill="#E0703C" stroke="${S}" stroke-width="2.6" stroke-linejoin="round"/>
+     <path d="M100 70 Q108 80 104 90 Q100 94 96 90 Q94 82 100 70 Z" fill="#F2C14E"/>`,
+    `<path d="M100 38 Q76 70 78 82 Q80 98 100 98 Q120 98 122 82 Q124 70 100 38 Z" fill="#6FA8D0" stroke="${S}" stroke-width="2.6"/>
+     <path d="M90 74 Q88 84 94 90" stroke="#FBF7EC" stroke-width="3.4" fill="none" stroke-linecap="round"/>`,
+    `<rect x="95" y="72" width="10" height="28" fill="#8A6A4A" stroke="${S}" stroke-width="2.2"/><circle cx="100" cy="60" r="22" fill="#6E8F58" stroke="${S}" stroke-width="2.6"/>`,
+    `<path d="M76 90 L86 62 L114 62 L124 90 Z" fill="#E3A93C" stroke="${S}" stroke-width="2.6" stroke-linejoin="round"/><path d="M90 70 L100 70" stroke="#FBF7EC" stroke-width="3" stroke-linecap="round"/>
+     <path d="M118 48 l4 -8 M126 54 l8 -4 M110 44 l0 -9" stroke="#E3A93C" stroke-width="2.6" stroke-linecap="round"/>`,
+    `<path d="M66 98 Q80 58 100 60 Q122 58 134 98 Z" fill="#9C7650" stroke="${S}" stroke-width="2.6" stroke-linejoin="round"/>
+     <g fill="#6E5236"><circle cx="90" cy="80" r="2.4"/><circle cx="106" cy="74" r="2"/><circle cx="116" cy="88" r="2.6"/></g>
+     <path d="M100 60 L100 48 M100 50 Q108 42 112 46 M100 52 Q92 44 88 48" stroke="#6E8F58" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+    `<circle cx="100" cy="70" r="20" fill="#F2C14E" stroke="${S}" stroke-width="2.6"/><g stroke="#E3A93C" stroke-width="3.2" stroke-linecap="round">${[0, 45, 90, 135, 180, 225, 270, 315].map(a => { const t = a * Math.PI / 180;
+      return `<path d="M${100 + Math.cos(t) * 26} ${70 + Math.sin(t) * 26} L${100 + Math.cos(t) * 33} ${70 + Math.sin(t) * 33}"/>`; }).join('')}</g>`][i];
+  let dots = '';
+  for(let k = 0; k < 7; k++) dots += `<circle cx="${70 + k * 10}" cy="24" r="3.4" fill="${k === i ? '#C1403A' : '#FBF7EC'}" stroke="${S}" stroke-width="1.4"/>`;
+  const name = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'][i];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${name}">
+    <rect x="46" y="10" width="108" height="112" rx="10" fill="${col}" stroke="${S}" stroke-width="3"/>
+    <path d="M46 34 L154 34" stroke="${S}" stroke-width="2"/>${dots}${icon}</svg>`;
+}
+for(let i = 0; i < 7; i++) M3_ONLY['day' + (i + 1)] = m3Day(i);
+/* 내일: 오늘 카드에서 다음 카드로 가는 화살표 */
+M3_ONLY.tomorrow = `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="내일">
+  <rect x="14" y="30" width="66" height="72" rx="8" fill="#F5E6BD" stroke="#221F1C" stroke-width="3"/><circle cx="47" cy="66" r="12" fill="#F2C14E" stroke="#221F1C" stroke-width="2"/>
+  <rect x="120" y="30" width="66" height="72" rx="8" fill="#FBF7EC" stroke="#221F1C" stroke-width="3" stroke-dasharray="7 4"/><circle cx="153" cy="66" r="12" fill="#F2C14E" stroke="#221F1C" stroke-width="2" opacity=".5"/>
+  <path d="M86 66 L112 66" stroke="#C1403A" stroke-width="5" stroke-linecap="round"/><path d="M104 58 L114 66 L104 74" stroke="#C1403A" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
 /* 셋째 달 화면에서는 둘째 달 그림도 함께 씁니다. */
 const M3_PIC = Object.assign({}, M2_PIC, M3_ONLY);
 
@@ -310,7 +344,7 @@ const M3_BUNDLES = [
   {k:2, title:'학교에 가요', topic:'학교와 주말 한글학교', nights:[4, 5, 6], after:'그동안 한글학교에서, 아니면 집에서 가족과 선생님 놀이를 하며 세 마디 인사를 해 봐.'},
   {k:3, title:'맛있어요', topic:'음식, 좋아해요와 먹고 싶어요', nights:[7, 8, 9], after:'그동안 밥 먹기 전에는 잘 먹겠습니다, 먹고 나서는 잘 먹었습니다를 말해 봐.'},
   {k:4, title:'오늘 날씨', topic:'날씨와 계절', nights:[10, 11, 12], after:'그동안 아침마다 창밖을 보고 오늘 날씨를 가족에게 알려 줘.'},
-  {k:5, title:'토리의 하루', topic:'요일과 하루 이야기', nights:[13, 14, 15]}
+  {k:5, title:'토리의 하루', topic:'요일과 하루 이야기', nights:[13, 14, 15], after:'이제 가족에게 네 하루를 처음부터 끝까지 이야기해 봐.'}
 ];
 
 /* ---- 밤 ---- */
@@ -861,12 +895,164 @@ const M3_NIGHTS = [
        {when:'할머니 할아버지와 통화할 때 물어봐요', say:'할머니, 오늘 날씨가 어때요?', sub:'대답을 잘 듣고 여기 날씨와 비교해 봐요.'}],
      parent:'사흘 정도 아침 식사 전에 아이에게 창밖을 보고 날씨를 말하게 해 주세요. 한국에 계신 조부모님과 통화하신다면 "오늘 날씨가 어때요?"를 여쭤 보게 하시면 좋습니다. 한국과 미국은 계절이 같아도 날씨가 다를 때가 많아서 아이가 흥미를 느낍니다. 첫눈이 오는 날에는 이 밤의 이야기를 다시 들려주셔도 좋습니다.'}
   ],
+  dictWords:[] },
+
+/* ---- 다섯째 묶음: 토리의 하루 -------------------------------------
+   요일 일곱 개와 내일. 요일 이름에 숨은 달, 불, 물, 나무, 쇠, 흙, 해를 그림으로 보여 줍니다.
+   "월요일부터 금요일까지"는 부터, 까지를 규칙 없이 말 덩어리로 씁니다.
+   셋째 밤에는 토리가 하루를 처음부터 끝까지 이야기하며 셋째 달의 네 묶음을 모두 다시 씁니다. */
+{ n:13, bundle:5, title:'월요일부터 일요일까지',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'셋째 달 마지막 묶음이야. 오늘은 요일을 모아 왔어. 일곱 개니까 하나, 둘, 셋 세면서 들어 봐.',
+     big:'월요일, 화요일, 수요일'},
+    {type:'pairs', title:'일곱 요일', who:'moi',
+     t:'요일마다 그림이 하나씩 숨어 있어. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'월요일', pic:'day1', en:'Monday'}, {w:'화요일', pic:'day2', en:'Tuesday'}, {w:'수요일', pic:'day3', en:'Wednesday'},
+       {w:'목요일', pic:'day4', en:'Thursday'}, {w:'금요일', pic:'day5', en:'Friday'}, {w:'토요일', pic:'day6', en:'Saturday'},
+       {w:'일요일', pic:'day7', en:'Sunday'}],
+     tip:{who:'dami', t:'요일 이름 첫 글자에는 옛사람들이 하늘에서 본 것이 숨어 있단다. 월은 달, 화는 불, 수는 물, 목은 나무, 금은 쇠, 토는 흙, 일은 해. 그래서 그림이 그렇게 생겼지.'}},
+    {type:'pairs', title:'오늘과 내일', who:'moi',
+     t:'날을 말하는 말 두 개를 더 가져왔어. 오늘은 넷째 묶음에서 만났지?',
+     singles:[{w:'오늘', pic:'w_sunny', en:'today'}, {w:'내일', pic:'tomorrow', en:'tomorrow'}, {w:'요일', pic:'day1', en:'day of the week'}]},
+    {type:'build', title:'차례대로 말해요', who:'tori',
+     t:'요일 카드를 차례대로 눌러 봐. 월요일부터 시작해.',
+     qs:[
+       {s:'월요일 화요일 수요일 목요일', tiles:['월요일','화요일','수요일','목요일'], en:'Monday to Thursday', hint:'달, 불, 물, 나무 차례예요.'},
+       {s:'금요일 토요일 일요일', tiles:['금요일','토요일','일요일'], en:'Friday to Sunday', hint:'쇠, 흙, 해 차례예요.'}]},
+    {type:'choose', title:'무슨 요일이에요?', who:'tori',
+     t:'그림을 보고 요일을 골라 봐. 위의 빨간 점이 한 주에서 몇째 날인지 알려 줘.',
+     qs:[
+       {pic:'day3', o:['수요일','화요일','금요일'], a:'수요일'},
+       {pic:'day6', o:['일요일','토요일','월요일'], a:'토요일'},
+       {pic:'day4', o:['목요일','금요일','수요일'], a:'목요일'},
+       {pic:'day7', t:'해가 숨은 날이에요.', o:['월요일','일요일','화요일'], a:'일요일'},
+       {pic:'day2', t:'월요일 다음 날이에요.', o:['화요일','수요일','토요일'], a:'화요일'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 요일을 찾아 봐.',
+     qs:[
+       {say:'월요일', o:['day7','day1','day3'], a:'day1'},
+       {say:'금요일', o:['day5','day6','day4'], a:'day5'},
+       {say:'내일', o:['w_sunny','tomorrow','day2'], a:'tomorrow'},
+       {say:'목요일', o:['day2','day3','day4'], a:'day4'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'요일을 써 봐. 요일은 모두 ‘요일’로 끝나.',
+     items:[{w:'토요일', en:'Saturday'}, {w:'수요일', en:'Wednesday'}, {w:'내일', en:'tomorrow'}]}
+  ],
+  dictWords:[{w:'월요일', en:'Monday'}, {w:'화요일', en:'Tuesday'}, {w:'수요일', en:'Wednesday'}, {w:'목요일', en:'Thursday'},
+             {w:'금요일', en:'Friday'}, {w:'토요일', en:'Saturday'}, {w:'일요일', en:'Sunday'}, {w:'내일', en:'tomorrow'}] },
+
+{ n:14, bundle:5, title:'토요일에 한글학교에 가요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 요일마다 무엇을 하는지 말해 볼 거야. 요일 뒤에도 ‘에’를 붙여. 토요일에, 일요일에.',
+     big:'토요일에 한글학교에 가요'},
+    {type:'pairs', title:'오늘의 말', who:'moi',
+     t:'오늘 문장에 쓸 말이야. 눌러서 들어 봐.',
+     singles:[
+       {w:'뭐 해요?', pic:'what', en:'What do you do?'},
+       {w:'월요일부터 금요일까지', pic:'s_school', en:'from Monday to Friday'},
+       {w:'할머니 집', pic:'t_house', en:"grandma's house"}],
+     tip:{who:'tori', t:'부터는 시작, 까지는 끝이야. 월요일부터 금요일까지는 월요일에 시작해서 금요일에 끝난다는 뜻이야.'}},
+    {type:'choose', title:'토리의 한 주', who:'tori',
+     t:'토리의 한 주야. 그림을 보고 알맞은 말을 골라 봐.',
+     qs:[
+       {pic:'s_school', t:'월요일부터 금요일까지 어디에 가요?', o:['학교에 가요.','한글학교에 가요.'], a:'학교에 가요.', en:'I go to school.'},
+       {pic:'s_hangeul', t:'토요일에 어디에 가요?', o:['토요일에 한글학교에 가요.','토요일이 한글학교에 가요.'], a:'토요일에 한글학교에 가요.', en:'I go to Korean school on Saturday.', why:'요일 뒤에는 ‘에’를 붙여요.'},
+       {pic:'t_house', t:'일요일에 뭐 해요?', o:['할머니 집에 가요.','할머니 집이 가요.'], a:'할머니 집에 가요.', en:"I go to Grandma's house.", why:'가는 곳 뒤에는 ‘에’를 붙여요.'},
+       {pic:'tomorrow', t:'오늘은 금요일이에요. 내일은 무슨 요일이에요?', o:['목요일이에요.','토요일이에요.'], a:'토요일이에요.', en:"Tomorrow is Saturday."}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'일요일에 뭐 해요?', tiles:['일요일에','뭐','해요?'], en:'What do you do on Sunday?'},
+       {s:'토요일에 한글학교에 가요.', tiles:['토요일에','한글학교에','가요.'], extra:['토요일이'], en:'I go to Korean school on Saturday.', hint:'언제(토요일에), 어디(한글학교에), 가요 차례예요.'},
+       {s:'월요일부터 금요일까지 학교에 가요.', tiles:['월요일부터','금요일까지','학교에','가요.'], en:'I go to school from Monday to Friday.', hint:'시작(부터)이 먼저, 끝(까지)이 다음이에요.'},
+       {s:'내일 할머니 집에 가요.', tiles:['내일','할머니','집에','가요.'], extra:['집이'], en:"Tomorrow I'm going to Grandma's house."}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'요일 이름에서도 받침이 뒤로 건너간단다. 요일마다 들어 보거라.',
+     cmp:[
+       {s:'월요일', d:'워료일', n:'ㄹ 받침이 뒤로 건너가요'},
+       {s:'목요일', d:'모교일', n:'ㄱ 받침이 뒤로 건너가요'},
+       {s:'금요일', d:'그묘일', n:'ㅁ 받침이 뒤로 건너가요'},
+       {s:'일요일', d:'이료일', n:'ㄹ 받침이 뒤로 건너가요'}],
+     note:'요일 앞 글자는 달, 불, 물, 나무 같은 뜻을 가진 글자라 모양을 지킨단다. [워료일]로 들려도 달을 뜻하는 ‘월’을 써야 하지.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'목요일', en:'Thursday', hint:{who:'dami', t:'소리는 [모교일]이지만 나무를 뜻하는 ‘목’에 받침 ㄱ이 있단다.'}},
+       {w:'일요일', en:'Sunday', hint:{who:'dami', t:'소리는 [이료일]이지만 해를 뜻하는 ‘일’에 받침 ㄹ이 있단다.'}},
+       {w:'뭐', en:'what'}]}
+  ],
+  dictWords:[{w:'뭐', en:'what'}, {w:'목요일', en:'Thursday'}, {w:'일요일', en:'Sunday'}] },
+
+{ n:15, bundle:5, title:'토리의 하루',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'셋째 달 마지막 밤이야. 오늘은 내가 내 하루를 처음부터 끝까지 이야기해 줄게. 셋째 달에 배운 말이 다 나와. 먼저 귀로만 들어 봐.',
+     big:'저는 토리예요'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 토리의 하루를 귀로만 먼저 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'tori', t:'저는 토리예요. 오늘은 토요일이에요.', en:"I'm Tori. Today is Saturday."},
+       {who:'tori', t:'저는 일곱 시에 일어나요. 그리고 씻어요.', en:"I get up at seven. Then I wash up."},
+       {who:'tori', t:'아침에 빵을 먹어요. 우유도 마셔요.', en:'In the morning I eat bread. I drink milk too.'},
+       {who:'tori', t:'오늘은 비가 와요. 우산을 써요.', en:"It's raining today. I use an umbrella."},
+       {who:'tori', t:'토요일에 한글학교에 가요. 선생님은 담이 할아버지예요.', en:'On Saturday I go to Korean school. The teacher is Grandpa Dami.'},
+       {who:'moi', t:'토리야, 점심에 떡볶이 먹자!', en:"Tori, let's eat tteokbokki for lunch!"},
+       {who:'tori', t:'좋아! 저녁에 숙제를 해요. 그리고 아홉 시에 자요.', en:"Okay! In the evening I do homework. And I go to sleep at nine."},
+       {who:'tori', t:'할아버지, 안녕히 주무세요!', en:'Good night, Grandpa!'}],
+     note:{who:'dami', t:'하루 이야기에 셋째 달이 다 들어 있구나. 일어나고 씻는 하루 일과, 한글학교, 빵과 우유, 비 오는 날씨, 토요일까지. 이렇게 차례대로 이으면 하루가 한 편의 이야기가 된단다.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'오늘은 무슨 요일이에요?', o:['금요일','토요일','일요일'], a:'토요일', why:'토리는 ‘오늘은 토요일이에요’라고 했어요.'},
+       {t:'토리는 몇 시에 일어나요?', o:['여섯 시','일곱 시','아홉 시'], a:'일곱 시', why:'토리는 ‘일곱 시에 일어나요’라고 했어요.'},
+       {t:'아침에 무엇을 먹어요?', o:['밥','빵','떡볶이'], a:'빵', why:'토리는 ‘아침에 빵을 먹어요’라고 했어요.'},
+       {t:'오늘 날씨는 어때요?', o:['눈이 와요','맑아요','비가 와요'], a:'비가 와요', why:'토리는 ‘오늘은 비가 와요’라고 했어요.'},
+       {t:'토리는 몇 시에 자요?', o:['여덟 시','아홉 시','열 시'], a:'아홉 시', why:'토리는 ‘아홉 시에 자요’라고 했어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {line:{who:'moi', t:'토리야, 토요일에 뭐 해?'}, en:'Tori, what do you do on Saturday?', o:['한글학교에 가.','한글학교에 가요.'], a:'한글학교에 가.', why:'모이는 친구라서 편한 말로 대답해요.'},
+       {line:{who:'dami', t:'토리야, 오늘이 무슨 요일이냐?'}, en:'Tori, what day is it today?', o:['토요일이야.','토요일이에요.'], a:'토요일이에요.', why:'할아버지는 어른이라서 ‘이에요’라고 해요.'},
+       {pic:'act_sleep', t:'밤이에요. 할아버지께 인사해요.', en:'It is night. Say good night to Grandpa.', o:['잘 자.','안녕히 주무세요.'], a:'안녕히 주무세요.', why:'자러 가시는 어른께는 ‘안녕히 주무세요’라고 해요.'}]},
+    {type:'task', title:'나의 하루 이야기', who:'moi',
+     t:'셋째 달 마지막 과제야. 토리처럼 네 하루를 가족에게 이야기해 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'처음에', say:'저는 ______ 시에 일어나요.', sub:'그리고 씻어요.'},
+       {when:'가운데', say:'______에 ______을 먹어요.', sub:'아침에 빵을 먹어요, 점심에 밥을 먹어요처럼.'},
+       {when:'오늘 한 일', say:'______에 가요.', sub:'학교에 가요, 한글학교에 가요, 할머니 집에 가요.'},
+       {when:'끝에', say:'저는 ______ 시에 자요.', sub:'그리고 가족에게 안녕히 주무세요.'}],
+     parent:'셋째 달의 마무리 과제입니다. 아이가 하루를 네 문장 정도로 이어서 말하게 해 주세요. 문장이 틀려도 끝까지 들어 주시고, 다 말하면 한 문장만 바르게 고쳐서 다시 말해 주시면 충분합니다. 휴대폰으로 녹음하거나 영상을 찍어 할머니 할아버지께 보내 드리면 아이에게 큰 동기가 됩니다. 이 과제로 셋째 달이 끝납니다. 하루 일과, 학교, 음식, 날씨, 요일까지 모두 해냈으니 많이 칭찬해 주세요.'}
+  ],
   dictWords:[] }
 ];
 
 /* ---- 빠른 확인 ----
-   셋째 달은 묶음이 모두 열린 뒤에 빠른 확인을 만듭니다. 비어 있으면 밤 고르기에 확인 버튼이 나오지 않습니다. */
-const M3_CHECK = [];
+   둘째 달과 같은 방식입니다. 묶음마다 세 문제, 두 문제 이상 맞히면 그 묶음을 건너뜁니다. */
+const M3_CHECK = [
+  {k:1, qs:[
+    {mode:'pic', say:'씻어요', t:'듣고 그림을 골라요.', o:['act_eat','act_wash','act_sleep'], a:'act_wash'},
+    {pic:'clock3', t:'몇 시예요?', o:['셋 시예요.','세 시예요.'], a:'세 시예요.'},
+    {pic:'p_grandpa', t:'밤이에요. 할아버지가 주무시러 가세요.', o:['잘 자','안녕히 주무세요'], a:'안녕히 주무세요'}]},
+  {k:2, qs:[
+    {mode:'pic', say:'교실', t:'듣고 그림을 골라요.', o:['s_school','s_hangeul','s_classroom'], a:'s_classroom'},
+    {pic:'s_read', t:'그림에 맞는 말을 골라요.', o:['책를 읽어요.','책을 읽어요.'], a:'책을 읽어요.'},
+    {pic:'s_classroom', t:'수업이 끝났어요. 선생님은 교실에 계세요.', o:['안녕히 가세요.','안녕히 계세요.'], a:'안녕히 계세요.'}]},
+  {k:3, qs:[
+    {mode:'pic', say:'김밥', t:'듣고 그림을 골라요.', o:['f_kimchi','f_gimbap','f_rice'], a:'f_gimbap'},
+    {pic:'f_hungry', t:'그림에 맞는 말을 골라요.', o:['떡볶이를 먹고 싶어요.','떡볶이를 먹어요 싶어요.'], a:'떡볶이를 먹고 싶어요.'},
+    {pic:'f_rice', t:'밥을 먹기 전이에요. 뭐라고 해요?', o:['잘 먹겠습니다','잘 먹었습니다'], a:'잘 먹겠습니다'}]},
+  {k:4, qs:[
+    {mode:'pic', say:'비가 와요', t:'듣고 그림을 골라요.', o:['w_snow','w_sunny','w_rain'], a:'w_rain'},
+    {pic:'w_winter', t:'어느 계절이에요?', o:['봄','겨울','여름'], a:'겨울'},
+    {pic:'w_umbrella', t:'그림에 맞는 말을 골라요.', o:['우산을 써요.','우산를 써요.'], a:'우산을 써요.'}]},
+  {k:5, qs:[
+    {mode:'pic', say:'수요일', t:'듣고 그림을 골라요.', o:['day5','day3','day7'], a:'day3'},
+    {t:'월요일 다음은 무슨 요일이에요?', o:['화요일','목요일','일요일'], a:'화요일'},
+    {pic:'s_hangeul', t:'그림에 맞는 말을 골라요.', o:['토요일에 한글학교에 가요.','토요일이 한글학교에 가요.'], a:'토요일에 한글학교에 가요.'}]}
+];
 
 /* ---- 받아쓰기 자판: 둘째 달에 읽어요의 ㄺ 을 더합니다 ---- */
 const M3_POOL = Object.assign({}, M2_POOL, {jong: [...M2_POOL.jong, 'ㄺ']});
