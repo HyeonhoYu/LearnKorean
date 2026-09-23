@@ -629,6 +629,30 @@ SCREENS.clock = S => {
   if(S.note) card.append(guide('dami', S.note, true));
 };
 
+/* ---- 좋아해요, 싫어해요: 아이가 음식마다 골라 자기 문장을 듣습니다. 고른 것은 저장하지 않습니다. ---- */
+const likeLine = (w, v) => '저는 ' + josa(w, '을') + ' ' + v + '.';
+SCREENS.likes = S => {
+  head2(S);
+  hideNext();
+  const need = Math.min(S.need || 3, S.items.length), picked = new Set();
+  const grid = h('div', {class:'likes'});
+  S.items.forEach(item => {
+    const out = h('div', {class:'likeout', 'aria-live':'polite'});
+    const btns = ['좋아해요', '싫어해요'].map(v => h('button', {class:'chip', onclick: () => {
+      btns.forEach(b => b.classList.toggle('on', b.textContent === v));
+      out.innerHTML = ''; out.append(sayBtn(likeLine(item.w, v)));
+      talk(likeLine(item.w, v));
+      picked.add(item.w);
+      if(picked.size >= need) showNext();
+    }}, v));
+    grid.append(h('div', {class:'likecard'},
+      h('div', {class:'pic', html: MOON.pic[item.pic] || ''}),
+      h('b', {}, item.w), h('div', {class:'likebtns'}, ...btns), out));
+  });
+  card.append(grid);
+  if(S.tip) card.append(guide(S.tip.who, S.tip.t, true));
+};
+
 /* ---- 소리와 글자 (담이) ---- */
 SCREENS.sound = S => {
   head2(S);
@@ -847,6 +871,7 @@ function listClips(){
     if(S.type === 'rule') [...S.yes, ...S.no].forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙'));
     if(S.type === 'josa') S.names.forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙 고르기'));
     if(S.type === 'shrink') S.rows.forEach(([full, short]) => { add(full, n, '세는 말'); S.units.forEach(u => add(short + ' ' + u, n, '줄어드는 숫자')); });
+    if(S.type === 'likes') S.items.forEach(x => ['좋아해요', '싫어해요'].forEach(v => add(likeLine(x.w, v), n, '좋아해요와 싫어해요')));
     if(S.type === 'clock') for(let i = 1; i <= 12; i++) add(hourWord(i) + '예요', n, '시계');
     if(S.type === 'sibling') ['형','누나','오빠','언니','동생'].forEach(w => add(w, n, '형제 부르는 말'));
     if(S.type === 'build') S.qs.forEach(q => add(q.s, n, '문장 만들기', '문장 끝까지 자연스럽게'));

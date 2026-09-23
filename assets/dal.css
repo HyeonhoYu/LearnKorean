@@ -400,3 +400,14 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
 .clocklabel .saybtn{font-size:30px}
 .clockrow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:8px}
 .clockrow .chip.on{background:var(--hwang)}
+
+/* ---- 셋째 달: 좋아해요와 싫어해요 ---- */
+.likes{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.likecard{border:3px solid var(--meok);border-radius:14px;background:var(--dalbit);padding:10px;text-align:center}
+.likecard .pic svg{width:100%;max-width:130px;height:auto}
+.likecard b{display:block;font-size:22px;font-weight:500;margin:2px 0 8px}
+.likebtns{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.likebtns .chip{font-size:16px;white-space:nowrap;padding:6px 10px;min-width:0}
+.likebtns .chip.on{background:var(--hwang)}
+.likeout{margin-top:8px}
+.likeout .saybtn{font-size:17px}

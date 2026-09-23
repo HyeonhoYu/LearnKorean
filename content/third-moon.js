@@ -171,6 +171,76 @@ function m3School(kind){
 ['school', 'hangeul', 'classroom', 'pencil', 'notebook', 'read', 'write', 'study', 'play', 'repeat', 'good', 'quiet', 'song', 'homework', 'drawing']
   .forEach(k => { M3_ONLY['s_' + k] = m3School(k); });
 
+/* ---- 셋째 묶음 그림: 음식 ---- */
+function m3Food(kind){
+  const S = '#221F1C';
+  const bowl = (fill, top) => `<path d="M44 58 L156 58 Q152 106 100 108 Q48 106 44 58 Z" fill="${fill}" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+    <ellipse cx="100" cy="58" rx="56" ry="10" fill="${top}" stroke="${S}" stroke-width="2.6"/><rect x="82" y="106" width="36" height="8" rx="3" fill="${fill}" stroke="${S}" stroke-width="2.4"/>`;
+  const plate = `<ellipse cx="100" cy="92" rx="76" ry="22" fill="#FBF7EC" stroke="${S}" stroke-width="3"/><ellipse cx="100" cy="90" rx="56" ry="14" fill="none" stroke="#C9C0AE" stroke-width="2"/>`;
+  const g = {
+    rice: `${bowl('#FBF7EC', '#FBF7EC')}<path d="M52 56 Q100 22 148 56" fill="#FBF7EC" stroke="${S}" stroke-width="2.6"/>
+      <g fill="#E7DCC4">${[70, 86, 100, 114, 128, 94, 108].map((x, i) => `<ellipse cx="${x}" cy="${44 + (i % 3) * 4}" rx="3" ry="1.8"/>`).join('')}</g>`,
+    soup: `${bowl('#C1403A', '#E0B06A')}<path d="M70 56 q6 -3 12 0 M100 60 q6 -3 12 0 M124 55 q6 -3 12 0" stroke="#6E8F58" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M84 40 Q80 30 86 22 M104 40 Q100 30 106 22 M122 40 Q118 30 124 22" stroke="#8C7F63" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+    kimchi: `${plate}<path d="M56 88 Q64 60 92 66 Q108 50 126 64 Q150 62 146 88 Q100 104 56 88 Z" fill="#C1403A" stroke="${S}" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M70 80 Q86 70 100 78 M104 72 Q120 66 132 78" stroke="#F0D9A8" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <g fill="#8A1F1A"><circle cx="82" cy="74" r="1.8"/><circle cx="116" cy="82" r="1.8"/><circle cx="96" cy="86" r="1.6"/></g>`,
+    tteok: `${plate}${[[70, 76, -20], [92, 70, 10], [112, 80, -5], [130, 72, 25], [84, 88, 5], [106, 90, -15]].map(([x, y, r]) =>
+        `<rect x="${x - 14}" y="${y - 5}" width="28" height="10" rx="5" fill="#E0703C" stroke="${S}" stroke-width="2.2" transform="rotate(${r} ${x} ${y})"/>`).join('')}
+      <path d="M60 90 Q100 100 144 88" stroke="#C1403A" stroke-width="4" fill="none" opacity=".6"/>`,
+    gimbap: `${plate}${[64, 92, 120].map(x => `<circle cx="${x + 8}" cy="80" r="14" fill="#221F1C" stroke="${S}" stroke-width="2"/><circle cx="${x + 8}" cy="80" r="10.5" fill="#FBF7EC"/>
+        <circle cx="${x + 5}" cy="77" r="3" fill="#E3A93C"/><circle cx="${x + 11}" cy="78" r="2.6" fill="#6E8F58"/><circle cx="${x + 8}" cy="84" r="2.6" fill="#E0703C"/>`).join('')}`,
+    bread: `<path d="M50 104 L50 60 Q50 30 100 30 Q150 30 150 60 L150 104 Z" fill="#D9A45E" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M60 104 L60 64 Q60 42 100 42 Q140 42 140 64 L140 104 Z" fill="#F5E0B0" stroke="${S}" stroke-width="2"/>
+      <rect x="0" y="104" width="200" height="4" fill="none"/>`,
+    milk: `<path d="M70 44 L100 22 L130 44 Z" fill="#FBF7EC" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="70" y="44" width="60" height="74" fill="#FBF7EC" stroke="${S}" stroke-width="3"/>
+      <rect x="70" y="64" width="60" height="30" fill="#2D6E8E" stroke="${S}" stroke-width="2.4"/>
+      <path d="M100 68 Q90 80 92 86 Q94 92 100 92 Q106 92 108 86 Q110 80 100 68 Z" fill="#FBF7EC" stroke="${S}" stroke-width="1.8"/>`,
+    water: `<path d="M72 26 L128 26 L120 116 L80 116 Z" fill="#CFE0EA" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M75 52 L125 52 L120 116 L80 116 Z" fill="#9DC3DC"/>
+      <path d="M72 26 L128 26 L120 116 L80 116 Z" fill="none" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M86 64 L88 100" stroke="#FBF7EC" stroke-width="4" stroke-linecap="round" opacity=".7"/>`,
+    hungry: `${m2Person('kid', 66, 'stand', 1)}
+      <path d="M100 58 Q96 30 124 26 Q138 12 158 22 Q182 20 182 42 Q192 60 170 68 Q150 80 130 70 Q106 76 100 58 Z" fill="#FBF7EC" stroke="${S}" stroke-width="2.4"/>
+      <circle cx="94" cy="72" r="3" fill="#FBF7EC" stroke="${S}" stroke-width="1.6"/><circle cx="88" cy="82" r="2" fill="#FBF7EC" stroke="${S}" stroke-width="1.4"/>
+      <g transform="translate(142 46) scale(.42) translate(-100 -80)">${plate}${[[70, 76, -20], [92, 70, 10], [112, 80, -5], [130, 72, 25]].map(([x, y, r]) =>
+        `<rect x="${x - 14}" y="${y - 5}" width="28" height="10" rx="5" fill="#E0703C" stroke="${S}" stroke-width="2.2" transform="rotate(${r} ${x} ${y})"/>`).join('')}</g>
+      <path d="M58 88 q4 4 8 0" stroke="${S}" stroke-width="1.6" fill="none"/>`,
+    drink: `${m2Person('kid', 80, 'give', 1)}
+      <g transform="rotate(-24 98 66)"><path d="M90 50 L110 50 L107 84 L93 84 Z" fill="#FBF7EC" stroke="${S}" stroke-width="2.4" stroke-linejoin="round"/>
+      <path d="M91 60 L109 60 L107 84 L93 84 Z" fill="#9DC3DC"/></g>`
+  }[kind];
+  const label = {rice:'밥', soup:'국', kimchi:'김치', tteok:'떡볶이', gimbap:'김밥', bread:'빵', milk:'우유', water:'물', hungry:'배고파요', drink:'마셔요'}[kind];
+  const ground = ['hungry', 'drink'].includes(kind) ? m2Ground : '';
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${ground}${g}</svg>`;
+}
+/* 얼굴: 맛있어요, 매워요, 좋아해요, 싫어해요 */
+function m3Face(mood){
+  const S = '#221F1C';
+  const face = {
+    yum: {cheek:'#D98B7E', eyes:`<path d="M80 60 q6 -6 12 0 M108 60 q6 -6 12 0" stroke="${S}" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+          mouth:`<path d="M86 84 Q100 98 114 84 Z" fill="#C1403A" stroke="${S}" stroke-width="2.6"/><path d="M110 88 q6 6 2 10" stroke="#D98B7E" stroke-width="4" fill="none" stroke-linecap="round"/>`},
+    spicy: {cheek:'#E0703C', skin:'#F2B39A', eyes:`<path d="M78 56 L92 62 M122 56 L108 62" stroke="${S}" stroke-width="3" stroke-linecap="round"/><circle cx="86" cy="64" r="3.4" fill="${S}"/><circle cx="114" cy="64" r="3.4" fill="${S}"/>`,
+          mouth:`<ellipse cx="100" cy="88" rx="12" ry="9" fill="#8A1F1A" stroke="${S}" stroke-width="2.6"/>
+            <path d="M92 104 Q86 116 94 122 Q98 114 100 118 Q102 112 106 122 Q114 116 108 104" fill="#E0703C" stroke="${S}" stroke-width="2"/>
+            <path d="M150 40 q-4 8 0 10 q4 -2 0 -10 M156 58 q-3 6 0 8 q3 -2 0 -8" fill="#9DB4C6" stroke="${S}" stroke-width="1.4"/>`},
+    like: {cheek:'#D98B7E', eyes:`<circle cx="86" cy="62" r="4.4" fill="${S}"/><circle cx="114" cy="62" r="4.4" fill="${S}"/>`,
+          mouth:`<path d="M86 84 Q100 96 114 84" stroke="${S}" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M160 36 C160 26 174 26 174 36 C174 26 188 26 188 36 C188 48 174 54 174 60 C174 54 160 48 160 36 Z" fill="#C1403A" stroke="${S}" stroke-width="2"/>`},
+    dislike: {cheek:'#C9C0AE', eyes:`<path d="M80 62 L92 62 M108 62 L120 62" stroke="${S}" stroke-width="3" stroke-linecap="round"/>`,
+          mouth:`<path d="M86 92 Q100 82 114 92" stroke="${S}" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M162 30 L186 54 M186 30 L162 54" stroke="#C1403A" stroke-width="6" stroke-linecap="round"/>`}
+  }[mood];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${{yum:'맛있어요', spicy:'매워요', like:'좋아해요', dislike:'싫어해요'}[mood]}">
+    <circle cx="100" cy="70" r="42" fill="${face.skin || '#F0D9BE'}" stroke="${S}" stroke-width="3"/>
+    <path d="M58 60 C54 16 146 16 142 60 C124 40 76 40 58 60 Z" fill="#221F1C" stroke="${S}" stroke-width="2.6"/>
+    <circle cx="76" cy="80" r="7" fill="${face.cheek}" opacity=".55"/><circle cx="124" cy="80" r="7" fill="${face.cheek}" opacity=".55"/>
+    ${face.eyes}${face.mouth}</svg>`;
+}
+['rice', 'soup', 'kimchi', 'tteok', 'gimbap', 'bread', 'milk', 'water', 'hungry', 'drink'].forEach(k => { M3_ONLY['f_' + k] = m3Food(k); });
+['yum', 'spicy', 'like', 'dislike'].forEach(k => { M3_ONLY['m_' + k] = m3Face(k); });
+
 /* 셋째 달 화면에서는 둘째 달 그림도 함께 씁니다. */
 const M3_PIC = Object.assign({}, M2_PIC, M3_ONLY);
 
@@ -178,7 +248,7 @@ const M3_PIC = Object.assign({}, M2_PIC, M3_ONLY);
 const M3_BUNDLES = [
   {k:1, title:'아침에 일어나요', topic:'하루 일과와 시계', nights:[1, 2, 3], after:'그동안 가족에게 안녕히 주무세요, 하고 밤 인사를 해 봐.'},
   {k:2, title:'학교에 가요', topic:'학교와 주말 한글학교', nights:[4, 5, 6], after:'그동안 한글학교에서, 아니면 집에서 가족과 선생님 놀이를 하며 세 마디 인사를 해 봐.'},
-  {k:3, title:'맛있어요', topic:'음식, 좋아해요와 먹고 싶어요', nights:[7, 8, 9]},
+  {k:3, title:'맛있어요', topic:'음식, 좋아해요와 먹고 싶어요', nights:[7, 8, 9], after:'그동안 밥 먹기 전에는 잘 먹겠습니다, 먹고 나서는 잘 먹었습니다를 말해 봐.'},
   {k:4, title:'오늘 날씨', topic:'날씨와 계절', nights:[10, 11, 12]},
   {k:5, title:'토리의 하루', topic:'요일과 하루 이야기', nights:[13, 14, 15]}
 ];
@@ -456,6 +526,144 @@ const M3_NIGHTS = [
        {when:'선생님이 이름을 부르시면', say:'네!', sub:'크게 대답해요.'},
        {when:'집에 갈 때', say:'감사합니다. 안녕히 계세요.', sub:'선생님은 교실에 남아 계시니까 계세요.'}],
      parent:'한글학교에 다니는 아이라면 이번 주 수업에서 세 마디를 직접 해 보게 해 주세요. 선생님께 미리 살짝 말씀드려 두시면 아이를 더 칭찬해 주실 수 있습니다. 한글학교에 다니지 않는다면 식탁을 교실로 삼아 부모님이 선생님이 되어 주세요. 이름을 부르고, "따라 해 보세요" 하며 오늘 배운 문장을 읽게 하고, "잘했어요"로 마무리하시면 됩니다. 미국 학교 이야기도 한국어로 한 문장씩 물어봐 주세요. 예를 들어 "학교에서 뭐 해요?"에 "책을 읽어요"처럼 답하게 하시면 됩니다.'}
+  ],
+  dictWords:[] },
+
+/* ---- 셋째 묶음: 맛있어요 ---------------------------------------
+   한국 음식과 흔한 음식, 맛(맛있어요, 매워요), 식탁 인사(잘 먹겠습니다, 잘 먹었습니다).
+   둘째 밤에 좋아해요, 싫어해요, 안(부정), 먹고 싶어요(바람), 주세요를 문장으로 씁니다.
+   을/를은 둘째 묶음에서 배운 받침 규칙을 음식 이름으로 다시 씁니다. */
+{ n:7, bundle:3, title:'밥, 김치, 떡볶이',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'배고파! 오늘은 먹는 말을 모아 왔어. 집에서 먹는 음식 이름이 많이 나올 거야.',
+     big:'맛있어요'},
+    {type:'pairs', title:'밥상 위의 음식', who:'moi',
+     t:'그림을 누르면 소리가 나. 너희 집 밥상에도 있는지 봐.',
+     singles:[
+       {w:'밥', pic:'f_rice', en:'rice, a meal'}, {w:'국', pic:'f_soup', en:'soup'}, {w:'김치', pic:'f_kimchi', en:'kimchi'},
+       {w:'떡볶이', pic:'f_tteok', en:'spicy rice cakes'}, {w:'김밥', pic:'f_gimbap', en:'rice rolls'}, {w:'빵', pic:'f_bread', en:'bread'},
+       {w:'우유', pic:'f_milk', en:'milk'}, {w:'물', pic:'f_water', en:'water'}],
+     tip:{who:'dami', t:'밥은 쌀로 지은 밥이기도 하고, 끼니를 뜻하기도 한단다. 밥 먹자, 하면 식사하자는 말이지.'}},
+    {type:'pairs', title:'먹을 때 하는 말', who:'moi',
+     t:'맛을 말하는 말과 배고플 때 하는 말이야.',
+     singles:[
+       {w:'맛있어요', pic:'m_yum', en:'it is tasty'}, {w:'매워요', pic:'m_spicy', en:'it is spicy'},
+       {w:'배고파요', pic:'f_hungry', en:"I'm hungry"}, {w:'마셔요', pic:'f_drink', en:'drink'}],
+     tip:{who:'tori', t:'맛있어요의 반대는 맛없어요야. 그런데 할머니가 해 주신 음식에는 맛없어요라고 하지 않는 게 좋아.'}},
+    {type:'pairs', title:'밥상 인사', who:'dami',
+     t:'한국 집에서는 밥 먹기 전과 먹은 뒤에 인사를 한단다. 어른과 함께 먹을 때는 꼭 하거라.',
+     singles:[
+       {w:'잘 먹겠습니다', pic:'f_rice', en:'(before eating) Thank you for the food.'},
+       {w:'잘 먹었습니다', pic:'m_yum', en:'(after eating) Thank you, I enjoyed it.'}]},
+    {type:'choose', title:'이건 뭐예요?', who:'tori',
+     t:'그림을 보고 알맞은 말을 골라 봐.',
+     qs:[
+       {pic:'f_kimchi', o:['김치','김밥','국'], a:'김치'},
+       {pic:'f_tteok', o:['빵','떡볶이','밥'], a:'떡볶이'},
+       {pic:'f_milk', o:['물','우유','국'], a:'우유'},
+       {pic:'m_spicy', o:['맛있어요','매워요','배고파요'], a:'매워요'},
+       {pic:'f_rice', t:'밥을 먹기 전이에요.', en:'You are about to eat.', o:['잘 먹겠습니다','잘 먹었습니다'], a:'잘 먹겠습니다', why:'먹기 전에는 ‘잘 먹겠습니다’, 먹은 뒤에는 ‘잘 먹었습니다’예요.'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 그림을 찾아 봐.',
+     qs:[
+       {say:'김밥', o:['f_gimbap','f_kimchi','f_bread'], a:'f_gimbap'},
+       {say:'물', o:['f_milk','f_water','f_soup'], a:'f_water'},
+       {say:'맛있어요', o:['m_spicy','m_yum','f_hungry'], a:'m_yum'},
+       {say:'국', o:['f_rice','f_soup','f_tteok'], a:'f_soup'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'음식 이름을 써 봐. 뜻을 같이 보면 도움이 돼.',
+     items:[{w:'밥', en:'rice'}, {w:'김치', en:'kimchi'}, {w:'우유', en:'milk'}]}
+  ],
+  dictWords:[{w:'밥', en:'rice, a meal'}, {w:'국', en:'soup'}, {w:'김치', en:'kimchi'}, {w:'김밥', en:'rice rolls'},
+             {w:'빵', en:'bread'}, {w:'우유', en:'milk'}, {w:'물', en:'water'}, {w:'매워요', en:'it is spicy'}] },
+
+{ n:8, bundle:3, title:'김밥을 좋아해요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 좋아하는 음식, 싫어하는 음식, 먹고 싶은 음식을 말해 볼 거야. 무엇을 좋아하는지 말할 때도 ‘을’, ‘를’이 붙어.',
+     big:'김밥을 좋아해요'},
+    {type:'pairs', title:'오늘의 말', who:'moi',
+     t:'오늘 문장에 쓸 말이야. 눌러서 들어 봐.',
+     singles:[
+       {w:'좋아해요', pic:'m_like', en:'like'}, {w:'싫어해요', pic:'m_dislike', en:"don't like"},
+       {w:'먹고 싶어요', pic:'f_hungry', en:'want to eat'}, {w:'주세요', pic:'thanks', en:'please give me'}],
+     tip:{who:'tori', t:'안 먹어요처럼 움직이는 말 앞에 ‘안’을 붙이면 안 한다는 뜻이야. 안 매워요, 안 마셔요도 돼.'}},
+    {type:'likes', title:'나는 뭘 좋아할까?', who:'tori',
+     t:'음식마다 좋아해요와 싫어해요 가운데 하나를 눌러 봐. 네 문장이 만들어져. 세 개 이상 하면 다음으로 갈 수 있어.',
+     items:[{w:'김치', pic:'f_kimchi'}, {w:'떡볶이', pic:'f_tteok'}, {w:'김밥', pic:'f_gimbap'}, {w:'우유', pic:'f_milk'}, {w:'빵', pic:'f_bread'}, {w:'국', pic:'f_soup'}],
+     tip:{who:'dami', t:'김치에는 받침이 없어서 ‘김치를’, 국에는 받침이 있어서 ‘국을’이지. 받침 삼 형제가 여기서도 일하는구나.'}},
+    {type:'josa', j:'을', q:'뒤에 무엇을 붙일까요?', title:'을일까요, 를일까요?', who:'tori',
+     t:'음식 이름 끝 글자에 받침이 있는지 보고 골라 봐.',
+     names:['밥','김치','우유','물','빵','떡볶이','김밥','국']},
+    {type:'choose', title:'그림을 보고 말해요', who:'tori',
+     t:'그림에 맞는 말을 골라 봐.',
+     qs:[
+       {pic:'f_hungry', o:['떡볶이를 먹고 싶어요.','떡볶이를 먹어요 싶어요.'], a:'떡볶이를 먹고 싶어요.', en:'I want to eat tteokbokki.', why:'먹고 싶을 때는 ‘먹고 싶어요’라고 해요.'},
+       {pic:'m_dislike', t:'우유를 싫어해요. 어떻게 말해요?', o:['우유를 안 마셔요.','우유를 마셔요 안.'], a:'우유를 안 마셔요.', en:"I don't drink milk.", why:'‘안’은 움직이는 말 바로 앞에 와요.'},
+       {pic:'m_like', o:['김밥을 좋아해요.','김밥를 좋아해요.'], a:'김밥을 좋아해요.', en:'I like gimbap.', why:'‘밥’에 받침이 있어서 ‘을’이에요.'},
+       {pic:'f_water', t:'물이 마시고 싶어요. 할머니께 말해요.', o:['물 주세요.','물 줘.'], a:'물 주세요.', en:'Water, please.', why:'어른께는 ‘주세요’라고 해요.'}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'저는 떡볶이를 좋아해요.', tiles:['저는','떡볶이를','좋아해요.'], extra:['떡볶이을'], en:'I like tteokbokki.', hint:'‘이’에는 받침이 없어요.'},
+       {s:'우유를 마셔요.', tiles:['우유를','마셔요.'], extra:['우유을'], en:'I drink milk.'},
+       {s:'김치를 안 먹어요.', tiles:['김치를','안','먹어요.'], en:"I don't eat kimchi.", hint:'‘안’은 움직이는 말 바로 앞에 와요.'},
+       {s:'김밥을 먹고 싶어요.', tiles:['김밥을','먹고','싶어요.'], extra:['김밥를'], en:'I want to eat gimbap.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'맛있는 말에도 소리 비밀이 숨어 있단다. 들어 보거라.',
+     cmp:[
+       {s:'맛있어요', d:'마시써요', n:'ㅅ 받침과 ㅆ 받침이 차례로 뒤로 건너가요'},
+       {s:'좋아해요', d:'조아해요', n:'ㅎ 받침은 소리가 나지 않아요'},
+       {s:'먹고 싶어요', d:'먹꼬 시퍼요', n:'ㄱ 뒤의 ㄱ은 ㄲ처럼, ㅍ 받침은 뒤로 건너가요'},
+       {s:'떡볶이', d:'떡뽀끼', n:'ㄱ 뒤의 ㅂ은 ㅃ처럼, ㄲ 받침은 뒤로 건너가요'}],
+     note:'좋아해요의 ㅎ은 조용한 받침이란다. 소리는 안 나도 글자에는 꼭 써야 하지. 좋다, 좋은, 좋아요, 모두 ㅎ이 숨어 있단다.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'좋아해요', en:'like', hint:{who:'dami', t:'소리는 [조아해요]지만 ‘좋’에는 조용한 받침 ㅎ이 있단다.'}},
+       {w:'맛있어요', en:'it is tasty', hint:{who:'dami', t:'소리는 [마시써요]지만 ‘맛’과 ‘있’, 받침이 두 번 있단다. 맛, 있, 어, 요 차례로 써 보거라.'}},
+       {w:'빵', en:'bread'}]}
+  ],
+  dictWords:[{w:'좋아해요', en:'like'}, {w:'맛있어요', en:'it is tasty'}, {w:'주세요', en:'please give me'}, {w:'마셔요', en:'drink'}] },
+
+{ n:9, bundle:3, title:'담이의 떡볶이',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'담이 할아버지가 점심을 만드셨대! 먼저 글자 없이 귀로만 들어 보고, 그다음에 글자를 같이 보자.',
+     big:'잘 먹겠습니다!'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 누가 무슨 말을 하는지 귀로만 먼저 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'dami', t:'얘들아, 점심 먹자. 떡볶이란다.', en:"Kids, let's have lunch. It's tteokbokki."},
+       {who:'tori', t:'와! 잘 먹겠습니다!', en:'Wow! Thank you for the food!'},
+       {who:'moi', t:'음, 맛있어요!', en:"Mmm, it's delicious!"},
+       {who:'tori', t:'앗, 매워요! 할아버지, 물 주세요.', en:"Ah, it's spicy! Grandpa, water please."},
+       {who:'dami', t:'허허, 토리는 매운 떡볶이를 안 먹는구나. 김밥도 있단다.', en:"Ho ho, Tori doesn't eat spicy tteokbokki. There's gimbap too."},
+       {who:'tori', t:'저는 김밥을 좋아해요!', en:'I like gimbap!'},
+       {who:'moi', t:'나는 떡볶이를 더 먹고 싶어.', en:'I want to eat more tteokbokki.'},
+       {who:'tori', t:'잘 먹었습니다!', en:'Thank you, that was delicious!'}],
+     note:{who:'dami', t:'토리가 먹기 전에는 ‘잘 먹겠습니다’, 다 먹고는 ‘잘 먹었습니다’라고 했지? 그리고 물이 필요할 때는 ‘물 주세요’. 주세요는 무엇이든 부탁할 때 쓰는 요긴한 말이란다.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'할아버지가 만든 점심은 무엇이에요?', o:['김치','떡볶이','빵'], a:'떡볶이', why:'할아버지는 ‘떡볶이란다’라고 하셨어요.'},
+       {t:'토리에게 떡볶이는 어때요?', o:['매워요','맛없어요','달아요'], a:'매워요', why:'토리는 ‘앗, 매워요!’라고 했어요.'},
+       {t:'토리는 무엇을 좋아해요?', o:['떡볶이','김밥','우유'], a:'김밥', why:'토리는 ‘저는 김밥을 좋아해요’라고 했어요.'},
+       {t:'모이는 무엇을 더 먹고 싶어요?', o:['김밥','떡볶이','물'], a:'떡볶이', why:'모이는 ‘떡볶이를 더 먹고 싶어’라고 했어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {line:{who:'dami', t:'토리야, 무엇을 먹고 싶으냐?'}, en:'Tori, what do you want to eat?', o:['김밥을 먹고 싶어.','김밥을 먹고 싶어요.'], a:'김밥을 먹고 싶어요.', why:'할아버지는 어른이라서 ‘싶어요’라고 해요.'},
+       {line:{who:'moi', t:'토리야, 떡볶이 좋아해?'}, en:'Tori, do you like tteokbokki?', o:['아니, 매워.','아니요, 매워요.'], a:'아니, 매워.', why:'모이는 친구라서 편한 말로 대답해요.'},
+       {pic:'m_yum', t:'할머니가 해 주신 밥을 다 먹었어요.', en:"You finished the meal Grandma made.", o:['잘 먹겠습니다.','잘 먹었습니다.'], a:'잘 먹었습니다.', why:'다 먹은 뒤에는 ‘잘 먹었습니다’라고 해요.'}]},
+    {type:'task', title:'밥상 인사', who:'moi',
+     t:'오늘 저녁부터 밥상에서 해 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'밥 먹기 전에', say:'잘 먹겠습니다.', sub:'어른이 먼저 수저를 드신 뒤에 먹어요.'},
+       {when:'다 먹은 뒤에', say:'잘 먹었습니다.', sub:'음식을 해 주신 분께 말해요.'},
+       {when:'좋아하는 음식을 말해요', say:'저는 ______을 좋아해요.', sub:'받침이 없으면 를: 저는 김치를 좋아해요.'}],
+     parent:'"잘 먹겠습니다"와 "잘 먹었습니다"는 한국 가정에서 매일 쓰는 인사라, 한동안 식사 때마다 해 주시면 금방 자리 잡습니다. 한국 음식을 드시는 날에는 음식 이름을 한국어로 불러 주세요. 김치, 국, 밥처럼 짧은 이름부터 시작하면 좋습니다. 아이가 물이나 반찬이 필요할 때 영어 대신 "물 주세요"라고 말하면 바로 건네주시면 됩니다. 한국 음식을 자주 드시지 않는 가정이라면 빵, 우유, 사과처럼 이미 배운 말로 해도 충분합니다.'}
   ],
   dictWords:[] }
 ];
