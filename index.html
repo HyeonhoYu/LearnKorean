@@ -302,7 +302,7 @@ footer p{margin:4px 0}
   </div>
 </footer>
 
-<script src="content/second-moon.js?v=20260925"></script>
+<script src="content/second-moon.js?v=20260926"></script>
 <script>
 /* ---- 진도 읽기: 한글 첫 달과 같은 키를 씁니다 ---- */
 const STORE_KEY = 'daltokki:v1:first-moon';
@@ -404,7 +404,9 @@ if(m2Recent && m2next){
 } else if(m2Recent && !m2next){
   cta.textContent = '받아쓰기실';
   cta.href = 'dictation/';
-  note.textContent = '둘째 달에서 지금 열린 밤을 다 마쳤어요. 다음 밤들은 곧 열려요. 그동안 받아쓰기실에서 연습해요.';
+  note.textContent = m2done === M2_TOTAL
+    ? '둘째 달을 다 채웠어요. 셋째 달은 곧 열려요. 그동안 받아쓰기실에서 연습해요.'
+    : '둘째 달에서 지금 열린 밤을 다 마쳤어요. 다음 밤들은 곧 열려요. 그동안 받아쓰기실에서 연습해요.';
 } else if(!started && !m2done){
   cta.textContent = '시작하기';
   cta.href = 'first-moon/';
@@ -423,7 +425,9 @@ if(m2Recent && m2next){
 } else {
   cta.textContent = '받아쓰기실';
   cta.href = 'dictation/';
-  note.textContent = '둘째 달에서 지금 열린 밤을 다 마쳤어요. 다음 밤들은 곧 열려요. 그동안 받아쓰기실에서 연습해요.';
+  note.textContent = m2done === M2_TOTAL
+    ? '둘째 달을 다 채웠어요. 셋째 달은 곧 열려요. 그동안 받아쓰기실에서 연습해요.'
+    : '둘째 달에서 지금 열린 밤을 다 마쳤어요. 다음 밤들은 곧 열려요. 그동안 받아쓰기실에서 연습해요.';
 }
 
 /* ---- 일곱 달 ---- */
@@ -448,7 +452,7 @@ MONTHS.forEach((m, i) => {
     const openCount = COUNT2[M2_OPEN.length - 1];
     status = m2done === M2_TOTAL ? '열다섯 밤을 모두 마쳤어요.'
            : m2done ? '열다섯 밤 가운데 ' + COUNT2[m2done - 1] + ' 밤을 마쳤어요.'
-           : '열다섯 밤. 지금은 ' + openCount + ' 밤이 열려 있어요.';
+           : M2_OPEN.length === M2_TOTAL ? '열다섯 밤이 모두 열려 있어요.' : '열다섯 밤. 지금은 ' + openCount + ' 밤이 열려 있어요.';
     let dots = '<div class="nights" aria-hidden="true">';
     for(let n = 1; n <= M2_TOTAL; n++) dots += `<i class="${m2.stars[n] ? 'on' : ''}"></i>`;
     dots += '</div>';

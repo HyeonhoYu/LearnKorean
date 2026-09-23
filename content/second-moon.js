@@ -144,6 +144,61 @@ function m2BodyPart(part){
   return `<svg viewBox="${spot[3]}" width="150" height="98" role="img" aria-label="몸" style="overflow:hidden">
     ${m2Person('kid', 100, 'stand', 1)}${M2_RING(spot[0], spot[1], spot[2], 1.8)}</svg>`;
 }
+/* ---- 다섯째 묶음: 집 안 물건 ----
+   m2Thing(종류, 색): 색 문제에 같은 물건을 여러 색으로 쓰려고 색을 받습니다. */
+const M2_COLOR = {red:'#C1403A', blue:'#2D6E8E', yellow:'#E3A93C', green:'#6E8F58', black:'#2B2724', white:'#FBF7EC'};
+function m2Thing(kind, color){
+  const S = '#221F1C', c = M2_COLOR[color] || color || '#8A6A4A', wood = '#B08452';
+  const g = {
+    house: `<path d="M40 64 L100 20 L160 64 Z" fill="#C1403A" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="52" y="62" width="96" height="58" fill="#F5E6BD" stroke="${S}" stroke-width="3"/>
+      <rect x="88" y="84" width="24" height="36" fill="${wood}" stroke="${S}" stroke-width="2.6"/>
+      <rect x="60" y="74" width="20" height="18" fill="#9DB4C6" stroke="${S}" stroke-width="2.4"/><rect x="120" y="74" width="20" height="18" fill="#9DB4C6" stroke="${S}" stroke-width="2.4"/>`,
+    room: `<path d="M30 16 L170 16 L170 92 L30 92 Z" fill="#EFE2C2" stroke="${S}" stroke-width="3"/>
+      <path d="M30 92 L10 122 L190 122 L170 92" fill="#D9C39A" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="112" y="30" width="36" height="30" fill="#9DB4C6" stroke="${S}" stroke-width="2.4"/><path d="M130 30 L130 60 M112 45 L148 45" stroke="${S}" stroke-width="2"/>
+      <rect x="40" y="80" width="54" height="20" rx="3" fill="#E3A93C" stroke="${S}" stroke-width="2.4"/><rect x="42" y="72" width="16" height="10" rx="3" fill="#FBF7EC" stroke="${S}" stroke-width="2"/>`,
+    door: `<rect x="70" y="10" width="60" height="112" rx="3" fill="${wood}" stroke="${S}" stroke-width="3"/>
+      <rect x="80" y="22" width="40" height="36" fill="none" stroke="${S}" stroke-width="2"/><rect x="80" y="70" width="40" height="40" fill="none" stroke="${S}" stroke-width="2"/>
+      <circle cx="120" cy="66" r="4" fill="#E3A93C" stroke="${S}" stroke-width="2"/>`,
+    window: `<rect x="50" y="16" width="100" height="92" fill="#9DB4C6" stroke="${S}" stroke-width="3.4"/>
+      <circle cx="80" cy="44" r="10" fill="#F5E6BD"/><path d="M100 16 L100 108 M50 62 L150 62" stroke="${S}" stroke-width="3"/>
+      <rect x="44" y="106" width="112" height="8" fill="${wood}" stroke="${S}" stroke-width="2.4"/>`,
+    bed: `<rect x="30" y="44" width="10" height="72" fill="${wood}" stroke="${S}" stroke-width="2.6"/>
+      <rect x="36" y="70" width="134" height="30" rx="3" fill="#FBF7EC" stroke="${S}" stroke-width="2.6"/>
+      <rect x="44" y="58" width="30" height="14" rx="6" fill="#FBF7EC" stroke="${S}" stroke-width="2.4"/>
+      <path d="M80 66 L168 66 L168 100 L80 100 Z" fill="${c}" stroke="${S}" stroke-width="2.6" stroke-linejoin="round"/>
+      <rect x="36" y="100" width="134" height="8" fill="${wood}" stroke="${S}" stroke-width="2.4"/><path d="M40 108 L40 118 M166 108 L166 118" stroke="${S}" stroke-width="4"/>`,
+    desk: `<rect x="34" y="46" width="132" height="12" rx="2" fill="${c}" stroke="${S}" stroke-width="2.8"/>
+      <rect x="120" y="58" width="40" height="44" fill="${c}" stroke="${S}" stroke-width="2.6"/><path d="M126 80 L154 80" stroke="${S}" stroke-width="2"/>
+      <circle cx="140" cy="70" r="2.4" fill="${S}"/><circle cx="140" cy="92" r="2.4" fill="${S}"/>
+      <path d="M42 58 L42 120 M158 102 L158 120 M122 102 L122 120" stroke="${S}" stroke-width="5" stroke-linecap="round"/>
+      <rect x="54" y="30" width="30" height="16" fill="#9DB4C6" stroke="${S}" stroke-width="2.2"/>`,
+    chair: `<rect x="72" y="14" width="56" height="54" rx="6" fill="${c}" stroke="${S}" stroke-width="2.8"/>
+      <rect x="66" y="66" width="68" height="12" rx="3" fill="${c}" stroke="${S}" stroke-width="2.8"/>
+      <path d="M74 78 L70 120 M126 78 L130 120 M84 78 L86 112 M116 78 L114 112" stroke="${S}" stroke-width="4.6" stroke-linecap="round"/>`,
+    book: `<path d="M60 20 L70 14 L150 14 L150 106 L140 112 L60 112 Z" fill="#FBF7EC" stroke="${S}" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M140 20 L150 14" stroke="${S}" stroke-width="2.6"/>
+      <path d="M60 20 L140 20 L140 112 L60 112 Z" fill="${c}" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="78" y="40" width="48" height="16" fill="#FBF7EC" stroke="${S}" stroke-width="2"/>
+      <path d="M68 20 L68 112" stroke="${S}" stroke-width="2"/>`,
+    cup: `<path d="M64 36 L136 36 L128 114 L72 114 Z" fill="${c}" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M134 52 C164 52 164 92 130 92" stroke="${S}" stroke-width="9" fill="none"/><path d="M134 52 C164 52 164 92 130 92" stroke="${c}" stroke-width="4" fill="none"/>
+      <ellipse cx="100" cy="36" rx="36" ry="6" fill="#EFE2C2" stroke="${S}" stroke-width="2.6"/>
+`,
+    bag: `<path d="M84 34 C84 12 116 12 116 34" stroke="${S}" stroke-width="7" fill="none"/>
+      <rect x="58" y="30" width="84" height="88" rx="18" fill="${c}" stroke="${S}" stroke-width="3"/>
+      <rect x="72" y="70" width="56" height="34" rx="8" fill="${c}" stroke="${S}" stroke-width="2.6"/><path d="M72 82 L128 82" stroke="${S}" stroke-width="2"/>
+      <path d="M64 44 Q100 54 136 44" stroke="${S}" stroke-width="2" fill="none"/>`,
+    blob: `<path d="M60 40 C70 12 128 14 144 34 C166 60 150 104 118 112 C84 122 44 104 46 74 C47 60 54 50 60 40 Z" fill="${c}" stroke="${S}" stroke-width="3"/>
+      <ellipse cx="82" cy="48" rx="10" ry="6" fill="#fff" opacity="${color === 'white' ? 0 : .3}"/>`,
+    palette: `<path d="M100 14 C150 14 178 48 170 78 C164 100 140 94 132 104 C122 120 100 122 80 116 C44 106 26 76 36 50 C46 26 70 14 100 14 Z" fill="#E7D2A8" stroke="${S}" stroke-width="3"/>
+      <circle cx="70" cy="46" r="10" fill="#C1403A" stroke="${S}" stroke-width="2"/><circle cx="100" cy="34" r="10" fill="#E3A93C" stroke="${S}" stroke-width="2"/>
+      <circle cx="132" cy="44" r="10" fill="#2D6E8E" stroke="${S}" stroke-width="2"/><circle cx="62" cy="80" r="10" fill="#6E8F58" stroke="${S}" stroke-width="2"/>
+      <circle cx="104" cy="94" r="10" fill="#FBF7EC" stroke="${S}" stroke-width="2"/>`
+  }[kind];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${kind}">${g}</svg>`;
+}
 const M2_PIC = {
   hi_friend: m2Svg(m2Person('kid', 66, 'wave', 1) + m2Person('friend', 134, 'wave', -1) + m2Me(66, 29), '친구와 손을 흔들며 인사하는 그림'),
   hi_elder:  m2Svg(m2Person('kid', 70, 'bow', 1) + m2Person('grandma', 138, 'stand', -1) + m2Me(58, 38), '할머니께 고개 숙여 인사하는 그림'),
@@ -205,6 +260,16 @@ const M2_PIC = {
   f_face: m2Face(null), ouch: m2Face(null, 'ouch'),
   b_hand: m2BodyPart('hand'), b_foot: m2BodyPart('foot'), b_belly: m2BodyPart('belly'), b_arm: m2BodyPart('arm'), b_leg: m2BodyPart('leg'),
   b_body: m2Svg(m2Person('kid', 100, 'stand', 1), '몸', '52 22 96 104'),
+  /* ---- 다섯째 묶음: 우리 집 ---- */
+  t_house: m2Thing('house'), t_room: m2Thing('room'), t_door: m2Thing('door'), t_window: m2Thing('window'),
+  t_bed: m2Thing('bed', 'yellow'), t_desk: m2Thing('desk', '#B08452'), t_chair: m2Thing('chair', 'green'),
+  t_book: m2Thing('book', 'blue'), t_cup: m2Thing('cup', 'white'), t_bag: m2Thing('bag', 'red'),
+  c_red: m2Thing('blob', 'red'), c_blue: m2Thing('blob', 'blue'), c_yellow: m2Thing('blob', 'yellow'),
+  c_green: m2Thing('blob', 'green'), c_black: m2Thing('blob', 'black'), c_white: m2Thing('blob', 'white'),
+  palette: m2Thing('palette'),
+  bag_blue: m2Thing('bag', 'blue'), bag_yellow: m2Thing('bag', 'yellow'), cup_red: m2Thing('cup', 'red'), cup_green: m2Thing('cup', 'green'),
+  book_black: m2Thing('book', 'black'), book_red: m2Thing('book', 'red'), chair_white: m2Thing('chair', 'white'), chair_blue: m2Thing('chair', 'blue'),
+  chairs2: `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="의자 두 개"><g transform="translate(-44 0)">${m2Thing('chair', 'green').replace(/<\/?svg[^>]*>/g, '')}</g><g transform="translate(44 0)">${m2Thing('chair', 'green').replace(/<\/?svg[^>]*>/g, '')}</g></svg>`,
   what:      `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="물음표">
      <circle cx="100" cy="64" r="44" fill="#F5E6BD" stroke="#221F1C" stroke-width="3"/>
      <text x="100" y="88" text-anchor="middle" font-size="68" font-family="Jua, sans-serif" fill="#C1403A">?</text></svg>`
@@ -216,7 +281,7 @@ const M2_BUNDLES = [
   {k:2, title:'우리 가족', topic:'가족을 부르는 말, 있어요와 없어요', nights:[4, 5, 6], after:'그동안 가족사진을 보면서 가족을 한 사람씩 불러 봐.'},
   {k:3, title:'하나, 둘, 셋', topic:'숫자 세기와 나이', nights:[7, 8, 9], after:'그동안 집에 있는 물건을 하나, 둘, 셋 하고 세어 봐.'},
   {k:4, title:'내 몸', topic:'몸의 이름, 어디가 아파요', nights:[10, 11, 12], after:'그동안 가족과 담이가 말했어요 놀이를 해 봐.'},
-  {k:5, title:'우리 집', topic:'집 안 물건과 색', nights:[13, 14, 15]}
+  {k:5, title:'우리 집', topic:'집 안 물건과 색', nights:[13, 14, 15], after:'이제 집 안 물건을 가리키며 이게 뭐예요, 하고 가족과 묻고 답해 봐.'}
 ];
 const M2_TOTAL = 15;
 
@@ -759,6 +824,139 @@ const M2_NIGHTS = [
        {when:'이번엔 아이가 말해요', say:'담이가 말했어요, 귀!', sub:'머리, 눈, 입, 손, 발, 배, 팔, 다리로 바꿔 가며 해 봐요.'},
        {when:'놀이가 끝나면 아픈 척하며 말해요', say:'______가 아파요.', sub:'받침이 있는 말이면 이: 발이 아파요.'}],
      parent:'놀이는 영어의 Simon says와 같습니다. 어른이 "담이가 말했어요, 코!" 하면 아이가 코를 가리키고, "담이가 말했어요" 없이 "코!"만 말하면 가만히 있어야 합니다. 몇 번 하고 나면 역할을 바꿔 아이가 말하게 해 주세요. 부위를 말할 때 영어가 섞여도 괜찮고, 한국어로 다시 말해 주시면 됩니다. 마지막에 아픈 척하며 "배가 아파요" 같은 문장을 말하게 해 보세요.'}
+  ],
+  dictWords:[] },
+/* ---- 다섯째 묶음: 우리 집 ------------------------------------
+   집 안 물건 열 개와 색 여섯 개. 이에요/예요(첫째 묶음), 이/가(둘째), 숫자와 개(셋째)를 모두 다시 씁니다.
+   이야기에서는 친구에게 "내 가방", 어른께 "제 가방"을 구별합니다. */
+{ n:13, bundle:5, title:'집 안에 있어요',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'둘째 달 마지막 묶음이야. 오늘은 집 안에 있는 물건의 이름을 모아 왔어. 네 방에도 있는지 찾아보면서 들어 봐.',
+     big:'우리 집'},
+    {type:'pairs', title:'집', who:'moi',
+     t:'먼저 집이야. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'집', pic:'t_house', en:'house, home'}, {w:'방', pic:'t_room', en:'room'},
+       {w:'문', pic:'t_door', en:'door'}, {w:'창문', pic:'t_window', en:'window'}],
+     tip:{who:'tori', t:'창문은 ‘창’과 ‘문’이 합쳐진 말이야. 빛이 들어오는 문이라서 창문이지.'}},
+    {type:'pairs', title:'방 안의 물건', who:'moi',
+     t:'이번엔 방 안에 있는 물건이야. 하나씩 눌러서 들어 봐.',
+     singles:[
+       {w:'침대', pic:'t_bed', en:'bed'}, {w:'책상', pic:'t_desk', en:'desk'}, {w:'의자', pic:'t_chair', en:'chair'},
+       {w:'책', pic:'t_book', en:'book'}, {w:'컵', pic:'t_cup', en:'cup'}, {w:'가방', pic:'t_bag', en:'bag, backpack'}],
+     tip:{who:'dami', t:'책상은 책을 놓고 보는 상이라서 책상이란다. 책과 책상, 글자 하나로 이어져 있지.'}},
+    {type:'choose', title:'이건 뭐예요?', who:'tori',
+     t:'그림을 보고 이름을 골라 봐.',
+     qs:[
+       {pic:'t_chair', o:['책상','의자','침대'], a:'의자'},
+       {pic:'t_window', o:['문','창문','방'], a:'창문'},
+       {pic:'t_book', o:['책','컵','가방'], a:'책'},
+       {pic:'t_desk', o:['책','책상','의자'], a:'책상'},
+       {pic:'t_bag', o:['가방','집','컵'], a:'가방'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 물건을 찾아 봐.',
+     qs:[
+       {say:'침대', o:['t_desk','t_bed','t_chair'], a:'t_bed'},
+       {say:'컵', o:['t_cup','t_bag','t_book'], a:'t_cup'},
+       {say:'문', o:['t_window','t_house','t_door'], a:'t_door'},
+       {say:'방', o:['t_room','t_house','t_window'], a:'t_room'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'물건 이름을 써 봐. 뜻을 같이 보면 도움이 돼.',
+     items:[{w:'문', en:'door'}, {w:'책', en:'book'}, {w:'의자', en:'chair', hint:{who:'dami', t:'첫 글자는 ㅇ에 모음 ㅢ란다. 모음 줄에서 ㅢ를 찾아보거라.'}}]}
+  ],
+  dictWords:[{w:'집', en:'house, home'}, {w:'방', en:'room'}, {w:'문', en:'door'}, {w:'창문', en:'window'}, {w:'침대', en:'bed'},
+             {w:'책상', en:'desk'}, {w:'의자', en:'chair'}, {w:'책', en:'book'}, {w:'컵', en:'cup'}, {w:'가방', en:'bag'}] },
+
+{ n:14, bundle:5, title:'무슨 색이에요?',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 색을 배워. 그리고 물건을 가리키며 ‘이게 뭐예요?’ 하고 묻는 말도 배워.',
+     big:'빨간색이에요'},
+    {type:'pairs', title:'색', who:'moi',
+     t:'여섯 가지 색을 모아 왔어. 눌러서 들어 봐.',
+     singles:[
+       {w:'빨간색', pic:'c_red', en:'red'}, {w:'파란색', pic:'c_blue', en:'blue'}, {w:'노란색', pic:'c_yellow', en:'yellow'},
+       {w:'초록색', pic:'c_green', en:'green'}, {w:'검은색', pic:'c_black', en:'black'}, {w:'하얀색', pic:'c_white', en:'white'}],
+     tip:{who:'tori', t:'색 이름은 모두 ‘색’으로 끝나. 빨간색은 ‘빨강’, 파란색은 ‘파랑’이라고도 해.'}},
+    {type:'pairs', title:'묻는 말', who:'moi',
+     t:'물건과 색을 물을 때 쓰는 말이야.',
+     singles:[
+       {w:'이게 뭐예요?', pic:'what', en:'What is this?'},
+       {w:'무슨 색이에요?', pic:'palette', en:'What color is it?'}]},
+    {type:'choose', title:'무슨 색이에요?', who:'tori',
+     t:'그림을 보고 무슨 색인지 골라 봐.',
+     qs:[
+       {pic:'bag_blue', t:'무슨 색이에요?', o:['파란색이에요.','노란색이에요.'], a:'파란색이에요.', en:"It's blue."},
+       {pic:'cup_red', t:'무슨 색이에요?', o:['초록색이에요.','빨간색이에요.'], a:'빨간색이에요.', en:"It's red."},
+       {pic:'book_black', t:'무슨 색이에요?', o:['검은색이에요.','하얀색이에요.'], a:'검은색이에요.', en:"It's black."},
+       {pic:'chair_white', t:'무슨 색이에요?', o:['하얀색이에요.','파란색이에요.'], a:'하얀색이에요.', en:"It's white."},
+       {pic:'cup_green', t:'무슨 색이에요?', o:['노란색이에요.','초록색이에요.'], a:'초록색이에요.', en:"It's green."}]},
+    {type:'josa', title:'이에요일까요, 예요일까요?', who:'tori',
+     t:'‘이게 뭐예요?’ 하고 물으면 물건 이름에 이에요나 예요를 붙여서 대답해. 첫 묶음에서 배운 방법 그대로야.',
+     q:'이게 뭐예요?', names:['책','의자','컵','침대','가방','창문']},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'이게 뭐예요?', tiles:['이게','뭐예요?'], en:'What is this?'},
+       {s:'가방이 빨간색이에요.', tiles:['가방이','빨간색이에요.'], extra:['가방가'], en:'The bag is red.', hint:'‘방’에 받침 ㅇ이 있어요.'},
+       {s:'의자가 두 개 있어요.', tiles:['의자가','두','개','있어요.'], extra:['둘'], en:'There are two chairs.', hint:'둘은 개 앞에서 줄어들어요.'},
+       {s:'여기가 제 방이에요.', tiles:['여기가','제','방이에요.'], extra:['방예요.'], en:'This is my room.', hint:'‘방’에 받침이 있어요. ‘여기가’부터 시작해요.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'마지막 묶음의 소리 비밀이란다. 책상은 [책쌍]으로 들리지? ㄱ 받침 뒤에서 ㅅ이 힘을 주어 ㅆ처럼 나는 게야.',
+     cmp:[
+       {s:'책상', d:'책쌍', n:'ㄱ 받침 뒤의 ㅅ은 ㅆ처럼 나요'},
+       {s:'책이에요', d:'채기에요', n:'ㄱ 받침이 뒤로 건너가요'},
+       {s:'빨간색이에요', d:'빨간새기에요', n:'ㄱ 받침이 뒤로 건너가요'},
+       {s:'방이에요', d:'방이에요', n:'ㅇ 받침은 건너가지 않아요'}],
+     note:'둘째 달 동안 받침이 건너가는 소리를 여러 번 만났지. 들리는 대로 쓰지 않고 글자의 제자리를 찾아 쓰는 것, 그게 받아쓰기의 비밀이란다.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'책상', en:'desk', hint:{who:'dami', t:'소리는 [책쌍]이지만 ‘책’ 다음에 ‘상’을 쓴단다. 쌍이 아니라 상이지.'}},
+       {w:'노란색', en:'yellow'},
+       {w:'컵', en:'cup'}]}
+  ],
+  dictWords:[{w:'빨간색', en:'red'}, {w:'파란색', en:'blue'}, {w:'노란색', en:'yellow'}, {w:'초록색', en:'green'},
+             {w:'검은색', en:'black'}, {w:'하얀색', en:'white'}, {w:'색', en:'color'}] },
+
+{ n:15, bundle:5, title:'토리의 방',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'둘째 달 마지막 밤이야. 모이가 내 방에 놀러 왔어. 먼저 글자 없이 귀로만 들어 보고, 그다음에 글자를 같이 보자.',
+     big:'여기가 내 방이야'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 누가 무슨 말을 하는지 귀로만 먼저 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'tori', t:'모이야, 여기가 내 방이야.', en:'Moi, this is my room.'},
+       {who:'moi', t:'와! 이게 뭐야?', en:'Wow! What is this?'},
+       {who:'tori', t:'내 책상이야. 의자도 있어.', en:"It's my desk. There's a chair too."},
+       {who:'moi', t:'침대가 노란색이네!', en:'Your bed is yellow!'},
+       {who:'tori', t:'응, 달님처럼 노란색이야.', en:'Yes, yellow like the moon.'},
+       {who:'dami', t:'토리야, 이 빨간 가방은 누구 것이냐?', en:'Tori, whose red bag is this?'},
+       {who:'tori', t:'제 가방이에요, 할아버지.', en:"It's my bag, Grandpa."},
+       {who:'dami', t:'허허, 방이 참 깨끗하구나.', en:'Ho ho, your room is very tidy.'}],
+     note:{who:'dami', t:'토리가 모이에게는 ‘내 책상’이라고 하고, 나에게는 ‘제 가방’이라고 했지? 어른께 말할 때는 ‘나’ 대신 ‘저’, ‘내’ 대신 ‘제’를 쓴단다. 둘째 달 내내 배운 높이는 말의 마지막 조각이지.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'토리의 침대는 무슨 색이에요?', o:['파란색','노란색','빨간색'], a:'노란색', why:'토리는 ‘달님처럼 노란색이야’라고 했어요.'},
+       {t:'빨간 가방은 누구 것이에요?', o:['토리 가방','모이 가방','할아버지 가방'], a:'토리 가방', why:'토리는 ‘제 가방이에요’라고 했어요.'},
+       {t:'모이가 책상을 보고 뭐라고 물었어요?', o:['이게 뭐야?','몇 살이야?','어디가 아파?'], a:'이게 뭐야?', why:'모이는 ‘와! 이게 뭐야?’라고 물었어요.'},
+       {t:'할아버지는 토리 방이 어떻다고 했어요?', o:['깨끗해요','작아요','추워요'], a:'깨끗해요', why:'할아버지는 ‘방이 참 깨끗하구나’라고 했어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {pic:'t_chair', line:{who:'moi', t:'토리야, 이게 뭐야?'}, en:'Tori, what is this?', o:['의자야.','의자예요.'], a:'의자야.', why:'모이는 친구라서 편한 말로 대답해요.'},
+       {pic:'t_cup', line:{who:'dami', t:'토리야, 이게 뭐냐?'}, en:'Tori, what is this?', o:['컵이야.','컵이에요.','컵예요.'], a:'컵이에요.', why:'할아버지는 어른이라서 높이는 말로 해요. ‘컵’에는 받침이 있어서 ‘이에요’예요.'},
+       {pic:'t_bag', t:'할머니께 내 가방을 보여 드려요.', en:'Show Grandma your bag.', o:['내 가방이에요.','제 가방이에요.'], a:'제 가방이에요.', why:'어른께는 ‘내’ 대신 ‘제’라고 해요.'}]},
+    {type:'task', title:'우리 집 보물찾기', who:'moi',
+     t:'둘째 달 마지막 과제야. 가족과 집 안을 돌아다니며 물건을 찾아 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'가족이 물건을 가리키며 물어요', say:'이게 뭐예요?', sub:'아이가 가족에게 물어도 좋아요.'},
+       {when:'아이가 대답해요', say:'______이에요.', sub:'받침이 없으면 예요: 의자예요, 침대예요.'},
+       {when:'색도 말해 봐요', say:'______색이에요.', sub:'빨간색, 파란색, 노란색, 초록색, 검은색, 하얀색.'}],
+     parent:'집 안을 함께 돌아다니며 물건을 가리키고 "이게 뭐예요?"라고 물어 주세요. 아이가 모르는 물건이 나오면 이름을 알려 주시면 됩니다. 색은 여섯 가지만 배웠으니 분홍색, 보라색 같은 색은 알려 주시되 틀려도 괜찮습니다. 이 과제로 둘째 달이 끝납니다. 인사, 가족, 숫자, 몸, 집을 모두 해냈으니 많이 칭찬해 주세요.'}
   ],
   dictWords:[] }
 ];

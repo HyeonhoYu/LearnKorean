@@ -63,7 +63,7 @@ const openBundles = () => M2_BUNDLES.filter(bundleOpen);
 function waitLine(){
   const last = openBundles().pop(), nb = nextClosed();
   return (last ? last.title + ' 묶음까지 다 마쳤어. ' : '') +
-    (nb ? '다음 묶음 ' + josa(nb.title, '은') + ' 곧 열려. 그동안 받아쓰기실에서 방아를 찧어 보자.' : '둘째 달 보름달을 다 채웠어.');
+    (nb ? '다음 묶음 ' + josa(nb.title, '은') + ' 곧 열려. 그동안 받아쓰기실에서 방아를 찧어 보자.' : '둘째 달 보름달이 떴어! 셋째 달이 열릴 때까지 받아쓰기실에서 방아를 찧어 보자.');
 }
 function showPicker(){
   seq++; night = null; curGuide = null;
@@ -641,9 +641,11 @@ SCREENS.result = () => {
   const B = M2_BUNDLES.find(b => b.k === night.bundle);
   const lastOfBundle = night.n === B.nights[B.nights.length - 1];
   const bundleDone = B.nights.every(n => stars[n]);
-  const title = lastOfBundle && bundleDone ? ORD[B.k - 1] + ' 묶음을 다 채웠어요' : '오늘 밤 달이 조금 차올랐어요';
+  const monthDone = M2_NIGHTS.every(x => stars[x.n]) && !nextClosed();
+  const title = monthDone ? '둘째 달을 다 채웠어요' : lastOfBundle && bundleDone ? ORD[B.k - 1] + ' 묶음을 다 채웠어요' : '오늘 밤 달이 조금 차올랐어요';
   const nb = nextClosed();
   const line = s < 3 ? '괜찮아. 떡은 방아를 여러 번 찧어야 만들어져. 한 번 더 해 볼까?'
+    : monthDone && !nextOpen ? '둘째 달 보름달이 떴어! 인사, 가족, 숫자, 몸, 집까지 모두 해냈어. ' + (B.after || '')
     : nextOpen ? '잘했어. ' + (lastOfBundle ? B.title + ' 묶음을 마쳤어. ' : '') + '이제 ' + josa(nightName(nextN), '으로') + ' 가자.'
     : B.title + ' 묶음을 다 마쳤어. ' + (nb ? '다음 묶음 ' + josa(nb.title, '은') + ' 곧 열려. ' : '') + (B.after || '');
   card.append(h('div', {style:'text-align:center;padding-top:10px'},
