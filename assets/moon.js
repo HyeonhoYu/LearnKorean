@@ -444,8 +444,10 @@ SCREENS.rule = S => {
 function josaWhy(name, jo){
   const [noForm, yesForm] = JOSA_PAIR[jo || '이에요'];
   const syl = lastSyl(name), j = (decomp(syl) || [])[2];
-  return j ? '‘' + syl + '’에 받침 ' + josa(j, '이') + ' 있어서 ‘' + yesForm + '’를 붙여요.'
-           : '‘' + syl + '’에 받침이 없어서 ‘' + noForm + '’를 붙여요.';
+  /* ‘을’을, ‘를’을, ‘이’를처럼 따옴표 뒤의 조사도 받침에 맞춥니다. */
+  const q = f => '‘' + f + '’' + josa(f, '을').slice(f.length);
+  return j ? '‘' + syl + '’에 받침 ' + josa(j, '이') + ' 있어서 ' + q(yesForm) + ' 붙여요.'
+           : '‘' + syl + '’에 받침이 없어서 ' + q(noForm) + ' 붙여요.';
 }
 SCREENS.josa = S => {
   const jo = S.j || '이에요', [noForm, yesForm] = JOSA_PAIR[jo];
