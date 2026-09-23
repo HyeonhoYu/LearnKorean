@@ -42,15 +42,21 @@
 
 <script src="../assets/dal.js"></script>
 <script src="../content/first-moon.js"></script>
+<script src="../content/second-moon.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════
    받아쓰기실 페이지
    여러 달의 낱말을 한곳에서 연습합니다. 달이 늘어나면 MONTHS 에 등록만 하면 됩니다.
    아이가 마친 밤(또는 빠른 확인으로 통과한 밤)의 낱말만 나옵니다.
    ══════════════════════════════════════════════════════════════ */
-const MONTHS = [FIRST_MOON];
+const MONTHS = [FIRST_MOON, SECOND_MOON];
 let pool = null;
-const goNights = () => { location.href = '../' + MONTHS[0].path; };
+/* 밤 고르기는 아이가 마친 밤이 있는 가장 뒤의 달로 갑니다. */
+const goNights = () => {
+  const r = reached();
+  const M = r.length ? MONTHS[Math.max(...r.map(x => MONTHS.indexOf(x.M)))] : MONTHS[0];
+  location.href = '../' + M.path;
+};
 
 function monthProgress(M){
   let st = {}, start = 1;

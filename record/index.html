@@ -75,8 +75,8 @@ kbd{border:2px solid var(--meok);border-radius:5px;padding:0 6px;font-size:12px;
 
 <div class="wrap">
   <section class="intro">
-    <h1>첫째 달 소리 녹음</h1>
-    <p>첫째 달 화면에서 들리는 소리를 하나씩 녹음합니다. 녹음은 이 브라우저에 저장되니 여러 번에 나눠서 해도 됩니다. 다 하지 않고 일부만 올려도 되고, 녹음이 없는 말은 기기 음성으로 대신 나옵니다.</p>
+    <h1>달토끼 소리 녹음</h1>
+    <p>달마다 화면에서 들리는 소리를 하나씩 녹음합니다. 목록은 달과 밤 순서로 나오고, 아직 녹음하지 않은 첫 말에서 시작합니다. 녹음은 이 브라우저에 저장되니 여러 번에 나눠서 해도 됩니다. 다 하지 않고 일부만 올려도 되고, 녹음이 없는 말은 기기 음성으로 대신 나옵니다.</p>
     <ul class="tips">
       <li>조용한 방에서, 입과 마이크 사이를 한 뼘 정도로 두세요.</li>
       <li>처음부터 끝까지 같은 목소리 크기와 같은 속도로 해 주세요. 앞뒤 빈 소리와 음량은 도구가 자동으로 맞춥니다.</li>
@@ -127,7 +127,10 @@ kbd{border:2px solid var(--meok);border-radius:5px;padding:0 6px;font-size:12px;
 <script>
 /* ══════════════════════════════════════════════════════════════
    달토끼 녹음실
-   목록: 첫째 달 페이지의 listClips() 를 숨긴 창으로 읽어 옵니다. 내용이 바뀌면 목록도 따라 바뀝니다.
+   목록: 달마다 페이지의 listClips() 를 숨긴 창으로 읽어 옵니다. 내용이 바뀌면 목록도 따라 바뀝니다.
+   달이 늘어나면 MONTH_PAGES 에 한 줄 더하면 됩니다.
+   내보낼 때 manifest.json 은 사이트에 이미 올라가 있는 목록과 합칩니다.
+   그래서 다른 브라우저에서 둘째 달만 녹음해 올려도 첫째 달 녹음이 목록에서 빠지지 않습니다.
    처리: 녹음 → 앞뒤 빈 소리 자르기 → 음량 맞추기 → 22,050Hz 모노 16비트 WAV.
    WAV는 아이폰, 안드로이드, 카카오톡 속 브라우저까지 어디서나 재생됩니다.
    저장: 이 브라우저의 IndexedDB. 내보내기: 압축하지 않는 zip(소리 파일은 이미 작습니다).
@@ -137,6 +140,8 @@ const $ = id => document.getElementById(id);
 let clips = [], cur = 0, saved = new Set();
 let stream = null, actx = null, analyser = null, recorder = null, chunks = [], recording = false, safetyTimer = null;
 let lastAudio = null;
+const live = new Set();
+const have = id => saved.has(id) || live.has(id);
 
 function status(msg, kind){ const s = $('status'); s.textContent = msg || ''; s.className = kind || ''; }
 
@@ -162,55 +167,87 @@ const idbDel = id => tx('readwrite', st => st.delete(id));
 const idbAll = () => tx('readonly', st => st.getAll());
 
 /* ---- 목록 불러오기 ---- */
-function loadList(){
-  const f = document.createElement('iframe');
-  f.hidden = true; f.src = '../first-moon/?clips=1';
-  f.addEventListener('load', async () => {
-    try {
-      clips = f.contentWindow.listClips();
-      if(!Array.isArray(clips) || !clips.length) throw new Error('empty');
-    } catch(e) {
-      $('loadErr').innerHTML = '<div class="err">녹음 목록을 읽지 못했어요. 이 도구는 파일을 직접 열면 동작하지 않고, 사이트 주소(예: https://hyeonhoyu.github.io/daltokki/record/)에서 열어야 합니다.</div>';
-      return;
-    }
-    try { (await idbAll()).forEach(r => saved.add(r.id)); } catch(e) {
-      $('loadErr').innerHTML = '<div class="warn">이 브라우저에서는 녹음을 저장해 둘 수 없어요. 창을 닫기 전에 꼭 내려받기를 해 주세요.</div>';
-    }
-    const firstMissing = clips.findIndex(c => !saved.has(c.id));
-    cur = firstMissing >= 0 ? firstMissing : 0;
-    $('studio').hidden = false; $('exportSec').hidden = false;
-    renderList(); show();
+const MONTH_PAGES = [
+  {m: 1, name: '첫째 달', src: '../first-moon/?clips=1'},
+  {m: 2, name: '둘째 달', src: '../second-moon/?clips=1'}
+];
+function listFrom(pg){
+  return new Promise(res => {
+    const f = document.createElement('iframe');
+    f.hidden = true; f.src = pg.src;
+    const done = v => { res(v); f.remove(); };
+    const t = setTimeout(() => done([]), 15000);
+    f.addEventListener('load', () => {
+      clearTimeout(t);
+      let list = [];
+      try { list = f.contentWindow.listClips(); } catch(e) {}
+      done(Array.isArray(list) ? list.map(c => Object.assign({}, c, {month: pg.m})) : []);
+    });
+    document.body.append(f);
   });
-  document.body.append(f);
+}
+async function loadList(){
+  const lists = await Promise.all(MONTH_PAGES.map(listFrom));
+  const seen = new Set();
+  clips = [];
+  /* 같은 말이 여러 달에 나오면 처음 나온 곳에서 한 번만 녹음합니다. 파일 이름이 글자로 정해지니 다시 쓰입니다. */
+  lists.flat().forEach(c => { if(!seen.has(c.id)){ seen.add(c.id); clips.push(c); } });
+  /* 달, 밤 순서로 모읍니다. 같은 밤 안에서는 화면에 나오는 순서를 그대로 둡니다. */
+  clips = clips.map((c, i) => [c, i]).sort((a, b) => (a[0].month - b[0].month) || (a[0].night - b[0].night) || (a[1] - b[1])).map(x => x[0]);
+  /* 사이트에 이미 올라간 녹음은 다시 하지 않아도 되니 끝난 것으로 봅니다. */
+  try {
+    const r = await fetch('../audio/manifest.json', {cache: 'no-cache'});
+    const j = r.ok ? await r.json() : null;
+    if(j && j.clips) Object.keys(j.clips).forEach(id => live.add(id));
+  } catch(e) {}
+  if(!clips.length){
+    $('loadErr').innerHTML = '<div class="err">녹음 목록을 읽지 못했어요. 이 도구는 파일을 직접 열면 동작하지 않고, 사이트 주소(예: https://hyeonhoyu.github.io/daltokki/record/)에서 열어야 합니다.</div>';
+    return;
+  }
+  if(lists.some(l => !l.length))
+    $('loadErr').innerHTML = '<div class="warn">한 달의 목록을 읽지 못했어요. 읽은 달만 보여 줍니다. 새로 고침하면 다시 읽어요.</div>';
+  try { (await idbAll()).forEach(r => saved.add(r.id)); } catch(e) {
+    $('loadErr').innerHTML = '<div class="warn">이 브라우저에서는 녹음을 저장해 둘 수 없어요. 창을 닫기 전에 꼭 내려받기를 해 주세요.</div>';
+  }
+  const firstMissing = clips.findIndex(c => !have(c.id));
+  cur = firstMissing >= 0 ? firstMissing : 0;
+  $('studio').hidden = false; $('exportSec').hidden = false;
+  renderList(); show();
 }
 
-const ORD = ['첫째','둘째','셋째','넷째','다섯째','여섯째','일곱째','여덟째'];
+const ORD = ['첫째','둘째','셋째','넷째','다섯째','여섯째','일곱째','여덟째','아홉째','열째','열한째','열두째','열셋째','열넷째','열다섯째'];
+const MNAME = m => (MONTH_PAGES.find(p => p.m === m) || {name: ''}).name;
+const where = c => MNAME(c.month) + ' ' + (ORD[c.night - 1] || c.night) + ' 밤';
 function renderList(){
   const box = $('list'); box.innerHTML = '';
-  let night = 0;
+  let group = '';
   clips.forEach((c, i) => {
-    if(c.night !== night){
-      night = c.night;
-      const n = clips.filter(x => x.night === night);
-      const d = n.filter(x => saved.has(x.id)).length;
-      const hd = document.createElement('h3'); hd.textContent = (ORD[night - 1] || night) + ' 밤  ' + d + ' / ' + n.length;
+    const g = c.month + ':' + c.night;
+    if(g !== group){
+      group = g;
+      const n = clips.filter(x => x.month + ':' + x.night === g);
+      const d = n.filter(x => have(x.id)).length;
+      const hd = document.createElement('h3'); hd.textContent = where(c) + '  ' + d + ' / ' + n.length;
       box.append(hd);
     }
     const b = document.createElement('button');
-    b.className = 'item' + (saved.has(c.id) ? ' done' : '') + (i === cur ? ' cur' : '');
+    b.className = 'item' + (have(c.id) ? ' done' : '') + (i === cur ? ' cur' : '');
     b.innerHTML = `<i></i><span class="t"></span><small></small>`;
     b.querySelector('.t').textContent = c.text;
     b.querySelector('small').textContent = c.label;
     b.addEventListener('click', () => { cur = i; renderList(); show(); b.blur(); });
     box.append(b);
   });
-  $('count').textContent = '모두 ' + clips.length + '개 가운데 ' + clips.filter(c => saved.has(c.id)).length + '개를 녹음했어요.';
+  const onSite = clips.filter(c => live.has(c.id) && !saved.has(c.id)).length;
+  $('count').textContent = '모두 ' + clips.length + '개 가운데 ' + clips.filter(c => have(c.id)).length + '개가 있어요.'
+    + (onSite ? ' 그 가운데 ' + onSite + '개는 사이트에 이미 올라가 있어서, 다시 녹음하지 않아도 돼요.' : '')
+    + ' 내려받기에는 이 브라우저에서 녹음한 것만 담깁니다.';
   const curEl = box.querySelector('.item.cur');
   if(curEl) curEl.scrollIntoView({block: 'nearest'});
 }
 function show(){
   const c = clips[cur]; if(!c) return;
-  $('meta').textContent = (ORD[c.night - 1] || c.night) + ' 밤 · ' + c.label + (saved.has(c.id) ? ' · 녹음됨' : '');
+  $('meta').textContent = where(c) + ' · ' + c.label + (saved.has(c.id) ? ' · 녹음됨' : live.has(c.id) ? ' · 사이트에 있음' : '');
   $('big').textContent = c.text;
   $('say').textContent = c.say;
   $('playBtn').disabled = !saved.has(c.id);
@@ -407,11 +444,21 @@ async function exportZip(){
   const all = await idbAll();
   if(!all.length){ status('아직 녹음한 것이 없어요.', 'bad'); return; }
   const files = [], map = {}, texts = {};
+  /* 사이트에 이미 올라간 목록을 먼저 넣고, 이 브라우저의 녹음을 더합니다. */
+  try {
+    const r = await fetch('../audio/manifest.json', {cache: 'no-cache'});
+    const live = r.ok ? await r.json() : null;
+    if(live && live.clips) Object.keys(live.clips).forEach(id => { map[id] = 1; if(live.texts && live.texts[id]) texts[id] = live.texts[id]; });
+  } catch(e) {}
+  const liveCount = Object.keys(map).length;
   all.forEach(r => { files.push({name: 'audio/' + r.id + '.wav', data: new Uint8Array(r.wav)}); map[r.id] = 1; texts[r.id] = r.text; });
   const complete = clips.every(c => map[c.id]);
-  const manifest = {version: 1, sampleRate: OUT_RATE, complete, count: all.length, updated: new Date().toISOString(), clips: map, texts};
+  const missing = clips.filter(c => !map[c.id]);
+  const manifest = {version: 1, sampleRate: OUT_RATE, complete, count: Object.keys(map).length, updated: new Date().toISOString(), clips: map, texts};
   const manFile = {name: 'audio/manifest.json', data: new TextEncoder().encode(JSON.stringify(manifest, null, 1))};
-  const done = complete ? ' 첫째 달 녹음이 다 모였어요.' : ' 아직 녹음이 없는 말은 기기 음성으로 나옵니다.';
+  const done = (liveCount ? ' 사이트에 이미 있던 ' + liveCount + '개도 목록에 함께 적었어요.' : '')
+    + (complete ? ' 모든 달의 녹음이 다 모였어요.'
+       : ' 아직 녹음이 없는 말 ' + missing.length + '개는 기기 음성으로 나옵니다.');
   /* GitHub 웹에서는 한 번에 100개까지만 올릴 수 있어서, 넘으면 나눠 담습니다.
      manifest.json 은 늘 1부에 넣습니다. 목록 전체가 들어 있어서 한 번만 있으면 됩니다. */
   const PER = 95, groups = [];

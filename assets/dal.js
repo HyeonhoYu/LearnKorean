@@ -180,6 +180,40 @@ function playClip(text){
 }
 function preloadClips(texts){ texts.forEach(t => clipAudio(t)); }
 
+/* 말이 끝나면 done 을 부릅니다. 대화를 한 줄씩 이어서 들려줄 때 씁니다.
+   녹음은 ended, 음성 합성은 onend 를 기다리고, 둘 다 오지 않는 기기를 위해 시간 제한도 둡니다. */
+function speakThen(text, done){
+  let fired = false, timer = null;
+  const fin = () => { if(fired) return; fired = true; clearTimeout(timer); if(done) done(); };
+  timer = setTimeout(fin, 1200 + [...text].length * 280);
+  const a = clipAudio(text);
+  if(a){
+    try {
+      if(playingClip && playingClip !== a) playingClip.pause();
+      if(ttsOK) safe(() => speechSynthesis.cancel());
+      a.currentTime = 0;
+      a.onended = fin;
+      const pr = a.play();
+      playingClip = a;
+      if(pr && pr.catch) pr.catch(() => fin());
+      return;
+    } catch(e) {}
+  }
+  if(!ttsOK){ audioWarn(); return; }
+  if(playingClip){ try { playingClip.pause(); } catch(e) {} }
+  const ok = safe(() => {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ko-KR'; u.rate = .8;
+    if(voiceKo) u.voice = voiceKo;
+    u.onend = fin;
+    u.onerror = ev => { if(ev && ev.error !== 'interrupted' && ev.error !== 'canceled') audioWarn(); fin(); };
+    speechSynthesis.speak(u);
+    return true;
+  });
+  if(!ok) audioWarn();
+}
+
 function speak(text){
   if(!text) return;
   if(playClip(text)) return;
@@ -351,10 +385,11 @@ try {
 } catch(e) { canStore = false; }
 
 /* 밤 이름 */
-const ORD = ['첫째','둘째','셋째','넷째','다섯째','여섯째','일곱째','여덟째'];
+const ORD = ['첫째','둘째','셋째','넷째','다섯째','여섯째','일곱째','여덟째',
+  '아홉째','열째','열한째','열두째','열셋째','열넷째','열다섯째'];
 const nightName = n => ORD[n - 1] + ' 밤';
 /* 밤을 셀 때는 고유어 수사를 씁니다. 2밤이 아니라 두 밤. */
-const COUNT = ['한','두','세','네','다섯','여섯','일곱','여덟'];
+const COUNT = ['한','두','세','네','다섯','여섯','일곱','여덟','아홉','열','열한','열두','열세','열네','열다섯'];
 
 /* 밤 고르기 화면에서는 사이트 처음으로, 밤 안에서는 밤 고르기로 돌아갑니다. */
 function setNav(inNight){

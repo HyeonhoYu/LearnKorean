@@ -80,7 +80,7 @@ a.month:hover{transform:translateY(-3px);box-shadow:0 8px 0 var(--meok)}
 .topics{display:block;font-size:14px;margin-top:2px}
 .status{display:block;font-size:13.5px;margin-top:8px;font-weight:500}
 .soon{display:inline-block;margin-top:8px;font-size:12px;border:2px solid #8C7F63;border-radius:999px;padding:0 10px}
-.nights{display:flex;gap:5px;margin-top:6px}
+.nights{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .nights i{width:13px;height:13px;border-radius:50%;border:2px solid var(--meok);background:var(--gamcheong)}
 .nights i.on{background:var(--hwang)}
 .nights i.pass{background:var(--dalbit)}
@@ -219,7 +219,7 @@ footer p{margin:4px 0}
   <section aria-labelledby="monthsTitle">
     <div class="wrap">
       <h2 id="monthsTitle">일곱 달</h2>
-      <p class="sec-lede">달은 한 달에 한 번 보름달이 돼요. 달을 하나 가득 채울 때마다 한 단계씩 올라가요. 지금은 첫째 달이 열려 있어요.</p>
+      <p class="sec-lede">달은 한 달에 한 번 보름달이 돼요. 달을 하나 가득 채울 때마다 한 단계씩 올라가요. 지금은 첫째 달과 둘째 달이 열려 있어요.</p>
       <div class="month-grid" id="monthGrid">
         <noscript><a class="month" href="first-moon/"><span><span class="mlabel">첫째 달</span><b>한글</b><span class="topics">모음, 자음, 받침, 겹받침</span></span></a></noscript>
       </div>
@@ -302,12 +302,15 @@ footer p{margin:4px 0}
   </div>
 </footer>
 
+<script src="content/second-moon.js"></script>
 <script>
 /* ---- 진도 읽기: 한글 첫 달과 같은 키를 씁니다 ---- */
 const STORE_KEY = 'daltokki:v1:first-moon';
 const NIGHTS = 8;
 const ORD = ['첫째','둘째','셋째','넷째','다섯째','여섯째','일곱째','여덟째'];
 const COUNT = ['한','두','세','네','다섯','여섯','일곱','여덟'];
+const ORD2 = [...ORD, '아홉째','열째','열한째','열두째','열셋째','열넷째','열다섯째'];
+const COUNT2 = [...COUNT, '아홉','열','열한','열두','열세','열네','열다섯'];
 
 function readStars(){
   const out = {};
@@ -340,6 +343,31 @@ let next = 0;
 for(let n = start; n <= NIGHTS; n++){ if(!stars[n]){ next = n; break; } }
 const started = done > 0 || start > 1;
 
+/* ---- 둘째 달 진도: second-moon 과 같은 키. 열린 밤은 내용 파일(content/second-moon.js)에서 읽습니다. ---- */
+const M2_OPEN = M2_NIGHTS.map(x => x.n);
+function readM2(){
+  const out = {stars: {}, updated: 0};
+  try {
+    const d = JSON.parse(window.localStorage.getItem(SECOND_MOON.store) || 'null');
+    if(d && d.stars && typeof d.stars === 'object'){
+      for(const k in d.stars){
+        const n = Number(k), v = Number(d.stars[k]);
+        if(n >= 1 && n <= M2_TOTAL && v >= 1 && v <= 3) out.stars[n] = Math.round(v);
+      }
+    }
+    out.updated = Number(d && d.updated) || 0;
+  } catch(e) {}
+  return out;
+}
+function readUpdated(key){
+  try { const d = JSON.parse(window.localStorage.getItem(key) || 'null'); return Number(d && d.updated) || 0; } catch(e) { return 0; }
+}
+const m2 = readM2();
+const m2done = Object.keys(m2.stars).length;
+const m2next = M2_OPEN.find(n => !m2.stars[n]) || 0;
+/* 두 달을 오가는 아이는 가장 최근에 한 달로 이어 갑니다. */
+const m2Recent = m2done > 0 && m2.updated >= readUpdated(STORE_KEY);
+
 /* ---- 달 그림: 한글 첫 달과 같은 방식 (오른쪽부터 차오름) ---- */
 function moon(f, opts){
   opts = opts || {};
@@ -368,27 +396,36 @@ function moon(f, opts){
 /* ---- 첫 화면 버튼 ---- */
 const cta = document.getElementById('ctaMain');
 const note = document.getElementById('ctaNote');
-if(started) document.getElementById('checkLink').style.display = 'none';
-if(!started){
+if(started || m2done) document.getElementById('checkLink').style.display = 'none';
+if(m2Recent && m2next){
+  cta.textContent = '이어서 하기';
+  cta.href = 'second-moon/?night=' + m2next;
+  note.textContent = '둘째 달 ' + ORD2[m2next - 1] + ' 밤 차례예요. 둘째 달에서 ' + COUNT2[m2done - 1] + ' 밤을 마쳤어요.';
+} else if(!started && !m2done){
   cta.textContent = '시작하기';
   cta.href = 'first-moon/';
   note.textContent = '첫째 달, 첫째 밤부터 시작해요.';
 } else if(next){
-  cta.textContent = '이어서 하기';
+  cta.textContent = started ? '이어서 하기' : '첫째 달 시작하기';
   cta.href = 'first-moon/?night=' + next;
   note.textContent = done
     ? '이번엔 ' + ORD[next - 1] + ' 밤 차례예요. 지금까지 ' + COUNT[done - 1] + ' 밤을 마쳤어요.'
-    : '빠른 확인에서 ' + ORD[next - 1] + ' 밤부터 하기로 했어요.';
+    : start > 1 ? '빠른 확인에서 ' + ORD[next - 1] + ' 밤부터 하기로 했어요.'
+    : '첫째 달, 첫째 밤부터 시작해요.';
+} else if(m2next){
+  cta.textContent = m2done ? '이어서 하기' : '둘째 달 시작하기';
+  cta.href = 'second-moon/?night=' + m2next;
+  note.textContent = m2done ? '둘째 달 ' + ORD2[m2next - 1] + ' 밤 차례예요.' : '첫째 달을 가득 채웠어요. 이제 둘째 달이에요.';
 } else {
-  cta.textContent = '첫째 달 다시 보기';
-  cta.href = 'first-moon/';
-  note.textContent = '첫째 달을 가득 채웠어요. 둘째 달은 곧 열려요.';
+  cta.textContent = '받아쓰기실';
+  cta.href = 'dictation/';
+  note.textContent = '둘째 달에서 지금 열린 밤을 다 마쳤어요. 다음 밤들은 곧 열려요. 그동안 받아쓰기실에서 연습해요.';
 }
 
 /* ---- 일곱 달 ---- */
 const MONTHS = [
   {name:'첫째 달',   stage:'한글',  topics:'모음, 자음, 받침, 겹받침', href:'first-moon/'},
-  {name:'둘째 달',   stage:'1단계', topics:'인사, 이름과 나이, 가족, 숫자'},
+  {name:'둘째 달',   stage:'1단계', topics:'인사, 가족, 숫자, 몸, 우리 집', href:'second-moon/'},
   {name:'셋째 달',   stage:'2단계', topics:'하루 일과, 학교, 음식, 날씨'},
   {name:'넷째 달',   stage:'3단계', topics:'지난 일, 기분, 길 찾기, 존댓말'},
   {name:'다섯째 달', stage:'4단계', topics:'이야기 잇기, 친구, 한국 방문'},
@@ -403,7 +440,19 @@ MONTHS.forEach((m, i) => {
   el.className = 'month' + (open ? '' : ' locked');
   if(open) el.href = m.href;
   let status = '';
-  if(open){
+  if(open && i === 1){
+    const openCount = COUNT2[M2_OPEN.length - 1];
+    status = m2done === M2_TOTAL ? '열다섯 밤을 모두 마쳤어요.'
+           : m2done ? '열다섯 밤 가운데 ' + COUNT2[m2done - 1] + ' 밤을 마쳤어요.'
+           : '열다섯 밤. 지금은 ' + openCount + ' 밤이 열려 있어요.';
+    let dots = '<div class="nights" aria-hidden="true">';
+    for(let n = 1; n <= M2_TOTAL; n++) dots += `<i class="${m2.stars[n] ? 'on' : ''}"></i>`;
+    dots += '</div>';
+    el.innerHTML = `<div class="mm">${moon(m2done / M2_TOTAL, {done: m2done === M2_TOTAL})}</div>
+      <div><span class="mlabel">${m.name}</span><b>${m.stage}</b>
+      <span class="topics">${m.topics}</span><span class="status">${status}</span>${dots}</div>`;
+    el.setAttribute('aria-label', `${m.name}, ${m.stage}. ${status}`);
+  } else if(open){
     const f = (done + passed) / NIGHTS;
     el.innerHTML = `<div class="mm">${moon(f, {done: done === NIGHTS})}</div>`;
     const parts = [];
