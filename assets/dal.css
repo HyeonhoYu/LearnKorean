@@ -388,3 +388,7 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
 .sibtbl th{background:var(--hanji-deep);font-size:14px;font-weight:500}
 .sibtbl td .saybtn{font-size:26px}
 .sibtbl tr.mine td,.sibtbl tr.mine th{background:#F6D98F}
+
+/* ---- 둘째 달: 줄어드는 숫자 ---- */
+.cmp.shrink td .saybtn{font-size:24px;min-width:5.5em}
+.cmp.shrink tr.chg td:not(:first-child) .saybtn{color:var(--juhong)}

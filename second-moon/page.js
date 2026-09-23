@@ -461,6 +461,20 @@ SCREENS.build = S => {
   }
 };
 
+/* ---- 줄어드는 숫자: 셀 때 모양과 살, 개 앞의 모양을 나란히 보여 줍니다. 줄어드는 칸은 빨갛게. ---- */
+SCREENS.shrink = S => {
+  head2(S);
+  const t = h('table', {class:'cmp shrink'});
+  t.append(h('tr', {}, h('th', {}, '셀 때'), ...S.units.map(u => h('th', {}, u + ' 앞에서'))));
+  S.rows.forEach(([full, short]) => {
+    const changed = full !== short;
+    t.append(h('tr', {class: changed ? 'chg' : ''}, h('td', {}, sayBtn(full)),
+      ...S.units.map(u => h('td', {}, sayBtn(short + ' ' + u)))));
+  });
+  card.append(h('div', {class:'cmpwrap'}, t));
+  if(S.note) card.append(guide('dami', S.note, true));
+};
+
 /* ---- 소리와 글자 (담이) ---- */
 SCREENS.sound = S => {
   head2(S);
@@ -675,6 +689,7 @@ function listClips(){
     });
     if(S.type === 'rule') [...S.yes, ...S.no].forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙'));
     if(S.type === 'josa') S.names.forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙 고르기'));
+    if(S.type === 'shrink') S.rows.forEach(([full, short]) => { add(full, n, '세는 말'); S.units.forEach(u => add(short + ' ' + u, n, '줄어드는 숫자')); });
     if(S.type === 'sibling') ['형','누나','오빠','언니','동생'].forEach(w => add(w, n, '형제 부르는 말'));
     if(S.type === 'build') S.qs.forEach(q => add(q.s, n, '문장 만들기', '문장 끝까지 자연스럽게'));
     if(S.type === 'sound') S.cmp.forEach(c => add(c.s, n, '소리와 글자', '이어서 자연스럽게. [' + c.d + ']처럼 들리면 맞아요'));

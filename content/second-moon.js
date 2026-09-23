@@ -83,6 +83,67 @@ function m2Bye(stayer, leaver){
   return m2Door + m2Person(stayer, 70, 'wave', 1) + m2Person(leaver, 128, 'walk', 1) + m2Arrow(158)
     + (meStays ? m2Me(70, 29) : m2Me(128, 29));
 }
+/* 사과 n개: 다섯 개씩 한 줄. 세기 쉽게 다섯 묶음마다 줄을 바꿉니다. */
+function m2Apples(n){
+  let g = '';
+  const rows = Math.ceil(n / 5);
+  for(let i = 0; i < n; i++){
+    const row = Math.floor(i / 5), col = i % 5, per = Math.min(5, n - row * 5);
+    const x = 100 + (col - (per - 1) / 2) * 34, y = 65 + (row - (rows - 1) / 2) * 42;
+    g += `<g transform="translate(${x} ${y})"><circle r="14" fill="#C1403A" stroke="#221F1C" stroke-width="2.4"/>
+      <path d="M0 -13 Q2 -21 6 -23" stroke="#221F1C" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M2 -18 Q10 -24 14 -17 Q7 -14 2 -18 Z" fill="#6E8F58" stroke="#221F1C" stroke-width="1.6"/>
+      <ellipse cx="-5" cy="-4" rx="3" ry="5" fill="#fff" opacity=".35"/></g>`;
+  }
+  /* 세 줄이 되면 그림 안에 들어오도록 조금 줄입니다. */
+  const k = rows > 2 ? .82 : 1;
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="사과 ${n}개"><g transform="translate(100 65) scale(${k}) translate(-100 -65)">${g}</g></svg>`;
+}
+/* 초가 n개 꽂힌 생일 케이크 */
+function m2Cake(n){
+  let c = '';
+  const w = Math.min(15, 110 / n);
+  for(let i = 0; i < n; i++){
+    const x = 100 + (i - (n - 1) / 2) * w;
+    c += `<rect x="${x - 2.6}" y="40" width="5.2" height="22" fill="#9DB4C6" stroke="#221F1C" stroke-width="1.6"/>
+      <path d="M${x} 28 Q${x + 5} 35 ${x} 39 Q${x - 5} 35 ${x} 28 Z" fill="#E3A93C" stroke="#221F1C" stroke-width="1.4"/>`;
+  }
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="초가 ${n}개 꽂힌 생일 케이크">
+    <ellipse cx="100" cy="118" rx="80" ry="7" fill="#E0D2B2"/>
+    <rect x="36" y="62" width="128" height="52" rx="8" fill="#F5E6BD" stroke="#221F1C" stroke-width="3"/>
+    <path d="M36 80 Q52 92 68 80 Q84 92 100 80 Q116 92 132 80 Q148 92 164 80" stroke="#D98B7E" stroke-width="7" fill="none"/>
+    ${c}</svg>`;
+}
+/* ---- 넷째 묶음: 몸 그림 ----
+   얼굴 부위는 크게 그린 얼굴에, 몸 부위는 크게 당긴 아이 그림에 빨간 동그라미와 화살표로 짚어 줍니다. */
+const M2_RING = (x, y, r, w) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#F6D98F" fill-opacity=".35" stroke="#C1403A" stroke-width="${w || 3.4}" stroke-dasharray="${(w || 3.4) * 2} ${(w || 3.4) * 1.2}"/>`;
+function m2Face(part, mood){
+  const S = '#221F1C';
+  const spot = {head:[100, 34, 24], eye:[86, 62, 12], nose:[102, 75, 11], mouth:[100, 92, 14], ear:[143, 70, 14]}[part];
+  const mouth = mood === 'ouch'
+    ? `<path d="M88 96 Q100 86 112 96" stroke="${S}" stroke-width="3" fill="none" stroke-linecap="round"/>
+       <path d="M78 55 L92 50 M122 55 L108 50" stroke="${S}" stroke-width="2.6" stroke-linecap="round"/>
+       <path d="M142 34 Q136 46 142 50 Q148 46 142 34 Z" fill="#9DB4C6" stroke="${S}" stroke-width="1.8"/>`
+    : `<path d="M88 90 Q100 100 112 90" stroke="${S}" stroke-width="3" fill="#C1403A" stroke-linecap="round"/>`;
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${mood === 'ouch' ? '아파하는 얼굴' : '얼굴'}">
+    <ellipse cx="58" cy="70" rx="8" ry="11" fill="#F0D9BE" stroke="${S}" stroke-width="2.6"/>
+    <ellipse cx="142" cy="70" rx="8" ry="11" fill="#F0D9BE" stroke="${S}" stroke-width="2.6"/>
+    <circle cx="100" cy="68" r="42" fill="#F0D9BE" stroke="${S}" stroke-width="3"/>
+    <path d="M58 58 C54 14 146 14 142 58 C124 38 76 38 58 58 Z" fill="#221F1C" stroke="${S}" stroke-width="2.6"/>
+    <circle cx="86" cy="62" r="4.4" fill="${S}"/><circle cx="114" cy="62" r="4.4" fill="${S}"/>
+    <path d="M100 68 Q96 78 100 81 Q103 82 105 80" stroke="${S}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <circle cx="78" cy="80" r="6" fill="#D98B7E" opacity=".45"/><circle cx="122" cy="80" r="6" fill="#D98B7E" opacity=".45"/>
+    ${mouth}
+    ${spot ? M2_RING(...spot) : ''}</svg>`;
+}
+/* 아이 전신(크게 당김). 좌표는 m2Person 의 kid(크기 .78)를 x=100 에 세운 자리입니다. */
+function m2BodyPart(part){
+  /* 부위마다 그 둘레를 가까이 당겨 보여 줍니다. [x, y, 동그라미 크기, 보이는 창] */
+  const spot = {hand:[87.5, 92, 7, '56 58 76 50'], foot:[95.5, 119, 7, '62 80 76 50'], belly:[101.5, 84, 9, '64 48 76 50'],
+                arm:[89, 79, 7, '58 46 76 50'], leg:[96, 104, 9, '62 76 76 50']}[part];
+  return `<svg viewBox="${spot[3]}" width="150" height="98" role="img" aria-label="몸" style="overflow:hidden">
+    ${m2Person('kid', 100, 'stand', 1)}${M2_RING(spot[0], spot[1], spot[2], 1.8)}</svg>`;
+}
 const M2_PIC = {
   hi_friend: m2Svg(m2Person('kid', 66, 'wave', 1) + m2Person('friend', 134, 'wave', -1) + m2Me(66, 29), '친구와 손을 흔들며 인사하는 그림'),
   hi_elder:  m2Svg(m2Person('kid', 70, 'bow', 1) + m2Person('grandma', 138, 'stand', -1) + m2Me(58, 38), '할머니께 고개 숙여 인사하는 그림'),
@@ -135,6 +196,15 @@ const M2_PIC = {
      <rect x="30" y="14" width="140" height="104" rx="6" fill="#F5E6BD" stroke="#221F1C" stroke-width="3"/>
      <rect x="40" y="24" width="120" height="84" fill="#9DB4C6" stroke="#221F1C" stroke-width="2"/>
      <g transform="translate(40 24) scale(.6)">${m2Person('grandma', 40, 'stand', 1)}${m2Person('mom', 84, 'stand', 1)}${m2Person('dad', 126, 'stand', -1)}${m2Person('kid', 166, 'stand', -1)}</g></svg>`,
+  /* ---- 셋째 묶음: 하나, 둘, 셋 ---- */
+  apples1: m2Apples(1), apples2: m2Apples(2), apples3: m2Apples(3), apples4: m2Apples(4), apples5: m2Apples(5),
+  apples6: m2Apples(6), apples7: m2Apples(7), apples8: m2Apples(8), apples9: m2Apples(9), apples10: m2Apples(10), apples11: m2Apples(11), apples12: m2Apples(12),
+  cake1: m2Cake(1), cake3: m2Cake(3), cake5: m2Cake(5), cake7: m2Cake(7), cake8: m2Cake(8), cake9: m2Cake(9),
+  /* ---- 넷째 묶음: 내 몸 ---- */
+  f_head: m2Face('head'), f_eye: m2Face('eye'), f_nose: m2Face('nose'), f_mouth: m2Face('mouth'), f_ear: m2Face('ear'),
+  f_face: m2Face(null), ouch: m2Face(null, 'ouch'),
+  b_hand: m2BodyPart('hand'), b_foot: m2BodyPart('foot'), b_belly: m2BodyPart('belly'), b_arm: m2BodyPart('arm'), b_leg: m2BodyPart('leg'),
+  b_body: m2Svg(m2Person('kid', 100, 'stand', 1), '몸', '52 22 96 104'),
   what:      `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="물음표">
      <circle cx="100" cy="64" r="44" fill="#F5E6BD" stroke="#221F1C" stroke-width="3"/>
      <text x="100" y="88" text-anchor="middle" font-size="68" font-family="Jua, sans-serif" fill="#C1403A">?</text></svg>`
@@ -144,17 +214,17 @@ const M2_PIC = {
 const M2_BUNDLES = [
   {k:1, title:'안녕하세요', topic:'인사하고 이름 말하기', nights:[1, 2, 3], after:'그동안 할머니 할아버지께 인사해 봐.'},
   {k:2, title:'우리 가족', topic:'가족을 부르는 말, 있어요와 없어요', nights:[4, 5, 6], after:'그동안 가족사진을 보면서 가족을 한 사람씩 불러 봐.'},
-  {k:3, title:'하나, 둘, 셋', topic:'숫자 세기와 나이', nights:[7, 8, 9]},
-  {k:4, title:'내 몸', topic:'몸과 아픈 곳 말하기', nights:[10, 11, 12]},
+  {k:3, title:'하나, 둘, 셋', topic:'숫자 세기와 나이', nights:[7, 8, 9], after:'그동안 집에 있는 물건을 하나, 둘, 셋 하고 세어 봐.'},
+  {k:4, title:'내 몸', topic:'몸의 이름, 어디가 아파요', nights:[10, 11, 12], after:'그동안 가족과 담이가 말했어요 놀이를 해 봐.'},
   {k:5, title:'우리 집', topic:'집 안 물건과 색', nights:[13, 14, 15]}
 ];
 const M2_TOTAL = 15;
 
-/* 받아쓰기 자판: 첫째 달에서 배운 자모. 겹받침은 둘째 달 낱말에 나오는 ㅄ(없어요)만 넣습니다. */
+/* 받아쓰기 자판: 첫째 달에서 배운 자모. 겹받침은 둘째 달 낱말에 나오는 ㅄ(없어요)과 ㄼ(여덟)만 넣습니다. */
 const M2_POOL = {
   cho:  ['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅅ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ','ㄲ','ㄸ','ㅃ','ㅆ','ㅉ'],
   jung: ['ㅏ','ㅓ','ㅗ','ㅜ','ㅡ','ㅣ','ㅑ','ㅕ','ㅛ','ㅠ','ㅐ','ㅔ','ㅒ','ㅖ','ㅘ','ㅝ','ㅚ','ㅟ','ㅢ'],
-  jong: ['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅇ','ㅅ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ','ㄲ','ㅆ','ㅄ']
+  jong: ['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅇ','ㅅ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ','ㄲ','ㅆ','ㅄ','ㄼ']
 };
 
 /* ---- 첫 묶음: 안녕하세요 ------------------------------------
@@ -421,6 +491,274 @@ const M2_NIGHTS = [
        {when:'있는 가족을 말해요', say:'저는 ______가 있어요.', sub:'받침이 있는 말이면 이: 저는 동생이 있어요.'},
        {when:'없는 가족도 말해요', say:'저는 ______가 없어요.', sub:'받침이 있는 말이면 이: 저는 형이 없어요.'}],
      parent:'가족사진이나 휴대폰 사진을 함께 보면서 해 주세요. 형, 오빠, 누나, 언니는 아이 쪽에서 부르는 말로 알려 주시면 됩니다. 아이가 남자아이면 형과 누나, 여자아이면 오빠와 언니입니다. 고모, 외삼촌, 사촌처럼 이 묶음에 없는 말이 나오면 그대로 알려 주셔도 좋습니다. 사진 속 가족이 멀리 계시면 영상 통화로 직접 말해 보게 해도 좋습니다.'}
+  ],
+  dictWords:[] },
+/* ---- 셋째 묶음: 하나, 둘, 셋 --------------------------------
+   고유어 수(하나부터 열둘)를 세고, 살과 개 앞에서 하나, 둘, 셋, 넷이 한, 두, 세, 네로 줄어드는 것을 배웁니다.
+   어른에게는 몇 살이냐고 묻지 않는다는 것도 담이의 이야기로 다룹니다. */
+{ n:7, bundle:3, title:'하나부터 열까지',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'오늘은 세는 말을 모아 왔어. 하나, 둘, 셋. 달토끼에서 한 밤, 두 밤 하고 셀 때 벌써 들어 본 말들이야.',
+     big:'하나, 둘, 셋'},
+    {type:'pairs', title:'하나부터 열까지', who:'moi',
+     t:'사과를 세면서 들어 봐. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'하나', pic:'apples1', en:'one'}, {w:'둘', pic:'apples2', en:'two'}, {w:'셋', pic:'apples3', en:'three'},
+       {w:'넷', pic:'apples4', en:'four'}, {w:'다섯', pic:'apples5', en:'five'}, {w:'여섯', pic:'apples6', en:'six'},
+       {w:'일곱', pic:'apples7', en:'seven'}, {w:'여덟', pic:'apples8', en:'eight'}, {w:'아홉', pic:'apples9', en:'nine'},
+       {w:'열', pic:'apples10', en:'ten'}],
+     tip:{who:'dami', t:'한국어에는 세는 말이 두 가지 있단다. 오늘 배우는 하나, 둘, 셋은 옛날부터 우리말로 세던 말이지. 일, 이, 삼으로 세는 말은 나중에 따로 만나자꾸나.'}},
+    {type:'build', title:'차례대로 세어요', who:'tori',
+     t:'숫자 카드를 차례대로 눌러 봐. 하나부터 시작해.',
+     qs:[
+       {s:'하나 둘 셋 넷 다섯', tiles:['하나','둘','셋','넷','다섯'], en:'Count from one to five.', hint:'하나 다음은 둘, 둘 다음은 셋이에요.'},
+       {s:'여섯 일곱 여덟 아홉 열', tiles:['여섯','일곱','여덟','아홉','열'], en:'Count from six to ten.', hint:'여섯 다음은 일곱이에요.'}]},
+    {type:'choose', title:'몇 개일까요?', who:'tori',
+     t:'사과를 세어 보고 알맞은 말을 골라 봐. 다섯 개씩 한 줄이야.',
+     qs:[
+       {pic:'apples3', t:'사과를 세어 봐요.', o:['둘','셋','넷'], a:'셋'},
+       {pic:'apples7', t:'사과를 세어 봐요.', o:['여섯','일곱','여덟'], a:'일곱'},
+       {pic:'apples4', t:'사과를 세어 봐요.', o:['넷','다섯','셋'], a:'넷'},
+       {pic:'apples9', t:'사과를 세어 봐요.', o:['여덟','열','아홉'], a:'아홉'},
+       {pic:'apples6', t:'사과를 세어 봐요.', o:['여섯','다섯','일곱'], a:'여섯'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 만큼 사과가 있는 그림을 찾아 봐.',
+     qs:[
+       {say:'다섯', o:['apples4','apples5','apples6'], a:'apples5'},
+       {say:'둘', o:['apples2','apples3','apples1'], a:'apples2'},
+       {say:'여덟', o:['apples10','apples7','apples8'], a:'apples8'},
+       {say:'열', o:['apples9','apples10','apples5'], a:'apples10'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'세는 말을 써 봐. 받침을 잘 들어 봐.',
+     items:[{w:'하나', en:'one'}, {w:'셋', en:'three'},
+            {w:'여덟', en:'eight', hint:{who:'dami', t:'소리는 [여덜]이지만 받침에 ㄹ과 ㅂ이 함께 있단다. 받침 줄에서 ㄼ을 찾아보거라.'}}]}
+  ],
+  dictWords:[{w:'하나', en:'one'}, {w:'둘', en:'two'}, {w:'셋', en:'three'}, {w:'넷', en:'four'}, {w:'다섯', en:'five'},
+             {w:'여섯', en:'six'}, {w:'일곱', en:'seven'}, {w:'여덟', en:'eight'}, {w:'아홉', en:'nine'}, {w:'열', en:'ten'}] },
+
+{ n:8, bundle:3, title:'몇 살이에요?',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 나이를 말해 볼 거야. ‘몇 살이에요?’ 하고 물으면 ‘여덟 살이에요’처럼 대답해. 그런데 살 앞에서 숫자 몇 개가 모양을 바꿔. 그게 오늘의 비밀이야.',
+     big:'여덟 살이에요'},
+    {type:'pairs', title:'나이와 개수를 말하는 말', who:'moi',
+     t:'오늘 모아 온 말이야. 열 다음 숫자도 두 개 가져왔어.',
+     singles:[
+       {w:'살', pic:'cake8', en:'years old'},
+       {w:'개', pic:'apples3', en:'(counter for things)'},
+       {w:'몇', pic:'what', en:'how many'},
+       {w:'열하나', pic:'apples11', en:'eleven'},
+       {w:'열둘', pic:'apples12', en:'twelve'}],
+     tip:{who:'tori', t:'열하나는 열에 하나, 열둘은 열에 둘을 붙인 말이야. 쉽지?'}},
+    {type:'shrink', title:'살과 개 앞에서 줄어들어요', who:'tori',
+     t:'하나, 둘, 셋, 넷은 살이나 개 앞에서 끝이 줄어들어. 하나는 한, 둘은 두, 셋은 세, 넷은 네. 다섯부터는 그대로야. 눌러서 들어 봐.',
+     rows:[['하나','한'], ['둘','두'], ['셋','세'], ['넷','네'], ['다섯','다섯'], ['열하나','열한'], ['열둘','열두']],
+     units:['살','개'],
+     note:'그래서 달토끼에서도 밤을 셀 때 ‘하나 밤’이 아니라 ‘한 밤’, ‘둘 밤’이 아니라 ‘두 밤’이라고 했단다.'},
+    {type:'choose', title:'어느 쪽이 맞을까요?', who:'tori',
+     t:'그림을 보고 바르게 말한 쪽을 골라 봐.',
+     qs:[
+       {pic:'cake3', t:'몇 살이에요?', o:['셋 살이에요.','세 살이에요.'], a:'세 살이에요.', why:'셋은 살 앞에서 세가 돼요.'},
+       {pic:'apples2', t:'사과가 몇 개예요?', o:['두 개예요.','둘 개예요.'], a:'두 개예요.', why:'둘은 개 앞에서 두가 돼요.'},
+       {pic:'cake1', t:'몇 살이에요?', o:['하나 살이에요.','한 살이에요.'], a:'한 살이에요.', why:'하나는 살 앞에서 한이 돼요.'},
+       {pic:'apples4', t:'사과가 몇 개예요?', o:['넷 개예요.','네 개예요.'], a:'네 개예요.', why:'넷은 개 앞에서 네가 돼요.'},
+       {pic:'cake5', t:'몇 살이에요?', o:['다섯 살이에요.','다섯 개예요.'], a:'다섯 살이에요.', why:'나이는 살로 세요. 다섯은 그대로예요.'},
+       {pic:'apples8', t:'사과가 몇 개예요?', o:['여덟 살이에요.','여덟 개예요.'], a:'여덟 개예요.', why:'물건은 개로 세요.'}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'몇 살이에요?', tiles:['몇','살이에요?'], en:'How old are you?'},
+       {s:'저는 일곱 살이에요.', tiles:['저는','일곱','살이에요.'], extra:['개예요.'], en:"I'm seven years old.", hint:'나이는 살로 세요. 누가 하는 말인지(저는)부터 와요.'},
+       {s:'사과가 세 개예요.', tiles:['사과가','세','개예요.'], extra:['셋'], en:'There are three apples.', hint:'셋은 개 앞에서 줄어들어요.'},
+       {s:'동생은 두 살이에요.', tiles:['동생은','두','살이에요.'], extra:['둘'], en:'My little sibling is two.', hint:'둘은 살 앞에서 줄어들어요.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'나이를 말할 때도 소리와 글자가 다른 곳이 있단다. 살의 ㅅ이 앞 받침을 만나면 힘이 들어가 ㅆ처럼 소리 나기도 하지.',
+     cmp:[
+       {s:'몇 살', d:'멷 쌀', n:'ㅊ 받침은 ㄷ처럼 나고, 뒤의 ㅅ은 ㅆ처럼 나요'},
+       {s:'여덟 살', d:'여덜 쌀', n:'ㄼ 가운데 ㄹ만 소리 나고, 뒤의 ㅅ은 ㅆ처럼 나요'},
+       {s:'일곱 살', d:'일곱 쌀', n:'ㅂ 받침 뒤의 ㅅ은 ㅆ처럼 나요'},
+       {s:'살이에요', d:'사리에요', n:'ㄹ 받침이 뒤로 건너가요'}],
+     note:'소리가 [쌀]로 들려도 나이를 쓸 때는 늘 ‘살’이란다. 쌀은 밥 짓는 쌀이지. 헷갈리면 이 할아버지를 떠올리거라.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 들리는 소리와 쓰는 글자가 다른 말이 있어.',
+     items:[
+       {w:'살', en:'years old', hint:{who:'dami', t:'나이를 세는 살은 ㅅ 하나로 쓴단다. 쌀은 밥 짓는 쌀이지.'}},
+       {w:'몇', en:'how many', hint:{who:'dami', t:'소리는 [멷]이지만 받침은 ㅊ이란다. 받침 줄에서 ㅊ을 찾아보거라.'}},
+       {w:'열둘', en:'twelve'}]}
+  ],
+  dictWords:[{w:'살', en:'years old'}, {w:'개', en:'(counter for things)'}, {w:'몇', en:'how many'}, {w:'열하나', pic:'apples11', en:'eleven'}, {w:'열둘', en:'twelve'}] },
+
+{ n:9, bundle:3, title:'토리의 생일',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'오늘은 토리 생일이야. 담이 할아버지도 오셨어. 먼저 글자 없이 귀로만 들어 보고, 그다음에 글자를 같이 보자.',
+     big:'생일 축하해'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 누가 무슨 말을 하는지 귀로만 먼저 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'moi', t:'토리야, 생일 축하해!', en:'Happy birthday, Tori!'},
+       {who:'tori', t:'고마워, 모이야!', en:'Thanks, Moi!'},
+       {who:'moi', t:'토리는 몇 살이야?', en:'How old are you, Tori?'},
+       {who:'tori', t:'나는 여덟 살이야.', en:"I'm eight."},
+       {who:'moi', t:'와, 나도 여덟 살이야!', en:"Wow, I'm eight too!"},
+       {who:'dami', t:'허허, 떡을 여덟 개 가져왔단다.', en:'Ho ho, I brought eight rice cakes.'},
+       {who:'tori', t:'감사합니다, 할아버지. 할아버지는 몇 살이에요?', en:'Thank you, Grandpa. How old are you?'},
+       {who:'dami', t:'허허, 어른께는 연세가 어떻게 되세요, 하고 여쭙는단다.', en:'Ho ho, to an elder you ask, "May I ask your age?"'}],
+     note:{who:'dami', t:'친구에게는 ‘몇 살이야?’ 하고 물어도 된단다. 그런데 할머니, 할아버지 같은 어른께 몇 살이냐고 물으면 버릇없게 들리지. 어른의 나이는 ‘연세’라고 하고, ‘연세가 어떻게 되세요?’ 하고 여쭙는단다.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'토리는 몇 살이에요?', o:['일곱 살','여덟 살','아홉 살'], a:'여덟 살', why:'토리는 ‘나는 여덟 살이야’라고 했어요.'},
+       {t:'모이는 몇 살이에요?', o:['여덟 살','열 살','세 살'], a:'여덟 살', why:'모이는 ‘나도 여덟 살이야’라고 했어요.'},
+       {t:'담이 할아버지는 떡을 몇 개 가져왔어요?', o:['여섯 개','열 개','여덟 개'], a:'여덟 개', why:'할아버지는 ‘떡을 여덟 개 가져왔단다’라고 했어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {line:{who:'moi', t:'토리야, 너는 몇 살이야?'}, en:'Tori, how old are you?', o:['나는 여덟 살이야.','저는 여덟 살이에요.'], a:'나는 여덟 살이야.', why:'모이는 친구라서 편한 말로 대답해요.'},
+       {line:{who:'dami', t:'토리야, 너는 몇 살이냐?'}, en:'Tori, how old are you?', o:['나는 여덟 살이야.','저는 여덟 살이에요.'], a:'저는 여덟 살이에요.', why:'할아버지는 어른이라서 ‘저는 여덟 살이에요’라고 해요.'},
+       {pic:'p_grandma', t:'할머니의 나이가 궁금해요.', en:"You want to know Grandma's age.", o:['몇 살이에요?','연세가 어떻게 되세요?'], a:'연세가 어떻게 되세요?', why:'어른께는 ‘연세가 어떻게 되세요?’라고 여쭤요.'},
+       {pic:'p_friend', t:'친구의 나이가 궁금해요.', en:"You want to know your friend's age.", o:['몇 살이야?','연세가 어떻게 되세요?'], a:'몇 살이야?', why:'친구에게는 ‘몇 살이야?’라고 물어요.'}]},
+    {type:'task', title:'나이를 말하고 물어보기', who:'moi',
+     t:'오늘 배운 말로 가족과 이야기해 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'할머니 할아버지께 내 나이를 말해요', say:'저는 ______ 살이에요.', sub:'한, 두, 세, 네 살처럼 줄어드는 숫자를 조심해요.'},
+       {when:'사촌이나 친구에게 물어봐요', say:'너는 몇 살이야?', sub:'친구에게는 편한 말로 물어요.'},
+       {when:'할머니 할아버지께 여쭤요', say:'연세가 어떻게 되세요?', sub:'어른께는 몇 살이냐고 묻지 않아요.'}],
+     parent:'마지막 질문은 할머니 할아버지께 미리 알려 드리면 좋습니다. 아이가 "연세가 어떻게 되세요?"라고 여쭈면 칭찬해 주시고, 대답은 "여든 살이란다"처럼 숫자 그대로 해 주셔도 됩니다. 스물 이상의 수는 아직 배우지 않았으니 알아듣지 못해도 괜찮습니다. 저녁 식탁에서 숟가락이나 과일을 "하나, 둘, 셋" 하고 함께 세어 보는 것도 좋은 연습입니다.'}
+  ],
+  dictWords:[] },
+
+/* ---- 넷째 묶음: 내 몸 -----------------------------------------
+   몸의 이름 열 개를 배우고, 셋째 묶음의 숫자(눈이 두 개예요)와 둘째 묶음의 이/가(머리가 아파요)를 다시 씁니다.
+   과제는 "Simon says"와 같은 "담이가 말했어요" 놀이입니다. */
+{ n:10, bundle:4, title:'머리, 눈, 코, 입',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'오늘은 몸의 이름을 모아 왔어. 내 몸을 가리키면서 따라 해 봐.',
+     big:'내 몸'},
+    {type:'pairs', title:'얼굴', who:'moi',
+     t:'빨간 동그라미가 있는 곳을 봐. 그림을 누르면 소리가 나. 네 얼굴에서도 같은 곳을 짚어 봐.',
+     singles:[
+       {w:'머리', pic:'f_head', en:'head'}, {w:'눈', pic:'f_eye', en:'eye'}, {w:'코', pic:'f_nose', en:'nose'},
+       {w:'입', pic:'f_mouth', en:'mouth'}, {w:'귀', pic:'f_ear', en:'ear'}]},
+    {type:'pairs', title:'몸', who:'moi',
+     t:'이번엔 몸이야. 손, 발, 배, 팔, 다리. 하나씩 짚으면서 들어 봐.',
+     singles:[
+       {w:'손', pic:'b_hand', en:'hand'}, {w:'발', pic:'b_foot', en:'foot'}, {w:'배', pic:'b_belly', en:'belly'},
+       {w:'팔', pic:'b_arm', en:'arm'}, {w:'다리', pic:'b_leg', en:'leg'}],
+     tip:{who:'tori', t:'눈은 하늘에서 오는 눈과 글자가 같아. 배도 먹는 배, 타는 배와 글자가 같지. 그림을 보면 무슨 뜻인지 알 수 있어.'}},
+    {type:'choose', title:'여기는 어디예요?', who:'tori',
+     t:'빨간 동그라미가 있는 곳의 이름을 골라 봐.',
+     qs:[
+       {pic:'f_nose', o:['코','입','귀'], a:'코'},
+       {pic:'b_foot', o:['손','발','배'], a:'발'},
+       {pic:'f_ear', o:['눈','귀','머리'], a:'귀'},
+       {pic:'b_belly', o:['배','팔','다리'], a:'배'},
+       {pic:'f_eye', o:['코','눈','입'], a:'눈'},
+       {pic:'b_leg', o:['팔','다리','손'], a:'다리'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 곳을 찾아 봐.',
+     qs:[
+       {say:'입', o:['f_nose','f_mouth','f_eye'], a:'f_mouth'},
+       {say:'손', o:['b_hand','b_foot','b_arm'], a:'b_hand'},
+       {say:'머리', o:['f_ear','f_nose','f_head'], a:'f_head'},
+       {say:'팔', o:['b_leg','b_arm','b_belly'], a:'b_arm'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'몸의 이름을 써 봐. 뜻을 같이 보면 도움이 돼.',
+     items:[{w:'눈', en:'eye'}, {w:'손', en:'hand'}, {w:'다리', en:'leg'}]}
+  ],
+  dictWords:[{w:'머리', en:'head'}, {w:'눈', en:'eye'}, {w:'코', en:'nose'}, {w:'입', en:'mouth'}, {w:'귀', en:'ear'},
+             {w:'손', en:'hand'}, {w:'발', en:'foot'}, {w:'배', en:'belly'}, {w:'팔', en:'arm'}, {w:'다리', en:'leg'}] },
+
+{ n:11, bundle:4, title:'머리가 아파요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'어디가 아플 때 하는 말을 배워 보자. 아픈 곳 뒤에 이나 가를 붙이고 ‘아파요’라고 하면 돼.',
+     big:'머리가 아파요'},
+    {type:'pairs', title:'아플 때 하는 말', who:'moi',
+     t:'오늘 모아 온 말이야. 눌러서 들어 봐.',
+     singles:[
+       {w:'아파요', pic:'ouch', en:'it hurts'},
+       {w:'어디', pic:'what', en:'where'},
+       {w:'몸', pic:'b_body', en:'body'}],
+     tip:{who:'tori', t:'친구에게는 ‘아파’, 어른에게는 ‘아파요’라고 해. 넘어졌을 때 ‘아야!’ 하고 소리치는 건 누구에게나 괜찮아.'}},
+    {type:'josa', j:'이', q:'뒤에 무엇을 붙일까요?', title:'이일까요, 가일까요?', who:'tori',
+     t:'둘째 묶음에서 배운 것 기억나? 받침이 있으면 이, 없으면 가.',
+     names:['눈','코','입','귀','손','배','팔','다리']},
+    {type:'choose', title:'어디가 아파요?', who:'tori',
+     t:'빨간 동그라미가 있는 곳이 아파. 알맞은 말을 골라 봐.',
+     qs:[
+       {pic:'b_belly', o:['배가 아파요.','발이 아파요.'], a:'배가 아파요.', en:'My belly hurts.'},
+       {pic:'f_head', o:['머리가 아파요.','머리이 아파요.'], a:'머리가 아파요.', en:'My head hurts.', why:'‘리’에 받침이 없어서 ‘가’를 붙여요.'},
+       {pic:'b_hand', o:['손가 아파요.','손이 아파요.'], a:'손이 아파요.', en:'My hand hurts.', why:'‘손’에 받침 ㄴ이 있어서 ‘이’를 붙여요.'},
+       {pic:'f_ear', o:['귀가 아파요.','코가 아파요.'], a:'귀가 아파요.', en:'My ear hurts.'}]},
+    {type:'choose', title:'몇 개예요?', who:'moi',
+     t:'셋째 묶음에서 배운 숫자로 세어 봐. 개 앞에서 줄어드는 숫자, 기억나지?',
+     qs:[
+       {pic:'f_eye', t:'눈이 몇 개예요?', o:['눈이 두 개예요.','눈이 둘 개예요.'], a:'눈이 두 개예요.', en:'I have two eyes.', why:'둘은 개 앞에서 두가 돼요.'},
+       {pic:'f_nose', t:'코가 몇 개예요?', o:['코가 한 개예요.','코가 하나 개예요.'], a:'코가 한 개예요.', en:'I have one nose.', why:'하나는 개 앞에서 한이 돼요.'},
+       {pic:'f_ear', t:'귀가 몇 개예요?', o:['귀가 두 개예요.','귀가 세 개예요.'], a:'귀가 두 개예요.', en:'I have two ears.'}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'어디가 아파요?', tiles:['어디가','아파요?'], en:'Where does it hurt?'},
+       {s:'머리가 아파요.', tiles:['머리가','아파요.'], extra:['머리이'], en:'My head hurts.', hint:'‘리’에 받침이 없어요.'},
+       {s:'저는 발이 아파요.', tiles:['저는','발이','아파요.'], extra:['발가'], en:'My foot hurts.', hint:'누가 하는 말인지(저는)부터 와요. ‘발’에는 받침 ㄹ이 있어요.'},
+       {s:'손이 두 개예요.', tiles:['손이','두','개예요.'], extra:['둘'], en:'I have two hands.', hint:'둘은 개 앞에서 줄어들어요.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'몸의 이름 뒤에 이가 붙으면, 받침이 또 뒤로 건너간단다. 들어 보거라.',
+     cmp:[
+       {s:'눈이', d:'누니', n:'ㄴ 받침이 뒤로 건너가요'},
+       {s:'손이', d:'소니', n:'ㄴ 받침이 뒤로 건너가요'},
+       {s:'발이', d:'바리', n:'ㄹ 받침이 뒤로 건너가요'},
+       {s:'입이', d:'이비', n:'ㅂ 받침이 뒤로 건너가요'}],
+     note:'[누니 아파요]로 들려도 쓸 때는 ‘눈이 아파요’란다. 받침은 제 글자에 두고, 이는 따로 쓰는 게야.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'아파요', en:'it hurts'},
+       {w:'발이', en:'foot (with 이)', hint:{who:'dami', t:'소리는 [바리]지만, ㄹ은 ‘발’의 받침으로 남아 있단다. ‘발’을 쓰고 ‘이’를 붙여 보거라.'}},
+       {w:'눈이', en:'eye (with 이)', hint:{who:'dami', t:'소리는 [누니]지만, ㄴ은 ‘눈’의 받침이란다. ‘눈’을 쓰고 ‘이’를 붙여 보거라.'}}]}
+  ],
+  dictWords:[{w:'아파요', en:'it hurts'}, {w:'어디', en:'where'}, {w:'몸', en:'body'}, {w:'발이', en:'foot (with 이)'}, {w:'눈이', en:'eye (with 이)'}] },
+
+{ n:12, bundle:4, title:'모이가 아파요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'토리 생일 다음 날, 모이가 조금 이상해. 먼저 글자 없이 귀로만 들어 보고, 그다음에 글자를 같이 보자.',
+     big:'배가 아파요'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 누가 무슨 말을 하는지 귀로만 먼저 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'tori', t:'모이야, 왜 그래?', en:"Moi, what's wrong?"},
+       {who:'moi', t:'아야, 배가 아파.', en:'Ow, my belly hurts.'},
+       {who:'dami', t:'모이야, 어디가 아프냐?', en:'Moi, where does it hurt?'},
+       {who:'moi', t:'배가 아파요. 머리도 아파요.', en:'My belly hurts. My head hurts too.'},
+       {who:'tori', t:'할아버지, 모이가 어제 떡을 여덟 개 먹었어요!', en:'Grandpa, Moi ate eight rice cakes yesterday!'},
+       {who:'dami', t:'허허, 떡을 너무 많이 먹었구나.', en:'Ho ho, you ate too many rice cakes.'},
+       {who:'moi', t:'다음에는 한 개만 먹을게요.', en:"Next time I'll eat just one."}],
+     note:{who:'dami', t:'모이가 토리에게는 ‘배가 아파’라고 하고, 나에게는 ‘배가 아파요’라고 했지? 친구와 어른에게 하는 말이 이렇게 다르단다. 그리고 ‘머리도 아파요’의 ‘도’는 ‘~도, 또’라는 뜻이지.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'모이는 어디가 아파요?', o:['귀','배','발'], a:'배', why:'모이는 ‘배가 아파요’라고 했어요.'},
+       {t:'모이는 또 어디가 아파요?', o:['머리','손','다리'], a:'머리', why:'모이는 ‘머리도 아파요’라고 했어요.'},
+       {t:'모이는 떡을 몇 개 먹었어요?', o:['한 개','여덟 개','세 개'], a:'여덟 개', why:'토리가 ‘떡을 여덟 개 먹었어요’라고 했어요.'},
+       {t:'다음에는 떡을 몇 개만 먹을 거예요?', o:['한 개','두 개','열 개'], a:'한 개', why:'모이는 ‘한 개만 먹을게요’라고 했어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 넘어져서 발이 아파. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {pic:'b_foot', line:{who:'moi', t:'토리야, 어디가 아파?'}, en:'Tori, where does it hurt?', o:['발이 아파.','발이 아파요.'], a:'발이 아파.', why:'모이는 친구라서 편한 말로 대답해요.'},
+       {pic:'b_foot', line:{who:'dami', t:'토리야, 어디가 아프냐?'}, en:'Tori, where does it hurt?', o:['발이 아파.','발이 아파요.'], a:'발이 아파요.', why:'할아버지는 어른이라서 ‘아파요’라고 해요.'},
+       {pic:'f_ear', t:'귀가 아파요. 할머니께 말해요.', en:'Your ear hurts. Tell Grandma.', o:['귀가 아파요.','귀이 아파요.','귀가 아파.'], a:'귀가 아파요.', why:'‘귀’에는 받침이 없어서 ‘가’. 할머니께는 ‘아파요’라고 해요.'}]},
+    {type:'task', title:'담이가 말했어요 놀이', who:'moi',
+     t:'가족과 놀이를 해 봐. 영어의 Simon says와 같은 놀이야. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'어른이 말하면 아이가 가리켜요', say:'담이가 말했어요, 코!', sub:'‘담이가 말했어요’ 없이 ‘코!’만 말하면 움직이지 않아요.'},
+       {when:'이번엔 아이가 말해요', say:'담이가 말했어요, 귀!', sub:'머리, 눈, 입, 손, 발, 배, 팔, 다리로 바꿔 가며 해 봐요.'},
+       {when:'놀이가 끝나면 아픈 척하며 말해요', say:'______가 아파요.', sub:'받침이 있는 말이면 이: 발이 아파요.'}],
+     parent:'놀이는 영어의 Simon says와 같습니다. 어른이 "담이가 말했어요, 코!" 하면 아이가 코를 가리키고, "담이가 말했어요" 없이 "코!"만 말하면 가만히 있어야 합니다. 몇 번 하고 나면 역할을 바꿔 아이가 말하게 해 주세요. 부위를 말할 때 영어가 섞여도 괜찮고, 한국어로 다시 말해 주시면 됩니다. 마지막에 아픈 척하며 "배가 아파요" 같은 문장을 말하게 해 보세요.'}
   ],
   dictWords:[] }
 ];
