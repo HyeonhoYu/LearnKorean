@@ -100,7 +100,7 @@ function josa(word, type){
    특히 iOS 는 샌드박스 안에서 접근 자체가 막히기도 하고,
    사용자가 화면을 한 번 누르기 전에는 소리를 내 주지 않습니다.
    그래서 모든 접근을 safe() 로 감싸고, 실패하면 조용히 끕니다.   */
-let voiceKo = null, ttsOK = false, ttsUnlocked = false, ttsWarned = false;
+let voiceKo = null, ttsOK = false, ttsUnlocked = false, ttsWarned = false, unlockBusy = false;
 function safe(fn){
   try { return fn(); }
   catch(e) { ttsOK = false; return null; }
@@ -125,6 +125,9 @@ function unlockAudio(){
   safe(() => {
     const u = new SpeechSynthesisUtterance(' ');
     u.volume = 0;
+    unlockBusy = true;
+    u.onend = u.onerror = () => { unlockBusy = false; };
+    setTimeout(() => { unlockBusy = false; }, 1500);
     speechSynthesis.speak(u);
   });
 }
@@ -200,18 +203,7 @@ function speakThen(text, done){
     } catch(e) {}
   }
   if(!ttsOK){ audioWarn(); return; }
-  if(playingClip){ try { playingClip.pause(); } catch(e) {} }
-  const ok = safe(() => {
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'ko-KR'; u.rate = .8;
-    if(voiceKo) u.voice = voiceKo;
-    u.onend = fin;
-    u.onerror = ev => { if(ev && ev.error !== 'interrupted' && ev.error !== 'canceled') audioWarn(); fin(); };
-    speechSynthesis.speak(u);
-    return true;
-  });
-  if(!ok) audioWarn();
+  if(!ttsSay(text, fin)) audioWarn();
 }
 
 function speak(text){
@@ -221,18 +213,42 @@ function speak(text){
 }
 function ttsSpeak(text){
   if(!ttsOK || !text) return;
+  if(!ttsSay(text)) audioWarn();
+}
+/* 음성 합성으로 한 번 말합니다. 끝나면 onend 를 부릅니다.
+   페이지에서 처음 누르는 순간에는 잠금 풀기용 빈 말이 먼저 줄에 들어가 있는데,
+   그 바로 뒤에 cancel() 과 speak() 를 잇달아 부르면 iOS 사파리와 크롬이 새 말을 소리 없이 버리곤 합니다.
+   그래서 말하는 중일 때만 cancel() 하고, 조금 기다려도 말이 시작되지 않으면 한 번 더 말합니다. */
+function ttsSay(text, onend){
   if(playingClip){ try { playingClip.pause(); } catch(e) {} }
-  const done = safe(() => {
-    speechSynthesis.cancel();
+  let started = false, retried = false;
+  const utter = () => {
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'ko-KR';
-    u.rate = .8;
+    u.lang = 'ko-KR'; u.rate = .8;
     if(voiceKo) u.voice = voiceKo;
-    u.onerror = ev => { if(ev && ev.error !== 'interrupted' && ev.error !== 'canceled') audioWarn(); };
-    speechSynthesis.speak(u);
+    u.onstart = () => { started = true; };
+    u.onend = () => { started = true; if(onend) onend(); };
+    u.onerror = ev => {
+      if(ev && ev.error !== 'interrupted' && ev.error !== 'canceled'){ audioWarn(); if(onend) onend(); }
+    };
+    return u;
+  };
+  return !!safe(() => {
+    /* 잠금 풀기용 빈 말만 있을 때는 끊지 않고 그 뒤에 이어 말합니다. */
+    if(!unlockBusy && (speechSynthesis.speaking || speechSynthesis.pending)) speechSynthesis.cancel();
+    if(speechSynthesis.paused) speechSynthesis.resume();
+    speechSynthesis.speak(utter());
+    setTimeout(() => {
+      if(started || retried) return;
+      retried = true;
+      safe(() => {
+        if(speechSynthesis.speaking && !speechSynthesis.pending) return;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utter());
+      });
+    }, 650);
     return true;
   });
-  if(!done) audioWarn();
 }
 
 /* ---- 기초 도구 ---- */

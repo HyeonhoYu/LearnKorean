@@ -401,6 +401,10 @@ if(m2Recent && m2next){
   cta.textContent = '이어서 하기';
   cta.href = 'second-moon/?night=' + m2next;
   note.textContent = '둘째 달 ' + ORD2[m2next - 1] + ' 밤 차례예요. 둘째 달에서 ' + COUNT2[m2done - 1] + ' 밤을 마쳤어요.';
+} else if(m2Recent && !m2next){
+  cta.textContent = '받아쓰기실';
+  cta.href = 'dictation/';
+  note.textContent = '둘째 달에서 지금 열린 밤을 다 마쳤어요. 다음 밤들은 곧 열려요. 그동안 받아쓰기실에서 연습해요.';
 } else if(!started && !m2done){
   cta.textContent = '시작하기';
   cta.href = 'first-moon/';

@@ -56,6 +56,15 @@ const nightTitle = n => { const x = M2_NIGHTS.find(m => m.n === n); return x ? x
 /* ══════════════════════════════════════════════════════════════
    밤 고르기
    ══════════════════════════════════════════════════════════════ */
+const bundleOpen = B => B.nights.every(n => OPEN.includes(n));
+const nextClosed = () => M2_BUNDLES.find(B => !bundleOpen(B));
+const openBundles = () => M2_BUNDLES.filter(bundleOpen);
+/* 열린 밤을 다 마쳤을 때 토리가 하는 말 */
+function waitLine(){
+  const last = openBundles().pop(), nb = nextClosed();
+  return (last ? last.title + ' 묶음까지 다 마쳤어. ' : '') +
+    (nb ? '다음 묶음 ' + josa(nb.title, '은') + ' 곧 열려. 그동안 받아쓰기실에서 방아를 찧어 보자.' : '둘째 달 보름달을 다 채웠어.');
+}
 function showPicker(){
   seq++; night = null; curGuide = null;
   hdrTitle.textContent = '둘째 달, 나와 우리 집';
@@ -71,13 +80,13 @@ function showPicker(){
           ? '한글 첫 달을 다 채웠구나. 이제 그 글자로 말을 해 보자. 인사부터 시작해서 가족, 숫자, 몸, 우리 집까지 가. 보름, 열다섯 밤이면 보름달이 떠.'
           : '둘째 달에서는 한글로 말을 해 봐. 첫째 달을 먼저 하고 오면 훨씬 쉬워. 한글을 벌써 읽을 줄 알면 여기서 바로 시작해도 돼.')
       : nextUp ? '어서 와. ' + nightName(nextUp) + ' 차례야. 열다섯 밤 가운데 ' + COUNT[done - 1] + ' 밤을 마쳤어.'
-               : '첫 묶음을 다 마쳤어. 다음 묶음 우리 가족은 곧 열려. 그동안 받아쓰기실에서 방아를 찧어 보자.'));
+               : waitLine()));
   card.append(h('button', {class:'roomcard', onclick: () => { location.href = '../dictation/'; }},
     h('div', {html: CHAR.tori('')}),
     h('div', {}, h('b', {}, '받아쓰기실'), h('span', {}, '둘째 달에서 마친 밤의 말도 여기서 연습해요.'))));
 
   M2_BUNDLES.forEach(B => {
-    const open = B.nights.every(n => OPEN.includes(n));
+    const open = bundleOpen(B);
     const sec = h('section', {class:'bundle' + (open ? '' : ' locked'), 'aria-label': ORD[B.k - 1] + ' 묶음, ' + B.title});
     sec.append(h('div', {class:'bhead'},
       h('span', {class:'bnum'}, ORD[B.k - 1] + ' 묶음'),
@@ -117,7 +126,7 @@ function showPicker(){
   });
   card.append(h('div', {class:'parents'},
     h('b', {}, '부모님께. '),
-    '둘째 달은 인사, 가족, 숫자, 몸, 우리 집의 다섯 묶음으로, 묶음마다 세 밤입니다. 첫 밤에 새 말을 만나고, 둘째 밤에 그 말로 문장을 만들고, 셋째 밤에 이야기를 듣고 집에서 해 볼 과제를 합니다. 지금은 첫 묶음이 열려 있고 나머지는 차례로 열립니다. ',
+    '둘째 달은 인사, 가족, 숫자, 몸, 우리 집의 다섯 묶음으로, 묶음마다 세 밤입니다. 첫 밤에 새 말을 만나고, 둘째 밤에 그 말로 문장을 만들고, 셋째 밤에 이야기를 듣고 집에서 해 볼 과제를 합니다. ' + (nextClosed() ? '지금은 ' + ORD[openBundles().length - 1] + ' 묶음까지 열려 있고 나머지는 차례로 열립니다. ' : ''),
     canStore ? (done ? '지금까지 ' + COUNT[done - 1] + ' 밤을 마쳤습니다.' : '아직 시작하기 전입니다.') + ' 진도는 이 기기의 브라우저에만 저장됩니다.'
              : '이 브라우저에서는 진도가 저장되지 않습니다.',
     done && canStore ? h('div', {}, resetBtn) : ''));
@@ -286,32 +295,82 @@ SCREENS.choose = S => {
 
 /* ---- 이에요와 예요 규칙 ---- */
 function lastSyl(name){ return [...name].pop(); }
-function nameCell(name){
+function nameCell(name, jo){
   const syl = lastSyl(name), [c, v, j] = decomp(syl) || [];
-  const full = josa(name, '이에요');
+  const full = josa(name, jo || '이에요');
   const tail = full.slice(name.length);
   return h('button', {class:'rulecell', onclick: () => talk(full), 'aria-label': full + ' 듣기'},
     h('span', {class:'rn'}, name.slice(0, -1), h('span', {class: j ? 'rl has' : 'rl'}, syl)),
     h('span', {class:'rj'}, j ? '받침 ' + j : '받침 없음'),
     h('span', {class:'rf'}, name, h('b', {}, tail)));
 }
+/* S.j 는 붙일 말(기본 이에요). 받침이 있을 때와 없을 때의 모양은 조사 엔진의 짝에서 가져옵니다. */
 SCREENS.rule = S => {
   head2(S);
+  const jo = S.j || '이에요', [noForm, yesForm] = JOSA_PAIR[jo];
   card.append(h('div', {class:'rule'},
-    h('div', {class:'rcol'}, h('p', {class:'rhead'}, '받침이 있으면 ', h('b', {}, '이에요')), ...S.yes.map(nameCell)),
-    h('div', {class:'rcol'}, h('p', {class:'rhead'}, '받침이 없으면 ', h('b', {}, '예요')), ...S.no.map(nameCell))));
-  card.append(guide('dami', '토리, 모이, 담이는 모두 끝 글자에 받침이 없지. 그래서 토리예요, 모이예요, 담이예요라고 한단다.', true));
+    h('div', {class:'rcol'}, h('p', {class:'rhead'}, '받침이 있으면 ', h('b', {}, yesForm)), ...S.yes.map(nm => nameCell(nm, jo))),
+    h('div', {class:'rcol'}, h('p', {class:'rhead'}, '받침이 없으면 ', h('b', {}, noForm)), ...S.no.map(nm => nameCell(nm, jo)))));
+  card.append(guide('dami', S.note || '토리, 모이, 담이는 모두 끝 글자에 받침이 없지. 그래서 토리예요, 모이예요, 담이예요라고 한단다.', true));
 };
 
 /* ---- 이에요/예요 고르기: 이름 목록으로 문제를 만듭니다. 판정은 조사 엔진이 합니다. ---- */
-function josaWhy(name){
+function josaWhy(name, jo){
+  const [noForm, yesForm] = JOSA_PAIR[jo || '이에요'];
   const syl = lastSyl(name), j = (decomp(syl) || [])[2];
-  return j ? '‘' + syl + '’에 받침 ' + josa(j, '이') + ' 있어서 ‘이에요’를 붙여요.'
-           : '‘' + syl + '’에 받침이 없어서 ‘예요’를 붙여요.';
+  return j ? '‘' + syl + '’에 받침 ' + josa(j, '이') + ' 있어서 ‘' + yesForm + '’를 붙여요.'
+           : '‘' + syl + '’에 받침이 없어서 ‘' + noForm + '’를 붙여요.';
 }
 SCREENS.josa = S => {
+  const jo = S.j || '이에요', [noForm, yesForm] = JOSA_PAIR[jo];
   SCREENS.choose({title: S.title, who: S.who, t: S.t,
-    qs: S.names.map(nm => ({big: nm, t: '이름 뒤에 무엇을 붙일까요?', o: [nm + '이에요', nm + '예요'], a: josa(nm, '이에요'), why: josaWhy(nm)}))});
+    qs: S.names.map(nm => ({big: nm, t: S.q || '이름 뒤에 무엇을 붙일까요?', o: [nm + yesForm, nm + noForm], a: josa(nm, jo), why: josaWhy(nm, jo)}))});
+};
+
+/* ---- 형, 오빠, 누나, 언니 ------------------------------------
+   먼저 "나"가 남자아이인지 여자아이인지 고르면, 그 아이가 부르는 말을 크게 보여 주고
+   아래 표에서 두 쪽을 함께 보여 줍니다. 고른 것은 이 화면에서만 쓰고 저장하지 않습니다. */
+const SIB = {
+  boy:  {me:'me_boy',  label:'남자아이', older:[{w:'형', pic:'call_hyung', en:'older brother'}, {w:'누나', pic:'call_nuna', en:'older sister'}]},
+  girl: {me:'me_girl', label:'여자아이', older:[{w:'오빠', pic:'call_oppa', en:'older brother'}, {w:'언니', pic:'call_unni', en:'older sister'}]}
+};
+SCREENS.sibling = S => {
+  head2(S);
+  hideNext();
+  const pickRow = h('div', {class:'sibpick'});
+  const out = h('div', {'aria-live':'polite'});
+  const choose = k => {
+    [...pickRow.children].forEach(b => b.classList.toggle('on', b.dataset.k === k));
+    const me = SIB[k], other = SIB[k === 'boy' ? 'girl' : 'boy'];
+    out.innerHTML = '';
+    out.append(say('tori', me.label + '는 이렇게 불러. 나보다 나이 많은 남자는 ' + me.older[0].w + ', 나이 많은 여자는 ' + me.older[1].w + '. 나보다 어리면 누구든 동생이야.'));
+    const box = h('div', {class:'words'});
+    [...me.older, {w:'동생', pic:'call_dong', en:'younger sibling (boy or girl)'}].forEach(item => {
+      const el = h('div', {class:'word', role:'button', tabindex:'0', 'aria-label': item.w + ' 듣기', onclick: () => talk(item.w)});
+      el.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); talk(item.w); } });
+      el.innerHTML = M2_PIC[item.pic];
+      el.append(h('div', {class:'w'}, item.w), h('div', {class:'en', lang:'en'}, item.en));
+      box.append(el);
+    });
+    out.append(box);
+    const cell = w => h('td', {}, sayBtn(w));
+    const tbl = h('table', {class:'sibtbl'},
+      h('tr', {}, h('th', {}, ''), h('th', {}, '나이 많은 남자'), h('th', {}, '나이 많은 여자'), h('th', {}, '나보다 어린 아이')),
+      h('tr', {class: k === 'boy' ? 'mine' : ''}, h('th', {}, '남자아이가 부를 때'), cell('형'), cell('누나'), cell('동생')),
+      h('tr', {class: k === 'girl' ? 'mine' : ''}, h('th', {}, '여자아이가 부를 때'), cell('오빠'), cell('언니'), cell('동생')));
+    out.append(h('p', {class:'sub', style:'margin-top:18px'}, '두 쪽을 함께 보면 이래요. 색칠한 줄이 내가 부르는 말이에요. ' + other.label + '는 다르게 불러요.'),
+      h('div', {class:'cmpwrap'}, tbl));
+    talk(me.older[0].w);
+    react('happy');
+    showNext();
+  };
+  ['boy', 'girl'].forEach(k => {
+    const b = h('button', {class:'sibbtn', 'data-k': k, onclick: () => choose(k)});
+    b.innerHTML = M2_PIC[SIB[k].me];
+    b.append(h('span', {}, '나는 ' + SIB[k].label + '예요'));
+    pickRow.append(b);
+  });
+  card.append(pickRow, out);
 };
 
 /* ---- 내 이름으로 말하기. 이름은 화면에만 쓰고 저장하지 않습니다. ---- */
@@ -329,7 +388,7 @@ SCREENS.myname = S => {
     }
     setFeedback('');
     const a = '저는 ' + josa(nm, '이에요') + '.', b = '제 이름은 ' + josa(nm, '이에요') + '.';
-    out.append(say('tori', '좋아. ' + josaWhy(nm)),
+    out.append(say('tori', '좋아. ' + josaWhy(nm, '이에요')),
       h('div', {class:'mysent'}, sayBtn(a)), h('div', {class:'mysent'}, sayBtn(b)));
     talk((a));
     react('happy');
@@ -565,11 +624,14 @@ SCREENS.result = () => {
   stars[night.n] = Math.max(stars[night.n] || 0, s);
   saveStars();
   const nextN = night.n + 1, nextOpen = OPEN.includes(nextN);
-  const bundleDone = M2_BUNDLES.find(b => b.k === night.bundle).nights.every(n => stars[n]);
-  const title = nextOpen ? '오늘 밤 달이 조금 차올랐어요' : bundleDone ? '첫 묶음을 다 채웠어요' : '오늘 밤 달이 조금 차올랐어요';
-  const line = s === 3
-    ? (nextOpen ? '잘했어. 이제 ' + nightName(nextN) + '으로 가자.' : '안녕하세요 묶음을 다 마쳤어. 다음 묶음 우리 가족은 곧 열려. 그동안 할머니 할아버지께 인사해 봐.')
-    : '괜찮아. 떡은 방아를 여러 번 찧어야 만들어져. 한 번 더 해 볼까?';
+  const B = M2_BUNDLES.find(b => b.k === night.bundle);
+  const lastOfBundle = night.n === B.nights[B.nights.length - 1];
+  const bundleDone = B.nights.every(n => stars[n]);
+  const title = lastOfBundle && bundleDone ? ORD[B.k - 1] + ' 묶음을 다 채웠어요' : '오늘 밤 달이 조금 차올랐어요';
+  const nb = nextClosed();
+  const line = s < 3 ? '괜찮아. 떡은 방아를 여러 번 찧어야 만들어져. 한 번 더 해 볼까?'
+    : nextOpen ? '잘했어. ' + (lastOfBundle ? B.title + ' 묶음을 마쳤어. ' : '') + '이제 ' + josa(nightName(nextN), '으로') + ' 가자.'
+    : B.title + ' 묶음을 다 마쳤어. ' + (nb ? '다음 묶음 ' + josa(nb.title, '은') + ' 곧 열려. ' : '') + (B.after || '');
   card.append(h('div', {style:'text-align:center;padding-top:10px'},
     h('div', {class:'scene'},
       h('div', {class:'moon', html: moonSVG(night.n, 160, true, M2_TOTAL)}),
@@ -607,12 +669,13 @@ function listClips(){
       (S.singles || []).forEach(x => add(x.w, n, '낱말'));
     }
     if(S.type === 'choose') S.qs.forEach(q => {
-      if(q.line) add(q.line.t, n, '담이의 말', VOICE[q.line.who]);
+      if(q.line) add(q.line.t, n, NAME[q.line.who] + '의 말', VOICE[q.line.who]);
       if(q.say) add(q.say, n, '듣고 그림 고르기');
       if(S.mode !== 'pic') add(plain(q.a), n, '고르기 정답');
     });
-    if(S.type === 'rule') [...S.yes, ...S.no].forEach(nm => add(josa(nm, '이에요'), n, '이에요와 예요'));
-    if(S.type === 'josa') S.names.forEach(nm => add(josa(nm, '이에요'), n, '이에요와 예요 고르기'));
+    if(S.type === 'rule') [...S.yes, ...S.no].forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙'));
+    if(S.type === 'josa') S.names.forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙 고르기'));
+    if(S.type === 'sibling') ['형','누나','오빠','언니','동생'].forEach(w => add(w, n, '형제 부르는 말'));
     if(S.type === 'build') S.qs.forEach(q => add(q.s, n, '문장 만들기', '문장 끝까지 자연스럽게'));
     if(S.type === 'sound') S.cmp.forEach(c => add(c.s, n, '소리와 글자', '이어서 자연스럽게. [' + c.d + ']처럼 들리면 맞아요'));
     if(S.type === 'dict') S.items.forEach(x => add(x.w, n, '받아쓰기'));
