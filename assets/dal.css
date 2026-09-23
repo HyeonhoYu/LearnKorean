@@ -392,3 +392,11 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
 /* ---- 둘째 달: 줄어드는 숫자 ---- */
 .cmp.shrink td .saybtn{font-size:24px;min-width:5.5em}
 .cmp.shrink tr.chg td:not(:first-child) .saybtn{color:var(--juhong)}
+
+/* ---- 셋째 달: 시계 ---- */
+.clockbox{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0 10px}
+.clockface svg{width:240px;height:auto;display:block}
+.clocklabel{text-align:center;margin-bottom:14px}
+.clocklabel .saybtn{font-size:30px}
+.clockrow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:8px}
+.clockrow .chip.on{background:var(--hwang)}

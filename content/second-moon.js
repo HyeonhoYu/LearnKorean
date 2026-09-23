@@ -989,9 +989,21 @@ const M2_CHECK = [
     {pic:'t_bag', t:'할머니께 내 가방을 보여 드려요.', o:['내 가방이에요.','제 가방이에요.'], a:'제 가방이에요.'}]}
 ];
 
+/* 달 등록 정보. 받아쓰기실(key, title, path, store, units, extra, pool 함수)과
+   달 페이지 엔진(assets/moon.js 의 MOON: num, name, nights, bundles, pic, keys, total, check, text)이 함께 씁니다.
+   엔진은 받아쓰기 자판을 MOON.keys 로 읽습니다. */
 const SECOND_MOON = {
   key: 'second-moon', title: '둘째 달', path: 'second-moon/',
   store: 'daltokki:v1:second-moon',
   units: M2_NIGHTS.map(x => ({n: x.n, words: x.dictWords || []})),
-  extra: [], pool: () => M2_POOL
+  extra: [], pool: () => M2_POOL,
+  num: 2, name: '둘째 달', title2: '둘째 달, 나와 우리 집', nextName: '셋째 달', nextPath: 'third-moon/',
+  topics: '인사, 가족, 숫자, 몸, 우리 집',
+  nights: M2_NIGHTS, bundles: M2_BUNDLES, pic: M2_PIC, keys: M2_POOL, total: M2_TOTAL, check: M2_CHECK,
+  prev: {store: 'daltokki:v1:first-moon', total: 8},
+  text: {
+    welcomePrev: '한글 첫 달을 다 채웠구나. 이제 그 글자로 말을 해 보자. 인사부터 시작해서 가족, 숫자, 몸, 우리 집까지 가. 보름, 열다섯 밤이면 보름달이 떠.',
+    welcomeFresh: '둘째 달에서는 한글로 말을 해 봐. 첫째 달을 먼저 하고 오면 훨씬 쉬워. 한글을 벌써 읽을 줄 알면 여기서 바로 시작해도 돼.',
+    parents: '둘째 달은 인사, 가족, 숫자, 몸, 우리 집의 다섯 묶음으로, 묶음마다 세 밤입니다.'
+  }
 };

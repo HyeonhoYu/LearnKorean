@@ -219,7 +219,7 @@ footer p{margin:4px 0}
   <section aria-labelledby="monthsTitle">
     <div class="wrap">
       <h2 id="monthsTitle">일곱 달</h2>
-      <p class="sec-lede">달은 한 달에 한 번 보름달이 돼요. 달을 하나 가득 채울 때마다 한 단계씩 올라가요. 지금은 첫째 달과 둘째 달이 열려 있어요.</p>
+      <p class="sec-lede">달은 한 달에 한 번 보름달이 돼요. 달을 하나 가득 채울 때마다 한 단계씩 올라가요. 지금은 첫째 달부터 셋째 달까지 열려 있어요.</p>
       <div class="month-grid" id="monthGrid">
         <noscript><a class="month" href="first-moon/"><span><span class="mlabel">첫째 달</span><b>한글</b><span class="topics">모음, 자음, 받침, 겹받침</span></span></a></noscript>
       </div>
@@ -302,7 +302,8 @@ footer p{margin:4px 0}
   </div>
 </footer>
 
-<script src="content/second-moon.js?v=20260927"></script>
+<script src="content/second-moon.js?v=20260928"></script>
+<script src="content/third-moon.js?v=20260928"></script>
 <script>
 /* ---- 진도 읽기: 한글 첫 달과 같은 키를 씁니다 ---- */
 const STORE_KEY = 'daltokki:v1:first-moon';
@@ -343,32 +344,40 @@ let next = 0;
 for(let n = start; n <= NIGHTS; n++){ if(!stars[n]){ next = n; break; } }
 const started = done > 0 || start > 1;
 
-/* ---- 둘째 달 진도: second-moon 과 같은 키. 열린 밤은 내용 파일(content/second-moon.js)에서 읽습니다. ---- */
-const M2_OPEN = M2_NIGHTS.map(x => x.n);
-function readM2(){
+/* ---- 둘째 달부터: 달마다 내용 파일(content/*-moon.js)의 등록 정보로 진도를 읽습니다.
+   새 달이 열리면 LATER 에 한 줄, 위의 script 에 내용 파일 한 줄을 더하면 됩니다. ---- */
+const LATER = [SECOND_MOON, THIRD_MOON];
+function readUpdated(key){
+  try { const d = JSON.parse(window.localStorage.getItem(key) || 'null'); return Number(d && d.updated) || 0; } catch(e) { return 0; }
+}
+function readMoon(M){
   const out = {stars: {}, updated: 0, start: 1};
   try {
-    const d = JSON.parse(window.localStorage.getItem(SECOND_MOON.store) || 'null');
+    const d = JSON.parse(window.localStorage.getItem(M.store) || 'null');
     if(d && d.stars && typeof d.stars === 'object'){
       for(const k in d.stars){
         const n = Number(k), v = Number(d.stars[k]);
-        if(n >= 1 && n <= M2_TOTAL && v >= 1 && v <= 3) out.stars[n] = Math.round(v);
+        if(n >= 1 && n <= M.total && v >= 1 && v <= 3) out.stars[n] = Math.round(v);
       }
     }
     out.updated = Number(d && d.updated) || 0;
     const st = Number(d && d.start);
-    if(Number.isInteger(st) && st >= 1 && st <= M2_TOTAL + 1) out.start = st;
+    if(Number.isInteger(st) && st >= 1 && st <= M.total + 1) out.start = st;
   } catch(e) {}
   return out;
 }
-function readUpdated(key){
-  try { const d = JSON.parse(window.localStorage.getItem(key) || 'null'); return Number(d && d.updated) || 0; } catch(e) { return 0; }
-}
-const m2 = readM2();
-const m2done = Object.keys(m2.stars).length;
-const m2next = M2_OPEN.find(n => !m2.stars[n] && n >= m2.start) || 0;
-/* 두 달을 오가는 아이는 가장 최근에 한 달로 이어 갑니다. */
-const m2Recent = (m2done > 0 || m2.start > 1) && m2.updated >= readUpdated(STORE_KEY);
+const later = LATER.map(M => {
+  const p = readMoon(M), open = M.nights.map(x => x.n), done = Object.keys(p.stars).length;
+  const next = open.find(n => !p.stars[n] && n >= p.start) || 0;
+  const begun = done > 0 || p.start > 1;
+  /* 남은 밤이 없음: 모든 밤이 열렸고, 다 마쳤거나 빠른 확인으로 건너뛰었을 때 */
+  const full = open.length === M.total && !next && begun;
+  return {M, p, open, done, next, begun, full};
+});
+const anyLater = later.some(x => x.begun);
+/* 여러 달을 오가는 아이는 가장 최근에 한 달로 이어 갑니다. */
+const recent = later.filter(x => x.begun).sort((a, b) => b.p.updated - a.p.updated)[0];
+const recentWins = recent && recent.p.updated >= readUpdated(STORE_KEY);
 
 /* ---- 달 그림: 한글 첫 달과 같은 방식 (오른쪽부터 차오름) ---- */
 function moon(f, opts){
@@ -398,22 +407,31 @@ function moon(f, opts){
 /* ---- 첫 화면 버튼 ---- */
 const cta = document.getElementById('ctaMain');
 const note = document.getElementById('ctaNote');
-if(started || m2done || m2.start > 1) document.getElementById('checkLink').style.display = 'none';
-/* 둘째 달에서 남은 밤이 없음: 다 마쳤거나 빠른 확인으로 건너뛰었을 때 */
-const m2full = M2_OPEN.length === M2_TOTAL && !m2next && (m2done > 0 || m2.start > 1);
-if(m2Recent && m2next){
-  cta.textContent = '이어서 하기';
-  cta.href = 'second-moon/?night=' + m2next;
-  note.textContent = m2done
-    ? '둘째 달 ' + ORD2[m2next - 1] + ' 밤 차례예요. 둘째 달에서 ' + COUNT2[m2done - 1] + ' 밤을 마쳤어요.'
-    : '빠른 확인에서 둘째 달 ' + ORD2[m2next - 1] + ' 밤부터 하기로 했어요.';
-} else if(m2Recent && !m2next){
+if(started || anyLater) document.getElementById('checkLink').style.display = 'none';
+const goLater = x => {
+  cta.textContent = x.begun ? '이어서 하기' : x.M.name + ' 시작하기';
+  cta.href = x.M.path + '?night=' + x.next;
+  note.textContent = x.done
+    ? x.M.name + ' ' + ORD2[x.next - 1] + ' 밤 차례예요. ' + x.M.name + '에서 ' + COUNT2[x.done - 1] + ' 밤을 마쳤어요.'
+    : x.p.start > 1 ? '빠른 확인에서 ' + x.M.name + ' ' + ORD2[x.next - 1] + ' 밤부터 하기로 했어요.'
+    : '앞의 달을 가득 채웠어요. 이제 ' + x.M.name + '이에요.';
+};
+const goDict = x => {
   cta.textContent = '받아쓰기실';
   cta.href = 'dictation/';
-  note.textContent = m2full
-    ? (m2done ? '둘째 달을 다 채웠어요.' : '빠른 확인에서 둘째 달 말을 다 알고 있었어요.') + ' 셋째 달은 곧 열려요. 그동안 받아쓰기실에서 연습해요.'
-    : '둘째 달에서 지금 열린 밤을 다 마쳤어요. 다음 밤들은 곧 열려요. 그동안 받아쓰기실에서 연습해요.';
-} else if(!started && !m2done){
+  const last = x || later[later.length - 1];
+  note.textContent = last.full
+    ? (last.done ? last.M.name + '을 다 채웠어요.' : '빠른 확인에서 ' + last.M.name + ' 말을 다 알고 있었어요.') + ' ' + last.M.nextName + '은 곧 열려요. 그동안 받아쓰기실에서 연습해요.'
+    : last.M.name + '에서 지금 열린 밤을 다 마쳤어요. 다음 밤들은 곧 열려요. 그동안 받아쓰기실에서 연습해요.';
+};
+/* 최근 달 다음으로 할 달: 최근 달 뒤에서 남은 밤이 있는 첫 달 */
+const after = x => later.slice(later.indexOf(x) + 1).find(y => y.next);
+if(recentWins && recent.next){
+  goLater(recent);
+} else if(recentWins && !recent.next){
+  const y = recent.full ? after(recent) : null;
+  y ? goLater(y) : goDict(recent);
+} else if(!started && !anyLater){
   cta.textContent = '시작하기';
   cta.href = 'first-moon/';
   note.textContent = '첫째 달, 첫째 밤부터 시작해요.';
@@ -424,23 +442,17 @@ if(m2Recent && m2next){
     ? '이번엔 ' + ORD[next - 1] + ' 밤 차례예요. 지금까지 ' + COUNT[done - 1] + ' 밤을 마쳤어요.'
     : start > 1 ? '빠른 확인에서 ' + ORD[next - 1] + ' 밤부터 하기로 했어요.'
     : '첫째 달, 첫째 밤부터 시작해요.';
-} else if(m2next){
-  cta.textContent = m2done ? '이어서 하기' : '둘째 달 시작하기';
-  cta.href = 'second-moon/?night=' + m2next;
-  note.textContent = m2done ? '둘째 달 ' + ORD2[m2next - 1] + ' 밤 차례예요.' : '첫째 달을 가득 채웠어요. 이제 둘째 달이에요.';
 } else {
-  cta.textContent = '받아쓰기실';
-  cta.href = 'dictation/';
-  note.textContent = m2full
-    ? (m2done ? '둘째 달을 다 채웠어요.' : '빠른 확인에서 둘째 달 말을 다 알고 있었어요.') + ' 셋째 달은 곧 열려요. 그동안 받아쓰기실에서 연습해요.'
-    : '둘째 달에서 지금 열린 밤을 다 마쳤어요. 다음 밤들은 곧 열려요. 그동안 받아쓰기실에서 연습해요.';
+  /* 첫째 달을 마쳤으면, 남은 밤이 있는 첫 달로 */
+  const y = later.find(x => x.next && !x.full);
+  y ? goLater(y) : goDict(null);
 }
 
 /* ---- 일곱 달 ---- */
 const MONTHS = [
   {name:'첫째 달',   stage:'한글',  topics:'모음, 자음, 받침, 겹받침', href:'first-moon/'},
   {name:'둘째 달',   stage:'1단계', topics:'인사, 가족, 숫자, 몸, 우리 집', href:'second-moon/'},
-  {name:'셋째 달',   stage:'2단계', topics:'하루 일과, 학교, 음식, 날씨'},
+  {name:'셋째 달',   stage:'2단계', topics:'하루 일과, 학교, 음식, 날씨', href:'third-moon/'},
   {name:'넷째 달',   stage:'3단계', topics:'지난 일, 기분, 길 찾기, 존댓말'},
   {name:'다섯째 달', stage:'4단계', topics:'이야기 잇기, 친구, 한국 방문'},
   {name:'여섯째 달', stage:'5단계', topics:'설명하고 비교하기, 명절과 역사'},
@@ -454,15 +466,19 @@ MONTHS.forEach((m, i) => {
   el.className = 'month' + (open ? '' : ' locked');
   if(open) el.href = m.href;
   let status = '';
-  if(open && i === 1){
-    const openCount = COUNT2[M2_OPEN.length - 1];
-    status = m2done === M2_TOTAL ? '열다섯 밤을 모두 마쳤어요.'
-           : m2done ? '열다섯 밤 가운데 ' + COUNT2[m2done - 1] + ' 밤을 마쳤어요.'
-           : M2_OPEN.length === M2_TOTAL ? '열다섯 밤이 모두 열려 있어요.' : '열다섯 밤. 지금은 ' + openCount + ' 밤이 열려 있어요.';
+  const L = i >= 1 ? later[i - 1] : null;
+  if(open && L){
+    const M = L.M, tw = COUNT2[M.total - 1];
+    const passedN = L.open.filter(n => !L.p.stars[n] && n < L.p.start).length;
+    status = L.done === M.total ? tw + ' 밤을 모두 마쳤어요.'
+           : L.full ? tw + ' 밤을 모두 마쳤거나 확인으로 통과했어요.'
+           : L.done ? tw + ' 밤 가운데 ' + COUNT2[L.done - 1] + ' 밤을 마쳤어요.' + (passedN ? ' ' + COUNT2[passedN - 1] + ' 밤은 확인으로 통과했어요.' : '')
+           : passedN ? tw + ' 밤 가운데 ' + COUNT2[passedN - 1] + ' 밤은 확인으로 통과했어요.'
+           : L.open.length === M.total ? tw + ' 밤이 모두 열려 있어요.' : tw + ' 밤. 지금은 ' + COUNT2[L.open.length - 1] + ' 밤이 열려 있어요.';
     let dots = '<div class="nights" aria-hidden="true">';
-    for(let n = 1; n <= M2_TOTAL; n++) dots += `<i class="${m2.stars[n] ? 'on' : ''}"></i>`;
+    for(let n = 1; n <= M.total; n++) dots += `<i class="${L.p.stars[n] ? 'on' : (n < L.p.start ? 'pass' : '')}"></i>`;
     dots += '</div>';
-    el.innerHTML = `<div class="mm">${moon(m2done / M2_TOTAL, {done: m2done === M2_TOTAL})}</div>
+    el.innerHTML = `<div class="mm">${moon((L.done + passedN) / M.total, {done: L.done === M.total})}</div>
       <div><span class="mlabel">${m.name}</span><b>${m.stage}</b>
       <span class="topics">${m.topics}</span><span class="status">${status}</span>${dots}</div>`;
     el.setAttribute('aria-label', `${m.name}, ${m.stage}. ${status}`);
