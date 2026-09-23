@@ -302,7 +302,7 @@ footer p{margin:4px 0}
   </div>
 </footer>
 
-<script src="content/second-moon.js?v=20260926"></script>
+<script src="content/second-moon.js?v=20260927"></script>
 <script>
 /* ---- 진도 읽기: 한글 첫 달과 같은 키를 씁니다 ---- */
 const STORE_KEY = 'daltokki:v1:first-moon';
@@ -346,7 +346,7 @@ const started = done > 0 || start > 1;
 /* ---- 둘째 달 진도: second-moon 과 같은 키. 열린 밤은 내용 파일(content/second-moon.js)에서 읽습니다. ---- */
 const M2_OPEN = M2_NIGHTS.map(x => x.n);
 function readM2(){
-  const out = {stars: {}, updated: 0};
+  const out = {stars: {}, updated: 0, start: 1};
   try {
     const d = JSON.parse(window.localStorage.getItem(SECOND_MOON.store) || 'null');
     if(d && d.stars && typeof d.stars === 'object'){
@@ -356,6 +356,8 @@ function readM2(){
       }
     }
     out.updated = Number(d && d.updated) || 0;
+    const st = Number(d && d.start);
+    if(Number.isInteger(st) && st >= 1 && st <= M2_TOTAL + 1) out.start = st;
   } catch(e) {}
   return out;
 }
@@ -364,9 +366,9 @@ function readUpdated(key){
 }
 const m2 = readM2();
 const m2done = Object.keys(m2.stars).length;
-const m2next = M2_OPEN.find(n => !m2.stars[n]) || 0;
+const m2next = M2_OPEN.find(n => !m2.stars[n] && n >= m2.start) || 0;
 /* 두 달을 오가는 아이는 가장 최근에 한 달로 이어 갑니다. */
-const m2Recent = m2done > 0 && m2.updated >= readUpdated(STORE_KEY);
+const m2Recent = (m2done > 0 || m2.start > 1) && m2.updated >= readUpdated(STORE_KEY);
 
 /* ---- 달 그림: 한글 첫 달과 같은 방식 (오른쪽부터 차오름) ---- */
 function moon(f, opts){
@@ -396,16 +398,20 @@ function moon(f, opts){
 /* ---- 첫 화면 버튼 ---- */
 const cta = document.getElementById('ctaMain');
 const note = document.getElementById('ctaNote');
-if(started || m2done) document.getElementById('checkLink').style.display = 'none';
+if(started || m2done || m2.start > 1) document.getElementById('checkLink').style.display = 'none';
+/* 둘째 달에서 남은 밤이 없음: 다 마쳤거나 빠른 확인으로 건너뛰었을 때 */
+const m2full = M2_OPEN.length === M2_TOTAL && !m2next && (m2done > 0 || m2.start > 1);
 if(m2Recent && m2next){
   cta.textContent = '이어서 하기';
   cta.href = 'second-moon/?night=' + m2next;
-  note.textContent = '둘째 달 ' + ORD2[m2next - 1] + ' 밤 차례예요. 둘째 달에서 ' + COUNT2[m2done - 1] + ' 밤을 마쳤어요.';
+  note.textContent = m2done
+    ? '둘째 달 ' + ORD2[m2next - 1] + ' 밤 차례예요. 둘째 달에서 ' + COUNT2[m2done - 1] + ' 밤을 마쳤어요.'
+    : '빠른 확인에서 둘째 달 ' + ORD2[m2next - 1] + ' 밤부터 하기로 했어요.';
 } else if(m2Recent && !m2next){
   cta.textContent = '받아쓰기실';
   cta.href = 'dictation/';
-  note.textContent = m2done === M2_TOTAL
-    ? '둘째 달을 다 채웠어요. 셋째 달은 곧 열려요. 그동안 받아쓰기실에서 연습해요.'
+  note.textContent = m2full
+    ? (m2done ? '둘째 달을 다 채웠어요.' : '빠른 확인에서 둘째 달 말을 다 알고 있었어요.') + ' 셋째 달은 곧 열려요. 그동안 받아쓰기실에서 연습해요.'
     : '둘째 달에서 지금 열린 밤을 다 마쳤어요. 다음 밤들은 곧 열려요. 그동안 받아쓰기실에서 연습해요.';
 } else if(!started && !m2done){
   cta.textContent = '시작하기';
@@ -425,8 +431,8 @@ if(m2Recent && m2next){
 } else {
   cta.textContent = '받아쓰기실';
   cta.href = 'dictation/';
-  note.textContent = m2done === M2_TOTAL
-    ? '둘째 달을 다 채웠어요. 셋째 달은 곧 열려요. 그동안 받아쓰기실에서 연습해요.'
+  note.textContent = m2full
+    ? (m2done ? '둘째 달을 다 채웠어요.' : '빠른 확인에서 둘째 달 말을 다 알고 있었어요.') + ' 셋째 달은 곧 열려요. 그동안 받아쓰기실에서 연습해요.'
     : '둘째 달에서 지금 열린 밤을 다 마쳤어요. 다음 밤들은 곧 열려요. 그동안 받아쓰기실에서 연습해요.';
 }
 

@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dal.css?v=20260926">
+<link rel="stylesheet" href="../assets/dal.css?v=20260927">
 </head>
 <body>
 
@@ -40,8 +40,8 @@
   </div>
 </div>
 
-<script src="../assets/dal.js?v=20260926"></script>
-<script src="../content/first-moon.js?v=20260926"></script>
+<script src="../assets/dal.js?v=20260927"></script>
+<script src="../content/first-moon.js?v=20260927"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════
    첫째 달 페이지: 여덟 밤의 화면, 빠른 확인, 녹음 목록
@@ -677,12 +677,13 @@ function startCheck(){
     const msg = s === 1
       ? '첫째 밤부터 같이 하자. 소리부터 차근차근 익히면 금방 읽게 될 거야.'
       : all
-      ? '첫째 달은 벌써 다 알고 있구나. 둘째 달이 열리면 거기서 만나. 그동안 받아쓰기를 더 해 보고 싶으면 일곱째 밤이나 여덟째 밤을 골라 봐.'
+      ? '첫째 달은 벌써 다 알고 있구나. 둘째 달에서 한국어로 말하기를 해 보자. 둘째 달에도 빠른 확인이 있어서, 아는 묶음은 건너뛸 수 있어.'
       : '벌써 ' + COUNT[s - 2] + ' 밤만큼 달이 차 있어. ' + nightName(s) + '부터 하면 좋겠어. ' + REASON[s - 1];
     const btns = h('div', {style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'});
     if(!all) btns.append(h('button', {class:'btn', onclick: () => startModule(s)}, nightName(s) + ' 시작하기'));
     if(s > 1 && !all) btns.append(h('button', {class:'btn quiet', onclick: () => { startNight = 1; saveStars(); startModule(1); }}, '첫째 밤부터 할래요'));
-    btns.append(h('button', {class: all ? 'btn' : 'btn quiet', onclick: showPicker}, '밤 고르기'));
+    if(all) btns.append(h('button', {class:'btn', onclick: () => { location.href = '../second-moon/?check=1'; }}, '둘째 달 빠른 확인'));
+    btns.append(h('button', {class:'btn quiet', onclick: showPicker}, '밤 고르기'));
     card.append(h('div', {style:'text-align:center;padding-top:6px'},
       h('div', {class:'scene'},
         h('div', {class:'moon', html: moonSVG(Math.min(s - 1, MODULES.length), 160, false)}),

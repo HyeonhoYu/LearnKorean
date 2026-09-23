@@ -24,10 +24,20 @@ function loadStars(){
   return out;
 }
 const stars = loadStars();
+/* 빠른 확인에서 정한 시작 밤. 그 앞의 밤은 건너뛴 것으로 봅니다. M2_TOTAL + 1 이면 둘째 달을 다 안다는 뜻입니다. */
+function loadStart(){
+  if(!canStore) return 1;
+  try {
+    const v = Number((JSON.parse(localStorage.getItem(STORE_KEY) || 'null') || {}).start);
+    return Number.isInteger(v) && v >= 1 && v <= M2_TOTAL + 1 ? v : 1;
+  } catch(e) { return 1; }
+}
+let startAt = loadStart();
 function saveStars(){
   if(!canStore) return;
-  try { localStorage.setItem(STORE_KEY, JSON.stringify({stars, start: 1, updated: Date.now()})); } catch(e) {}
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({stars, start: startAt, updated: Date.now()})); } catch(e) {}
 }
+const passedNight = n => !stars[n] && n < startAt;
 function firstMoonDone(){
   if(!canStore) return false;
   try {
@@ -73,14 +83,22 @@ function showPicker(){
   hideNext(); setNav(false); setFeedback('');
   card.innerHTML = '';
   const done = Object.keys(stars).length;
-  const nextUp = OPEN.find(n => !stars[n]);
+  const nextUp = OPEN.find(n => !stars[n] && n >= startAt);
+  const started = done > 0 || startAt > 1;
   card.append(h('h2', {}, '둘째 달, 나와 우리 집'),
-    guide('tori', done === 0
+    guide('tori', done === 0 && startAt > M2_TOTAL
+      ? '빠른 확인에서 둘째 달 말을 다 알고 있었어. 대단해! 다시 보고 싶은 밤이 있으면 골라 봐.'
+      : done === 0 && startAt > 1 && nextUp
+      ? '빠른 확인에서 ' + nightName(nextUp) + '부터 하기로 했어. 앞의 밤도 언제든 골라서 해 볼 수 있어.'
+      : done === 0
       ? (firstMoonDone()
           ? '한글 첫 달을 다 채웠구나. 이제 그 글자로 말을 해 보자. 인사부터 시작해서 가족, 숫자, 몸, 우리 집까지 가. 보름, 열다섯 밤이면 보름달이 떠.'
           : '둘째 달에서는 한글로 말을 해 봐. 첫째 달을 먼저 하고 오면 훨씬 쉬워. 한글을 벌써 읽을 줄 알면 여기서 바로 시작해도 돼.')
       : nextUp ? '어서 와. ' + nightName(nextUp) + ' 차례야. 열다섯 밤 가운데 ' + COUNT[done - 1] + ' 밤을 마쳤어.'
                : waitLine()));
+  card.append(h('div', {class:'checkcta'},
+    h('button', {class:'btn quiet play', onclick: startCheck}, started ? '빠른 확인 다시 하기' : '한국어를 조금 할 줄 알아요'),
+    h('span', {}, '몇 문제만 풀면 시작할 밤을 찾아 줘요.')));
   card.append(h('button', {class:'roomcard', onclick: () => { location.href = '../dictation/'; }},
     h('div', {html: CHAR.tori('')}),
     h('div', {}, h('b', {}, '받아쓰기실'), h('span', {}, '둘째 달에서 마친 밤의 말도 여기서 연습해요.'))));
@@ -102,7 +120,8 @@ function showPicker(){
           h('div', {}, h('span', {class:'night'}, nightName(n)), h('span', {}, kind))));
         return;
       }
-      const isNext = n === nextUp && done > 0;
+      const isNext = n === nextUp && started;
+      const passed = passedNight(n);
       const label = h('span', {class:'night'}, nightName(n));
       if(isNext) label.append(h('span', {class:'here'}, '여기부터'));
       row.append(h('button', {class:'modcard' + (isNext ? ' next' : ''),
@@ -110,7 +129,7 @@ function showPicker(){
           onclick: () => startNight(n)},
         h('div', {html: moonSVG(n, 56, !!got, M2_TOTAL)}),
         h('div', {style:'flex:1'}, label, h('b', {}, nightTitle(n)),
-          h('span', {}, got ? '★'.repeat(got) + '☆'.repeat(3 - got) : kind))));
+          h('span', {}, got ? '★'.repeat(got) + '☆'.repeat(3 - got) : passed ? '빠른 확인으로 건너뛰었어요' : kind))));
     });
     sec.append(row);
     card.append(sec);
@@ -121,6 +140,7 @@ function showPicker(){
   resetBtn.addEventListener('click', () => {
     if(!armed){ armed = true; resetBtn.textContent = '둘째 달 별이 모두 지워져요. 한 번 더 누르면 지웁니다'; return; }
     for(const k in stars) delete stars[k];
+    startAt = 1;
     if(canStore){ try { localStorage.removeItem(STORE_KEY); } catch(e) {} }
     showPicker();
   });
@@ -129,7 +149,106 @@ function showPicker(){
     '둘째 달은 인사, 가족, 숫자, 몸, 우리 집의 다섯 묶음으로, 묶음마다 세 밤입니다. 첫 밤에 새 말을 만나고, 둘째 밤에 그 말로 문장을 만들고, 셋째 밤에 이야기를 듣고 집에서 해 볼 과제를 합니다. ' + (nextClosed() ? '지금은 ' + ORD[openBundles().length - 1] + ' 묶음까지 열려 있고 나머지는 차례로 열립니다. ' : ''),
     canStore ? (done ? '지금까지 ' + COUNT[done - 1] + ' 밤을 마쳤습니다.' : '아직 시작하기 전입니다.') + ' 진도는 이 기기의 브라우저에만 저장됩니다.'
              : '이 브라우저에서는 진도가 저장되지 않습니다.',
-    done && canStore ? h('div', {}, resetBtn) : ''));
+    started && canStore ? h('div', {}, resetBtn) : ''));
+}
+
+/* ══════════════════════════════════════════════════════════════
+   빠른 확인
+   묶음마다 세 문제. 두 문제 이상 맞히면 다음 묶음으로, 아니면 그 묶음의 첫 밤에서 멈춥니다.
+   모르겠어요는 틀린 것으로 셉니다. 한 묶음에서 두 문제를 틀리면 남은 문제는 묻지 않습니다.
+   ══════════════════════════════════════════════════════════════ */
+function startCheck(){
+  seq++; night = null; curGuide = null;
+  hdrTitle.textContent = '둘째 달 빠른 확인';
+  document.getElementById('stepLabel').textContent = '';
+  hideNext(); setNav(true); setFeedback('');
+  const total = M2_CHECK.reduce((a, g) => a + g.qs.length, 0);
+  const bar = p => { document.getElementById('trackFill').style.width = Math.round(p / total * 100) + '%'; };
+  let gi = 0, qi = 0, miss = 0, asked = 0, stopAt = null;
+  intro();
+
+  function intro(){
+    card.innerHTML = ''; bar(0);
+    card.append(h('h2', {}, '둘째 달 빠른 확인'),
+      guide('tori', '한국어를 조금 할 줄 알아? 몇 문제만 풀어 보면 어느 밤부터 하면 좋을지 알려 줄게. 모르면 모르겠어요를 눌러도 돼. 틀려도 괜찮아.'),
+      h('p', {class:'sub'}, '5분쯤 걸려요. 인사, 가족, 숫자, 몸, 우리 집 차례로 세 문제씩 나와요.'),
+      h('button', {class:'btn', onclick: ask}, '시작하기'));
+    window.scrollTo(0, 0);
+  }
+
+  function ask(){
+    const G = M2_CHECK[gi], q = G.qs[qi], B = M2_BUNDLES.find(b => b.k === G.k);
+    seq++; card.innerHTML = ''; curGuide = null; bar(asked); setFeedback('');
+    let locked = false;
+    card.append(h('h2', {}, ORD[G.k - 1] + ' 묶음, ' + B.title),
+      guide('tori', asked === 0 ? '잘 보고 맞는 걸 골라 봐.' : qi === 0 ? '좋아, 다음 묶음이야.' : '다음 문제야.'));
+    const box = h('div', {});
+    box.append(h('p', {class:'qcount'}, (qi + 1) + ' / ' + G.qs.length));
+    if(q.pic || q.t){
+      const sit = h('div', {class:'situation'});
+      if(q.pic) sit.append(h('div', {class:'pic', html: M2_PIC[q.pic]}));
+      if(q.t) sit.append(h('div', {}, h('p', {class:'qtext'}, q.t)));
+      box.append(sit);
+    }
+    if(q.say){
+      box.append(h('button', {class:'btn play', style:'margin-bottom:16px', onclick: () => talk(q.say)}, '다시 듣기'));
+      later(() => talk(q.say), 300);
+    }
+    const pic = q.mode === 'pic';
+    const opts = h('div', {class: pic ? 'popts' : 'topts'});
+    shuffled(q.o).forEach(o => {
+      const b = pic
+        ? h('button', {class:'popt', 'data-v': o, html: M2_PIC[o], 'aria-label': (M2_PIC[o].match(/aria-label="([^"]*)"/) || [])[1] || o})
+        : h('button', {class:'topt', 'data-v': o}, o);
+      b.addEventListener('click', () => pick(o === q.a));
+      opts.append(b);
+    });
+    box.append(opts, h('div', {style:'margin-top:16px'},
+      h('button', {class:'btn quiet play', onclick: () => pick(false)}, '모르겠어요')));
+    card.append(box);
+    window.scrollTo(0, 0);
+
+    /* 맞았는지는 알려 주지 않고 바로 다음으로 갑니다. 확인이 시험처럼 느껴지지 않게 하려는 것입니다. */
+    function pick(ok){
+      if(locked) return; locked = true;
+      asked++;
+      if(!ok){ miss++; if(!stopAt) stopAt = q.a; }
+      if(miss >= 2) return result(B.nights[0]);
+      qi++;
+      if(qi >= G.qs.length){ gi++; qi = 0; miss = 0; stopAt = null; }
+      if(gi >= M2_CHECK.length) return result(M2_TOTAL + 1);
+      ask();
+    }
+  }
+
+  function result(s){
+    startAt = s;
+    saveStars();
+    seq++; card.innerHTML = ''; curGuide = null; bar(total); setFeedback('');
+    const all = s > M2_TOTAL;
+    const B = all ? null : M2_BUNDLES.find(b => b.nights.includes(s));
+    const skipped = all ? M2_BUNDLES.length : B.k - 1;
+    const msg = s === 1
+      ? '첫째 밤부터 같이 하자. 인사부터 차근차근 하면 금방 늘 거야.'
+      : all
+      ? '둘째 달 말은 벌써 다 알고 있구나! 셋째 달이 열리면 거기서 만나. 그동안 받아쓰기실에서 글자로 쓰는 연습을 해 보자.'
+      : '벌써 ' + COUNT[skipped - 1] + ' 묶음을 알고 있어. ' + josa(B.title, '은') + ' 알아 가는 중이니 ' + nightName(s) + '부터 하면 좋겠어.';
+    const btns = h('div', {style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'});
+    if(!all) btns.append(h('button', {class:'btn', onclick: () => startNight(s)}, nightName(s) + ' 시작하기'));
+    if(s > 1 && !all) btns.append(h('button', {class:'btn quiet', onclick: () => { startAt = 1; saveStars(); startNight(1); }}, '첫째 밤부터 할래요'));
+    btns.append(h('button', {class: all ? 'btn' : 'btn quiet', onclick: showPicker}, '밤 고르기'));
+    card.append(h('div', {style:'text-align:center;padding-top:6px'},
+      h('div', {class:'scene'},
+        h('div', {class:'moon', html: moonSVG(Math.min(s - 1, M2_TOTAL), 160, false, M2_TOTAL)}),
+        h('div', {class:'tori', html: CHAR.tori('happy')})),
+      h('h2', {}, all ? '둘째 달을 다 알고 있어요' : nightName(s) + '부터 해요'),
+      h('div', {style:'max-width:520px;margin:0 auto 12px;text-align:left'}, say('tori', msg)),
+      h('p', {class:'checknote'}, '부모님께. 빠른 확인은 참고용입니다. 묶음마다 세 문제 가운데 두 문제를 맞히면 그 묶음을 건너뜁니다. 아이가 어려워하면 앞의 밤으로 돌아가도 괜찮고, 건너뛴 밤의 낱말도 받아쓰기실에 나옵니다.'
+        + (!all && s > 1 ? ' 확인은 ' + B.title + ' 묶음에서 멈췄습니다.' : '')
+        + (stopAt && !all && !M2_PIC[stopAt] ? ' 아이가 놓친 답 가운데 하나는 ‘' + stopAt + '’입니다.' : '')),
+      btns));
+    window.scrollTo(0, 0);
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -641,7 +760,7 @@ SCREENS.result = () => {
   const B = M2_BUNDLES.find(b => b.k === night.bundle);
   const lastOfBundle = night.n === B.nights[B.nights.length - 1];
   const bundleDone = B.nights.every(n => stars[n]);
-  const monthDone = M2_NIGHTS.every(x => stars[x.n]) && !nextClosed();
+  const monthDone = M2_NIGHTS.every(x => stars[x.n] || passedNight(x.n)) && !nextClosed();
   const title = monthDone ? '둘째 달을 다 채웠어요' : lastOfBundle && bundleDone ? ORD[B.k - 1] + ' 묶음을 다 채웠어요' : '오늘 밤 달이 조금 차올랐어요';
   const nb = nextClosed();
   const line = s < 3 ? '괜찮아. 떡은 방아를 여러 번 찧어야 만들어져. 한 번 더 해 볼까?'
@@ -699,11 +818,13 @@ function listClips(){
     if(S.type === 'dialogue') S.lines.forEach(L => add(L.t, n, '대화, ' + NAME[L.who], VOICE[L.who]));
     if(S.type === 'task') S.lines.forEach(L => { if(!L.say.includes('_')) add(plain(L.say), n, '가족 과제'); });
   }));
+  M2_CHECK.forEach(G => G.qs.forEach(q => { const B = M2_BUNDLES.find(b => b.k === G.k); if(q.say) add(q.say, B.nights[0], '빠른 확인'); }));
   return out;
 }
 
 /* 주소에 ?night=2 처럼 붙이면 그 밤으로 바로 들어갑니다. */
 const params = new URLSearchParams(location.search);
 const qNight = Number(params.get('night'));
-if(Number.isInteger(qNight) && OPEN.includes(qNight)) startNight(qNight);
+if(params.get('check')) startCheck();
+else if(Number.isInteger(qNight) && OPEN.includes(qNight)) startNight(qNight);
 else showPicker();
