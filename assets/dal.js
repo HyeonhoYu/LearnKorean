@@ -75,6 +75,9 @@ const JAMO_NAME = {
 };
 function jongseong(word){
   if(!word) return -1;
+  /* 끝의 문장부호와 닫는 따옴표는 건너뜁니다: ‘기분이 어때요?’는 */
+  word = word.replace(/[\s.,!?’”'")]+$/, '');
+  if(!word) return -1;
   let last = word[word.length - 1];
   if(JAMO_NAME[last]){ const nm = JAMO_NAME[last]; last = nm[nm.length - 1]; }
   const c = last.charCodeAt(0);

@@ -77,10 +77,12 @@ const openBundles = () => MOON.bundles.filter(bundleOpen);
 /* 다음 달이 이미 열려 있으면(MOON.nextPath) 그리로 안내합니다. */
 const goNextMoon = () => { location.href = '../' + MOON.nextPath; };
 const nextMoonBtn = cls => MOON.nextPath ? h('button', {class: cls || 'btn', onclick: goNextMoon}, MOON.nextName + '로 가기') : '';
+/* 문장 속 묶음 이름: 물음표로 끝나는 이름(어제 뭐 했어요?)은 따옴표로 묶어 읽기 쉽게 합니다. */
+const qt = t => /[?]$/.test(t) ? '‘' + t + '’' : t;
 function waitLine(){
   const last = openBundles().pop(), nb = nextClosed();
-  return (last ? last.title + ' 묶음까지 다 마쳤어. ' : '') +
-    (nb ? '다음 묶음 ' + josa(nb.title, '은') + ' 곧 열려. 그동안 받아쓰기실에서 방아를 찧어 보자.' : (MOON.nextPath ? MOON.name + ' 보름달이 떴어! 이제 ' + MOON.nextName + '로 가자.' : MOON.name + ' 보름달이 떴어! ' + josa(MOON.nextName, '이') + ' 열릴 때까지 받아쓰기실에서 방아를 찧어 보자.'));
+  return (last ? qt(last.title) + ' 묶음까지 다 마쳤어. ' : '') +
+    (nb ? '다음 묶음 ' + josa(qt(nb.title), '은') + ' 곧 열려. 그동안 받아쓰기실에서 방아를 찧어 보자.' : (MOON.nextPath ? MOON.name + ' 보름달이 떴어! 이제 ' + MOON.nextName + '로 가자.' : MOON.name + ' 보름달이 떴어! ' + josa(MOON.nextName, '이') + ' 열릴 때까지 받아쓰기실에서 방아를 찧어 보자.'));
 }
 function showPicker(){
   seq++; night = null; curGuide = null;
@@ -238,7 +240,7 @@ function startCheck(){
       ? '첫째 밤부터 같이 하자. 차근차근 하면 금방 늘 거야.'
       : all
       ? MOON.name + ' 말은 벌써 다 알고 있구나! ' + (MOON.nextPath ? MOON.nextName + '로 가 보자.' : josa(MOON.nextName, '이') + ' 열리면 거기서 만나. 그동안 받아쓰기실에서 글자로 쓰는 연습을 해 보자.')
-      : '벌써 ' + COUNT[skipped - 1] + ' 묶음을 알고 있어. ' + josa(B.title, '은') + ' 알아 가는 중이니 ' + nightName(s) + '부터 하면 좋겠어.';
+      : '벌써 ' + COUNT[skipped - 1] + ' 묶음을 알고 있어. ' + josa(qt(B.title), '은') + ' 알아 가는 중이니 ' + nightName(s) + '부터 하면 좋겠어.';
     const btns = h('div', {style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'});
     if(!all) btns.append(h('button', {class:'btn', onclick: () => startNight(s)}, nightName(s) + ' 시작하기'));
     if(s > 1 && !all) btns.append(h('button', {class:'btn quiet', onclick: () => { startAt = 1; saveStars(); startNight(1); }}, '첫째 밤부터 할래요'));
@@ -251,7 +253,7 @@ function startCheck(){
       h('h2', {}, all ? josa(MOON.name, '을') + ' 다 알고 있어요' : nightName(s) + '부터 해요'),
       h('div', {style:'max-width:520px;margin:0 auto 12px;text-align:left'}, say('tori', msg)),
       h('p', {class:'checknote'}, '부모님께. 빠른 확인은 참고용입니다. 묶음마다 세 문제 가운데 두 문제를 맞히면 그 묶음을 건너뜁니다. 아이가 어려워하면 앞의 밤으로 돌아가도 괜찮고, 건너뛴 밤의 낱말도 받아쓰기실에 나옵니다.'
-        + (!all && s > 1 ? ' 확인은 ' + B.title + ' 묶음에서 멈췄습니다.' : '')
+        + (!all && s > 1 ? ' 확인은 ' + qt(B.title) + ' 묶음에서 멈췄습니다.' : '')
         + (stopAt && !all && !MOON.pic[stopAt] ? ' 아이가 놓친 답 가운데 하나는 ‘' + stopAt + '’입니다.' : '')),
       btns));
     window.scrollTo(0, 0);
@@ -653,6 +655,22 @@ SCREENS.likes = S => {
   if(S.tip) card.append(guide(S.tip.who, S.tip.t, true));
 };
 
+/* ---- 지금과 지난 일: 모음 규칙 ----
+   S.groups 마다 규칙 한 줄과 [지금, 지난 일] 짝을 보여 줍니다. 앞 글자의 모음을 칠해 무엇을 보는지 알려 줍니다.
+   받침 규칙과 헷갈리지 않도록 표 제목을 "앞 글자의 모음"으로 둡니다. */
+SCREENS.tense = S => {
+  head2(S);
+  S.groups.forEach(G => {
+    const t = h('table', {class:'cmp tense'});
+    const hasV = G.rows.some(r => r[2]) || S.groups.some(g => g.rows.some(r => r[2]));
+    t.append(h('tr', {}, h('th', {}, '지금'), h('th', {}, '지난 일'), hasV ? h('th', {}, '앞 글자의 모음') : ''));
+    G.rows.forEach(([now, past, v]) => t.append(h('tr', {},
+      h('td', {}, sayBtn(now)), h('td', {}, sayBtn(past)), hasV ? h('td', {class:'vw'}, v || '') : '')));
+    card.append(h('p', {class:'rhead', style:'margin:16px 0 6px'}, G.rule), h('div', {class:'cmpwrap'}, t));
+  });
+  if(S.note) card.append(guide('dami', S.note, true));
+};
+
 /* ---- 소리와 글자 (담이) ---- */
 SCREENS.sound = S => {
   head2(S);
@@ -824,8 +842,8 @@ SCREENS.result = () => {
   const nb = nextClosed();
   const line = s < 3 ? '괜찮아. 떡은 방아를 여러 번 찧어야 만들어져. 한 번 더 해 볼까?'
     : monthDone && !nextOpen ? MOON.name + ' 보름달이 떴어! ' + MOON.topics + '까지 모두 해냈어. ' + (B.after || '')
-    : nextOpen ? '잘했어. ' + (lastOfBundle ? B.title + ' 묶음을 마쳤어. ' : '') + '이제 ' + josa(nightName(nextN), '으로') + ' 가자.'
-    : B.title + ' 묶음을 다 마쳤어. ' + (nb ? '다음 묶음 ' + josa(nb.title, '은') + ' 곧 열려. ' : '') + (B.after || '');
+    : nextOpen ? '잘했어. ' + (lastOfBundle ? qt(B.title) + ' 묶음을 마쳤어. ' : '') + '이제 ' + josa(nightName(nextN), '으로') + ' 가자.'
+    : qt(B.title) + ' 묶음을 다 마쳤어. ' + (nb ? '다음 묶음 ' + josa(qt(nb.title), '은') + ' 곧 열려. ' : '') + (B.after || '');
   card.append(h('div', {style:'text-align:center;padding-top:10px'},
     h('div', {class:'scene'},
       h('div', {class:'moon', html: moonSVG(night.n, 160, true, MOON.total)}),
@@ -871,6 +889,7 @@ function listClips(){
     if(S.type === 'rule') [...S.yes, ...S.no].forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙'));
     if(S.type === 'josa') S.names.forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙 고르기'));
     if(S.type === 'shrink') S.rows.forEach(([full, short]) => { add(full, n, '세는 말'); S.units.forEach(u => add(short + ' ' + u, n, '줄어드는 숫자')); });
+    if(S.type === 'tense') S.groups.forEach(G => G.rows.forEach(([a, b]) => { add(a, n, '지금'); add(b, n, '지난 일'); }));
     if(S.type === 'likes') S.items.forEach(x => ['좋아해요', '싫어해요'].forEach(v => add(likeLine(x.w, v), n, '좋아해요와 싫어해요')));
     if(S.type === 'clock') for(let i = 1; i <= 12; i++) add(hourWord(i) + '예요', n, '시계');
     if(S.type === 'sibling') ['형','누나','오빠','언니','동생'].forEach(w => add(w, n, '형제 부르는 말'));

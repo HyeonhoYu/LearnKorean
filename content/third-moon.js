@@ -1063,7 +1063,7 @@ const THIRD_MOON = {
   store: 'daltokki:v1:third-moon',
   units: M3_NIGHTS.map(x => ({n: x.n, words: x.dictWords || []})),
   extra: [], pool: () => M3_POOL,
-  num: 3, name: '셋째 달', title2: '셋째 달, 나의 하루', nextName: '넷째 달',
+  num: 3, name: '셋째 달', title2: '셋째 달, 나의 하루', nextName: '넷째 달', nextPath: 'fourth-moon/',
   topics: '하루 일과, 학교, 음식, 날씨, 나의 하루',
   nights: M3_NIGHTS, bundles: M3_BUNDLES, pic: M3_PIC, keys: M3_POOL, total: M3_TOTAL, check: M3_CHECK,
   prev: {store: 'daltokki:v1:second-moon', total: 15},

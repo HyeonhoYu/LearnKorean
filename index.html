@@ -219,7 +219,7 @@ footer p{margin:4px 0}
   <section aria-labelledby="monthsTitle">
     <div class="wrap">
       <h2 id="monthsTitle">일곱 달</h2>
-      <p class="sec-lede">달은 한 달에 한 번 보름달이 돼요. 달을 하나 가득 채울 때마다 한 단계씩 올라가요. 지금은 첫째 달부터 셋째 달까지 열려 있어요.</p>
+      <p class="sec-lede">달은 한 달에 한 번 보름달이 돼요. 달을 하나 가득 채울 때마다 한 단계씩 올라가요. 지금은 첫째 달부터 넷째 달까지 열려 있어요.</p>
       <div class="month-grid" id="monthGrid">
         <noscript><a class="month" href="first-moon/"><span><span class="mlabel">첫째 달</span><b>한글</b><span class="topics">모음, 자음, 받침, 겹받침</span></span></a></noscript>
       </div>
@@ -302,8 +302,9 @@ footer p{margin:4px 0}
   </div>
 </footer>
 
-<script src="content/second-moon.js?v=20261002"></script>
-<script src="content/third-moon.js?v=20261002"></script>
+<script src="content/second-moon.js?v=20261004"></script>
+<script src="content/third-moon.js?v=20261004"></script>
+<script src="content/fourth-moon.js?v=20261004"></script>
 <script>
 /* ---- 진도 읽기: 한글 첫 달과 같은 키를 씁니다 ---- */
 const STORE_KEY = 'daltokki:v1:first-moon';
@@ -346,7 +347,7 @@ const started = done > 0 || start > 1;
 
 /* ---- 둘째 달부터: 달마다 내용 파일(content/*-moon.js)의 등록 정보로 진도를 읽습니다.
    새 달이 열리면 LATER 에 한 줄, 위의 script 에 내용 파일 한 줄을 더하면 됩니다. ---- */
-const LATER = [SECOND_MOON, THIRD_MOON];
+const LATER = [SECOND_MOON, THIRD_MOON, FOURTH_MOON];
 function readUpdated(key){
   try { const d = JSON.parse(window.localStorage.getItem(key) || 'null'); return Number(d && d.updated) || 0; } catch(e) { return 0; }
 }
@@ -453,7 +454,7 @@ const MONTHS = [
   {name:'첫째 달',   stage:'한글',  topics:'모음, 자음, 받침, 겹받침', href:'first-moon/'},
   {name:'둘째 달',   stage:'1단계', topics:'인사, 가족, 숫자, 몸, 우리 집', href:'second-moon/'},
   {name:'셋째 달',   stage:'2단계', topics:'하루 일과, 학교, 음식, 날씨', href:'third-moon/'},
-  {name:'넷째 달',   stage:'3단계', topics:'지난 일, 기분, 길 찾기, 존댓말'},
+  {name:'넷째 달',   stage:'3단계', topics:'지난 일, 기분, 날짜, 길 찾기, 존댓말', href:'fourth-moon/'},
   {name:'다섯째 달', stage:'4단계', topics:'이야기 잇기, 친구, 한국 방문'},
   {name:'여섯째 달', stage:'5단계', topics:'설명하고 비교하기, 명절과 역사'},
   {name:'일곱째 달', stage:'6단계', topics:'글쓰기, 토론, 나의 이야기'}
