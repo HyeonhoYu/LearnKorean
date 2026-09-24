@@ -112,6 +112,42 @@ function m5Trip(kind){
   return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
 }
 ['plane', 'airport', 'passport', 'korea', 'pack', 'vacation', 'clothes'].forEach(k => { M5_ONLY['tr_' + k] = m5Trip(k); });
+/* ---- 넷째 묶음 그림: 돈과 가게 ----
+   동전(100, 500)과 지폐(1000, 5000, 10000)는 숫자와 색으로 구별합니다. 실제 돈의 인물이나 무늬는 그리지 않습니다. */
+const m5Coin = (x, y, v) => `<g transform="translate(${x} ${y})"><circle r="${v === 500 ? 24 : 20}" fill="${v === 500 ? '#D8D4C8' : '#C9C0AE'}" stroke="#221F1C" stroke-width="2.6"/>
+  <circle r="${v === 500 ? 18 : 15}" fill="none" stroke="#8C7F63" stroke-width="1.6"/>
+  <text y="1" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-weight="700" font-size="${v === 500 ? 15 : 13}" fill="#221F1C">${v}</text></g>`;
+const M5_BILL = {1000:'#8FB8D6', 5000:'#E8A87C', 10000:'#9DBA7E'};
+const m5Bill = (x, y, v, k) => `<g transform="translate(${x} ${y}) scale(${k || 1})"><rect x="-44" y="-24" width="88" height="48" rx="4" fill="${M5_BILL[v]}" stroke="#221F1C" stroke-width="2.6"/>
+  <rect x="-38" y="-18" width="76" height="36" rx="2" fill="none" stroke="#FBF7EC" stroke-width="1.6"/><circle cx="-22" cy="0" r="10" fill="#FBF7EC" opacity=".6"/>
+  <text x="14" y="1" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-weight="700" font-size="${v > 5000 ? 15 : 17}" fill="#221F1C">${v}</text></g>`;
+const m5Money = inner => `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="돈">${inner}</svg>`;
+Object.assign(M5_ONLY, {
+  mo100: m5Money(m5Coin(100, 65, 100)), mo500: m5Money(m5Coin(100, 65, 500)),
+  mo1000: m5Money(m5Bill(100, 65, 1000, 1.4)), mo5000: m5Money(m5Bill(100, 65, 5000, 1.4)), mo10000: m5Money(m5Bill(100, 65, 10000, 1.4)),
+  mo2000: m5Money(m5Bill(88, 55, 1000, 1.1) + m5Bill(112, 78, 1000, 1.1)),
+  mo3000: m5Money(m5Bill(80, 45, 1000, 1) + m5Bill(100, 65, 1000, 1) + m5Bill(120, 85, 1000, 1)),
+  mo600: m5Money(m5Coin(80, 65, 500) + m5Coin(128, 65, 100)),
+  money: m5Money(m5Bill(84, 58, 5000, 1.05) + m5Coin(146, 84, 500) + m5Coin(120, 100, 100)),
+  snack: `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="과자">
+    <path d="M60 16 L140 16 L136 30 L144 110 L140 118 L60 118 L56 110 L64 30 Z" fill="#E3A93C" stroke="#221F1C" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M60 16 l6 6 l6 -6 l6 6 l6 -6 l6 6 l6 -6 l6 6 l6 -6 l6 6 l6 -6 l6 6 l6 -6 l6 6" stroke="#221F1C" stroke-width="2" fill="none"/>
+    <circle cx="100" cy="68" r="22" fill="#C1403A" stroke="#221F1C" stroke-width="2.4"/><circle cx="92" cy="62" r="3" fill="#8A5A36"/><circle cx="106" cy="70" r="3" fill="#8A5A36"/><circle cx="98" cy="76" r="3" fill="#8A5A36"/></svg>`,
+  shop5: `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="가게">
+    <rect x="20" y="40" width="160" height="80" fill="#F5E6BD" stroke="#221F1C" stroke-width="3"/>
+    <path d="M14 40 L186 40 L176 18 L24 18 Z" fill="#C1403A" stroke="#221F1C" stroke-width="3" stroke-linejoin="round"/>
+    ${[34, 62, 90, 118, 146].map(x => `<path d="M${x} 40 Q${x + 14} 54 ${x + 28} 40" fill="#FBF7EC" stroke="#221F1C" stroke-width="2"/>`).join('')}
+    <rect x="30" y="80" width="140" height="10" fill="#B08452" stroke="#221F1C" stroke-width="2"/>
+    <path d="M44 80 Q52 66 62 80 Z" fill="#E0703C" stroke="#221F1C" stroke-width="1.6"/><rect x="80" y="68" width="18" height="12" fill="#FBF7EC" stroke="#221F1C" stroke-width="1.6"/>
+    <circle cx="124" cy="74" r="7" fill="#C1403A" stroke="#221F1C" stroke-width="1.6"/><rect x="140" y="64" width="16" height="16" fill="#E3A93C" stroke="#221F1C" stroke-width="1.6"/></svg>`
+});
+/* 가격표를 붙인 물건: 앞 달의 그림에 노란 가격표를 얹습니다 */
+const m5Tag = (pic, price) => M4_PIC[pic] ? M4_PIC[pic].replace(/<\/svg>\s*$/, `<g transform="translate(150 22) rotate(12)"><rect x="-30" y="-14" width="60" height="28" rx="5" fill="#F6D98F" stroke="#221F1C" stroke-width="2.4"/>
+  <circle cx="-22" cy="0" r="3" fill="#FBF7EC" stroke="#221F1C" stroke-width="1.4"/><text x="6" y="1" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-weight="700" font-size="14" fill="#221F1C">${price}</text></g></svg>`) : '';
+Object.assign(M5_ONLY, {
+  tag_tteok: m5Tag('f_tteok', 3000), tag_gimbap: m5Tag('f_gimbap', 2000), tag_milk: m5Tag('f_milk', 1000), tag_bread: m5Tag('f_bread', 1000)
+});
+M5_ONLY.tag_snack = M5_ONLY.snack.replace(/<\/svg>\s*$/, `<g transform="translate(150 22) rotate(12)"><rect x="-30" y="-14" width="60" height="28" rx="5" fill="#F6D98F" stroke="#221F1C" stroke-width="2.4"/><circle cx="-22" cy="0" r="3" fill="#FBF7EC" stroke="#221F1C" stroke-width="1.4"/><text x="6" y="1" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-weight="700" font-size="14" fill="#221F1C">500</text></g></svg>`);
 const M5_PIC = Object.assign({}, M4_PIC, M5_ONLY);
 
 /* ---- 묶음 ---- */
@@ -119,7 +155,7 @@ const M5_BUNDLES = [
   {k:1, title:'그리고, 그래서', topic:'문장 잇기와 이야기 순서', nights:[1, 2, 3], after:'그동안 날마다 그림일기를 한 장씩 그리고 세 문장으로 이어 써 봐.'},
   {k:2, title:'같이 놀자', topic:'친구와 놀기, 할 수 있어요', nights:[4, 5, 6], after:'그동안 가족이나 친구에게 한국어로 같이 놀자고 해 봐.'},
   {k:3, title:'한국에 갈 거예요', topic:'앞날 말하기와 여행 준비', nights:[7, 8, 9], after:'그동안 가족에게 이번 방학이나 주말에 무엇을 할 건지 말해 봐.'},
-  {k:4, title:'이거 얼마예요?', topic:'돈과 가게', nights:[10, 11, 12]},
+  {k:4, title:'이거 얼마예요?', topic:'돈과 가게', nights:[10, 11, 12], after:'그동안 집에서 가게 놀이를 하며 이거 얼마예요, 하고 물어봐.'},
   {k:5, title:'할머니 댁까지', topic:'한국 방문', nights:[13, 14, 15]}
 ];
 
@@ -532,6 +568,132 @@ const M5_NIGHTS = [
        {when:'무엇을 할지', say:'______을 할 거예요.', sub:'받침이 없으면 를: 수영을 할 거예요, 여행을 할 거예요.'},
        {when:'누구를 만날지', say:'______를 만날 거예요.', sub:'받침이 있으면 을: 친구를 만날 거예요, 선생님을 만날 거예요.'}],
      parent:'아이와 다음 방학이나 주말 계획을 한국어로 이야기해 보세요. 한국에 갈 계획이 없어도 괜찮습니다. 공원, 도서관, 할머니 댁처럼 가까운 곳도 좋습니다. 계획이 끝나고 나면 "어제 공원에 갔어요"처럼 지난 일로 다시 말하게 해 보시면 넷째 달과 다섯째 달이 자연스럽게 이어집니다. 한국에 갈 계획이 있다면 달력에 날짜를 적고 "몇 밤 남았어요?"를 세어 보셔도 좋습니다.'}
+  ],
+  dictWords:[] },
+
+/* ---- 넷째 묶음: 이거 얼마예요? --------------------------------------
+   돈(백, 천, 만과 원)과 가게에서 쓰는 말(이거 얼마예요?, 주세요, 모두, 어서 오세요).
+   약속대로 딱 떨어지는 값(백 원, 오백 원, 천 원, 이천 원, 삼천 원, 오천 원, 만 원)만 씁니다.
+   개는 하나 둘로, 원은 일 이로 센다는 넷째 달의 두 숫자 구별을 다시 씁니다(우유 두 개, 이천 원).
+   백, 천, 만 앞에는 일을 붙이지 않습니다(백 원, 천 원, 만 원). */
+{ n:10, bundle:4, title:'백, 천, 만',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'한국에 가면 돈을 쓸 거야. 한국 돈은 원이야. 오늘은 돈을 세는 말을 모아 왔어.',
+     big:'백 원, 천 원, 만 원'},
+    {type:'pairs', title:'한국 돈', who:'moi',
+     t:'동전과 지폐야. 누르면 소리가 나. 숫자를 잘 봐.',
+     singles:[
+       {w:'돈', pic:'money', en:'money'}, {w:'백 원', pic:'mo100', en:'100 won'}, {w:'오백 원', pic:'mo500', en:'500 won'},
+       {w:'천 원', pic:'mo1000', en:'1,000 won'}, {w:'오천 원', pic:'mo5000', en:'5,000 won'}, {w:'만 원', pic:'mo10000', en:'10,000 won'}],
+     tip:{who:'dami', t:'백, 천, 만 앞에는 일을 붙이지 않는단다. 일백 원이 아니라 백 원, 일천 원이 아니라 천 원이지. 둘이면 이천 원, 셋이면 삼천 원이란다. 그리고 동그라미 넷 달린 10000은 십천이 아니라 만이란다.'}},
+    {type:'pairs', title:'천 원이 여러 장', who:'moi',
+     t:'천 원짜리가 여러 장이면 넷째 달에 배운 일, 이, 삼을 앞에 붙여.',
+     singles:[
+       {w:'이천 원', pic:'mo2000', en:'2,000 won'}, {w:'삼천 원', pic:'mo3000', en:'3,000 won'}, {w:'육백 원', pic:'mo600', en:'600 won'}]},
+    {type:'choose', title:'얼마예요?', who:'tori',
+     t:'돈 그림을 보고 바르게 읽은 쪽을 골라 봐.',
+     qs:[
+       {pic:'mo1000', o:['천 원','일천 원','백 원'], a:'천 원', why:'천 앞에는 일을 붙이지 않아요.'},
+       {pic:'mo500', o:['오백 원','다섯백 원','오천 원'], a:'오백 원', why:'원은 일, 이, 삼으로 세요.'},
+       {pic:'mo3000', o:['셋천 원','삼천 원','삼백 원'], a:'삼천 원', why:'천 원이 세 장이라서 삼천 원이에요.'},
+       {pic:'mo10000', o:['십천 원','만 원','천 원'], a:'만 원', why:'10000은 만이에요.'},
+       {pic:'mo600', o:['육백 원','오백 원','육천 원'], a:'육백 원', why:'오백 원과 백 원을 더하면 육백 원이에요.'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 돈을 찾아 봐.',
+     qs:[
+       {say:'오천 원', o:['mo5000','mo500','mo10000'], a:'mo5000'},
+       {say:'백 원', o:['mo1000','mo100','mo500'], a:'mo100'},
+       {say:'이천 원', o:['mo3000','mo2000','mo1000'], a:'mo2000'},
+       {say:'만 원', o:['mo10000','mo5000','mo1000'], a:'mo10000'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'돈을 세는 말을 써 봐.',
+     items:[{w:'돈', en:'money'}, {w:'천', en:'thousand'}, {w:'만', en:'ten thousand'}]}
+  ],
+  dictWords:[{w:'돈', en:'money'}, {w:'백', en:'hundred'}, {w:'천', en:'thousand'}, {w:'만', en:'ten thousand'}, {w:'원', en:'won'}] },
+
+{ n:11, bundle:4, title:'이거 얼마예요?',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 가게에서 물건을 사 볼 거야. 값을 묻고, 달라고 하고, 돈을 내는 말이야.',
+     big:'이거 얼마예요?'},
+    {type:'pairs', title:'가게에서 쓰는 말', who:'moi',
+     t:'가게에서 자주 듣고 말하는 말이야. 눌러서 들어 봐.',
+     singles:[
+       {w:'이거 얼마예요?', pic:'tag_tteok', en:'How much is this?'}, {w:'이거 주세요', pic:'tag_gimbap', en:'I will take this, please.'},
+       {w:'모두', pic:'mo5000', en:'all together'}, {w:'어서 오세요', pic:'shop5', en:'Welcome!'},
+       {w:'여기 있어요', pic:'money', en:'Here you are.'}, {w:'과자', pic:'snack', en:'snack'}],
+     tip:{who:'tori', t:'가게 주인은 손님에게 높이는 말을 써. 어서 오세요, 감사합니다. 손님도 이거 주세요, 여기 있어요처럼 높여서 말하면 좋아.'}},
+    {type:'choose', title:'얼마예요?', who:'tori',
+     t:'가격표를 보고 알맞은 대답을 골라 봐.',
+     qs:[
+       {pic:'tag_tteok', t:'떡볶이는 얼마예요?', o:['삼천 원이에요.','셋천 원이에요.'], a:'삼천 원이에요.', en:"It's 3,000 won."},
+       {pic:'tag_snack', t:'과자는 얼마예요?', o:['오백 원이에요.','오천 원이에요.'], a:'오백 원이에요.', en:"It's 500 won."},
+       {pic:'tag_milk', t:'우유 두 개는 모두 얼마예요?', o:['이천 원이에요.','둘천 원이에요.'], a:'이천 원이에요.', en:"It's 2,000 won in total.", why:'천 원이 두 번이라서 이천 원이에요.'},
+       {pic:'tag_gimbap', t:'김밥을 사고 싶어요. 뭐라고 해요?', o:['김밥 하나 주세요.','김밥 일 주세요.'], a:'김밥 하나 주세요.', en:'One gimbap, please.', why:'물건을 셀 때는 하나, 둘이에요.'}]},
+    {type:'shrink', title:'개는 하나 둘, 원은 일 이', who:'dami',
+     t:'넷째 달에 배운 두 숫자를 가게에서 함께 쓴단다. 물건은 하나, 둘로, 돈은 일, 이로 세거라.',
+     rows:[['하나','한'], ['둘','두'], ['셋','세']],
+     units:['개'],
+     note:'우유 두 개, 이천 원. 김밥 세 개, 육천 원. 물건은 두 개, 세 개, 값은 이천, 육천이지. 헷갈리면 이 할아버지를 떠올리거라.'},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'이거 얼마예요?', tiles:['이거','얼마예요?'], en:'How much is this?'},
+       {s:'김밥 하나 주세요.', tiles:['김밥','하나','주세요.'], extra:['일'], en:'One gimbap, please.'},
+       {s:'우유 두 개 주세요.', tiles:['우유','두','개','주세요.'], extra:['이'], en:'Two milks, please.', hint:'물건은 하나, 둘로 세요.'},
+       {s:'모두 오천 원이에요.', tiles:['모두','오천','원이에요.'], extra:['다섯천'], en:"It's 5,000 won in total.", hint:'돈은 일, 이로 세요.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'돈을 셀 때도 받침이 원으로 건너간단다. 들어 보거라.',
+     cmp:[
+       {s:'천 원', d:'처 눤', n:'ㄴ 받침이 뒤로 건너가요'},
+       {s:'만 원', d:'마 눤', n:'ㄴ 받침이 뒤로 건너가요'},
+       {s:'오백 원', d:'오배 권', n:'ㄱ 받침이 뒤로 건너가요'},
+       {s:'얼마예요', d:'얼마예요', n:'받침이 없어서 그대로 나요'}],
+     note:'[처 눤], [마 눤]으로 들려도 쓸 때는 천 원, 만 원이란다. 숫자와 원은 띄어 쓰는 것도 잊지 말거라.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐.',
+     items:[{w:'얼마', en:'how much'}, {w:'과자', en:'snack'}, {w:'모두', en:'all together'}]}
+  ],
+  dictWords:[{w:'얼마', en:'how much'}, {w:'과자', en:'snack'}, {w:'모두', en:'all together'}, {w:'주세요', en:'please give me'}] },
+
+{ n:12, bundle:4, title:'모이네 떡볶이 가게',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'모이가 떡볶이 가게 놀이를 열었대! 나는 손님이야. 먼저 글자 없이 귀로만 들어 보고, 그다음에 글자를 같이 보자.',
+     big:'어서 오세요!'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 값을 잘 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'moi', t:'어서 오세요! 모이네 가게예요.', en:"Welcome! This is Moi's shop."},
+       {who:'tori', t:'안녕하세요. 떡볶이는 얼마예요?', en:'Hello. How much is the tteokbokki?'},
+       {who:'moi', t:'떡볶이는 삼천 원이에요. 김밥은 이천 원이에요.', en:'Tteokbokki is 3,000 won. Gimbap is 2,000 won.'},
+       {who:'tori', t:'떡볶이 하나하고 김밥 하나 주세요.', en:'One tteokbokki and one gimbap, please.'},
+       {who:'moi', t:'모두 오천 원이에요.', en:"That's 5,000 won in total."},
+       {who:'tori', t:'여기 있어요.', en:'Here you are.'},
+       {who:'dami', t:'허허, 나도 우유 두 개 주세요. 얼마예요?', en:'Ho ho, two milks for me too, please. How much?'},
+       {who:'moi', t:'할아버지, 이천 원이에요. 감사합니다. 또 오세요!', en:"Grandpa, that's 2,000 won. Thank you. Come again!"}],
+     note:{who:'dami', t:'모이가 가게 주인이 되니 손님에게 ‘어서 오세요’, ‘감사합니다’라고 높여서 말했지? 한국 가게에서는 어른이든 아이든 손님에게 이렇게 말한단다. 그리고 나는 우유 ‘두 개’를 사고 ‘이천 원’을 냈지. 두 숫자가 다 나왔구나.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'떡볶이는 얼마예요?', o:['이천 원','삼천 원','오천 원'], a:'삼천 원', why:'모이가 ‘떡볶이는 삼천 원이에요’라고 했어요.'},
+       {t:'토리는 모두 얼마를 냈어요?', o:['삼천 원','오천 원','만 원'], a:'오천 원', why:'떡볶이 삼천 원에 김밥 이천 원을 더해서 오천 원이에요.'},
+       {t:'할아버지는 우유를 몇 개 샀어요?', o:['한 개','두 개','세 개'], a:'두 개', why:'할아버지는 ‘우유 두 개 주세요’라고 하셨어요.'},
+       {t:'모이가 손님을 맞으며 처음 한 말은?', o:['어서 오세요','안녕히 가세요','잘 먹겠습니다'], a:'어서 오세요', why:'가게에서는 손님에게 ‘어서 오세요’라고 해요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 손님이야. 가게 주인 모이에게 대답해 봐.',
+     qs:[
+       {pic:'tag_gimbap', line:{who:'moi', t:'어서 오세요! 뭐 드릴까요?'}, en:'Welcome! What can I get you?', o:['김밥 하나 주세요.','김밥 일 주세요.'], a:'김밥 하나 주세요.', why:'물건은 하나, 둘로 세요.'},
+       {pic:'tag_milk', line:{who:'dami', t:'토리야, 우유는 얼마냐?'}, en:'Tori, how much is the milk?', o:['천 원이에요.','일천 원이에요.'], a:'천 원이에요.', why:'천 앞에는 일을 붙이지 않아요.'},
+       {pic:'mo5000', t:'떡볶이(삼천 원)와 김밥(이천 원)을 샀어요. 모두 얼마예요?', en:'Tteokbokki (3,000) and gimbap (2,000). How much in total?', o:['오천 원이에요.','삼천 원이에요.'], a:'오천 원이에요.'}]},
+    {type:'task', title:'우리 집 가게 놀이', who:'moi',
+     t:'가족과 가게 놀이를 해 봐. 한 번은 주인, 한 번은 손님! 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'주인이 되어 손님을 맞아요', say:'어서 오세요!', sub:'물건에 가격표를 붙여요: 천 원, 오백 원.'},
+       {when:'손님이 되어 물어요', say:'이거 얼마예요?', sub:'대답을 듣고 돈을 세어 봐요.'},
+       {when:'사고 싶은 것을 말해요', say:'이거 ______ 주세요.', sub:'물건은 하나, 둘로: 사과 두 개 주세요.'}],
+     parent:'집에 있는 과일, 과자, 장난감에 포스트잇으로 가격표(오백 원, 천 원, 이천 원처럼 딱 떨어지는 값)를 붙이고 가게 놀이를 해 주세요. 종이로 천 원, 오천 원, 만 원 지폐를 만들어 쓰면 더 재미있습니다. 아이가 주인일 때는 "어서 오세요", "감사합니다"를, 손님일 때는 "이거 얼마예요?", "여기 있어요"를 쓰게 해 주세요. 물건은 하나, 둘(두 개), 값은 일, 이(이천 원)로 센다는 점을 한 번씩 짚어 주시면 좋습니다.'}
   ],
   dictWords:[] }
 ];
