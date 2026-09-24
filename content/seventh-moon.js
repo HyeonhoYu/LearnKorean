@@ -81,6 +81,43 @@ M7_ONLY.debate = `<svg viewBox="0 0 200 130" width="150" height="98" role="img" 
   ${m2Person('kid', 47, 'wave', 1).replace('translate(47 122)', 'translate(47 96)')}${m2Person('friend', 153, 'wave', -1).replace('translate(153 122)', 'translate(153 96)')}
   <rect x="84" y="16" width="32" height="22" rx="4" fill="#FBF7EC" stroke="#221F1C" stroke-width="2"/><path d="M92 27 L108 27" stroke="#C1403A" stroke-width="3"/>
   <path d="M60 30 L84 26 M140 30 L116 26" stroke="#8C7F63" stroke-width="2" stroke-dasharray="3 3"/></svg>`;
+/* ---- 넷째 묶음 그림: 해님 달님 ----
+   이야기 속 호랑이는 담이와 다른 욕심쟁이 호랑이라서, 털빛을 더 짙게 하고 눈썹을 찌푸리게 그립니다. */
+const m7Tiger = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k || 1})">
+  <ellipse cx="6" cy="-18" rx="30" ry="16" fill="#D9782E" stroke="#221F1C" stroke-width="2.4"/>
+  <g stroke="#221F1C" stroke-width="3" stroke-linecap="round"><path d="M-6 -30 L-4 -22 M6 -32 L8 -22 M18 -30 L18 -22"/></g>
+  <circle cx="-26" cy="-30" r="15" fill="#D9782E" stroke="#221F1C" stroke-width="2.4"/>
+  <circle cx="-36" cy="-42" r="5" fill="#D9782E" stroke="#221F1C" stroke-width="2"/><circle cx="-16" cy="-43" r="5" fill="#D9782E" stroke="#221F1C" stroke-width="2"/>
+  <path d="M-34 -36 L-28 -33 M-18 -36 L-24 -33" stroke="#221F1C" stroke-width="2.4" stroke-linecap="round"/>
+  <circle cx="-30" cy="-31" r="1.8" fill="#221F1C"/><circle cx="-22" cy="-31" r="1.8" fill="#221F1C"/>
+  <ellipse cx="-26" cy="-23" rx="7" ry="5" fill="#FBF7EC" stroke="#221F1C" stroke-width="1.4"/><path d="M-28 -24 L-24 -24" stroke="#221F1C" stroke-width="2"/>
+  <path d="M-16 -4 L-16 0 M24 -4 L24 0" stroke="#221F1C" stroke-width="5" stroke-linecap="round"/>
+  <path d="M36 -22 Q50 -30 46 -44" stroke="#221F1C" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M36 -22 Q50 -30 46 -44" stroke="#D9782E" stroke-width="3" fill="none" stroke-linecap="round"/></g>`;
+const m7Sky = inner => `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="">${inner}</svg>`;
+Object.assign(M7_ONLY, {
+  hd_sibs: `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="오누이"><path d="M8 122 L192 122" stroke="#221F1C" stroke-width="2.6"/>${m2Person('kid', 76, 'stand', 1)}${m2Person('girl', 124, 'stand', -1).replace('#2D6E8E', '#C1403A')}</svg>`,
+  hd_mother: `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="떡 광주리를 인 어머니"><path d="M8 122 L192 122" stroke="#221F1C" stroke-width="2.6"/>${m2Person('mom', 100, 'stand', 1)}
+    <ellipse cx="100" cy="20" rx="30" ry="8" fill="#C9A06A" stroke="#221F1C" stroke-width="2.4"/><path d="M72 20 Q100 34 128 20" fill="#C9A06A" stroke="#221F1C" stroke-width="2.4"/>
+    ${[86, 100, 114].map(x => `<ellipse cx="${x}" cy="16" rx="6" ry="3.6" fill="#FBF7EC" stroke="#C9C0AE" stroke-width="1.2"/>`).join('')}</svg>`,
+  hd_tiger: `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="욕심쟁이 호랑이"><path d="M8 122 L192 122" stroke="#221F1C" stroke-width="2.6"/>${m7Tiger(110, 120, 1.7)}</svg>`,
+  hd_hill: `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="고개"><rect width="200" height="130" rx="6" fill="#DCEBD6"/>
+    <path d="M0 120 Q50 40 100 50 Q150 40 200 120 Z" fill="#9DBA7E" stroke="#221F1C" stroke-width="2.4"/><path d="M60 120 Q90 70 100 52 Q110 70 140 120" stroke="#E0C49A" stroke-width="10" fill="none"/>
+    ${m7Tiger(150, 76, .7)}</svg>`,
+  hd_tree: `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="나무 위로 도망친 오누이"><rect width="200" height="130" rx="6" fill="#17324A"/>
+    <rect x="92" y="40" width="16" height="90" fill="#8A6A4A" stroke="#221F1C" stroke-width="2"/><circle cx="100" cy="36" r="34" fill="#3E5B4A" stroke="#221F1C" stroke-width="2.4"/>
+    <circle cx="90" cy="30" r="7" fill="#F0D9BE" stroke="#221F1C" stroke-width="1.6"/><circle cx="110" cy="34" r="7" fill="#F0D9BE" stroke="#221F1C" stroke-width="1.6"/>${m7Tiger(60, 128, .8)}</svg>`,
+  hd_rope: `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="하늘에서 내려온 동아줄"><rect width="200" height="130" rx="6" fill="#CFE0EA"/>
+    <path d="M60 10 Q90 4 120 10 Q150 4 170 16" fill="#FBF7EC" stroke="#221F1C" stroke-width="2"/>
+    <path d="M100 12 L100 126" stroke="#B08452" stroke-width="6"/><path d="M96 20 L104 28 M96 40 L104 48 M96 60 L104 68 M96 80 L104 88 M96 100 L104 108" stroke="#8A6A4A" stroke-width="2"/>
+    <g fill="#F2C14E"><path d="M60 50 l2 4 l4 1 l-3 3 l1 4 l-4 -2 l-4 2 l1 -4 l-3 -3 l4 -1 Z"/><path d="M146 70 l2 4 l4 1 l-3 3 l1 4 l-4 -2 l-4 2 l1 -4 l-3 -3 l4 -1 Z"/></g></svg>`,
+  hd_sunmoon: `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="해와 달이 된 오누이"><rect width="100" height="130" rx="6" fill="#CFE0EA"/><rect x="100" width="100" height="130" rx="6" fill="#17324A"/>
+    <circle cx="50" cy="60" r="26" fill="#F2C14E" stroke="#221F1C" stroke-width="2.4"/><g stroke="#E3A93C" stroke-width="3" stroke-linecap="round"><path d="M50 22 L50 14 M50 98 L50 106 M12 60 L4 60 M88 60 L96 60"/></g>
+    <circle cx="150" cy="60" r="26" fill="#F6E3A1" stroke="#221F1C" stroke-width="2.4"/>
+    <circle cx="43" cy="58" r="2" fill="#221F1C"/><circle cx="57" cy="58" r="2" fill="#221F1C"/><path d="M44 68 q6 5 12 0" stroke="#221F1C" stroke-width="2" fill="none"/>
+    <circle cx="143" cy="58" r="2" fill="#221F1C"/><circle cx="157" cy="58" r="2" fill="#221F1C"/><path d="M144 68 q6 5 12 0" stroke="#221F1C" stroke-width="2" fill="none"/></svg>`,
+  hd_book: `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="옛날이야기 책"><path d="M30 24 L100 30 L170 24 L170 110 L100 116 L30 110 Z" fill="#FBF7EC" stroke="#221F1C" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M100 30 L100 116" stroke="#221F1C" stroke-width="2.4"/><circle cx="64" cy="64" r="18" fill="#F2C14E" stroke="#221F1C" stroke-width="2"/><circle cx="136" cy="64" r="18" fill="#F6E3A1" stroke="#221F1C" stroke-width="2"/></svg>`
+});
 const M7_PIC = Object.assign({}, M6_PIC, M7_ONLY);
 
 /* ---- 묶음 ---- */
@@ -88,7 +125,7 @@ const M7_BUNDLES = [
   {k:1, title:'편지를 써요', topic:'편지의 틀과 안부', nights:[1, 2, 3], after:'그동안 할머니 할아버지께 손으로 편지를 한 장 써 봐.'},
   {k:2, title:'일기를 써요', topic:'글에서 쓰는 ~다 말투', nights:[4, 5, 6], after:'그동안 날마다 일기를 한 편씩 써 봐.'},
   {k:3, title:'내 생각은요', topic:'의견과 까닭, 토론', nights:[7, 8, 9], after:'그동안 가족과 작은 토론을 하며 까닭을 붙여 생각을 말해 봐.'},
-  {k:4, title:'옛날이야기', topic:'해님 달님과 이야기 짓기', nights:[10, 11, 12]},
+  {k:4, title:'옛날이야기', topic:'해님 달님과 이야기 짓기', nights:[10, 11, 12], after:'그동안 가족에게 해님 달님 이야기를 한국어로 들려줘.'},
   {k:5, title:'나의 이야기', topic:'나를 소개하고 꿈 말하기', nights:[13, 14, 15]}
 ];
 
@@ -495,6 +532,145 @@ const M7_NIGHTS = [
        {when:'생각과 까닭을 말해요', say:'저는 ______이 좋다고 생각해요. 왜냐하면 ______기 때문이에요.', sub:'까닭은 하나면 충분해요.'},
        {when:'다른 생각을 들으면', say:'말씀도 맞아요. 그런데 제 생각은 조금 달라요.', sub:'형제에게는 네 말도 맞아, 내 생각은 좀 달라.'}],
      parent:'저녁 식탁에서 가볍게 편을 나눌 수 있는 주제로 토론해 보세요. 누가 옳은지가 아니라, 아이가 "생각해요"와 "왜냐하면 ~기 때문이에요"로 까닭을 붙여 말하는지를 봐 주시면 됩니다. 부모님이 일부러 다른 편을 들어 주시면 아이가 "제 생각은 조금 달라요"를 연습할 기회가 생깁니다. 다른 사람의 생각을 먼저 인정하고 자기 생각을 말하는 태도도 함께 칭찬해 주세요.'}
+  ],
+  dictWords:[] },
+
+/* ---- 넷째 묶음: 옛날이야기 -------------------------------------------
+   한국 옛이야기 "해와 달이 된 오누이(해님 달님)"를 듣고, 다시 들려주고, 끝을 바꿔 새 이야기를 짓습니다.
+   옛이야기의 말투 "~었대요"는 둘째 묶음의 ~다 말투에서 다를 대요로 바꾼 모양이라 이어서 가르칩니다(갔다 → 갔대요).
+   원래 이야기에는 호랑이가 어머니를 해치는 대목이 있지만, 달토끼에서는 호랑이가 떡을 빼앗고 어머니는
+   다른 길로 무사히 돌아오는 것으로 부드럽게 바꿨습니다. 부모님 안내에 이 점을 밝힙니다.
+   이야기 속 호랑이는 담이와 다른 욕심쟁이 호랑이입니다. */
+{ n:10, bundle:4, title:'옛날 옛적에',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'한국 옛이야기는 늘 이렇게 시작해. 옛날 옛적에! 오늘은 해와 달이 어떻게 생겼는지 알려 주는 옛이야기에 나오는 말을 모아 왔어.',
+     big:'옛날 옛적에'},
+    {type:'pairs', title:'이야기에 나오는 말', who:'moi',
+     t:'해님 달님 이야기에 나오는 말이야. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'오누이', pic:'hd_sibs', en:'brother and sister'}, {w:'어머니', pic:'hd_mother', en:'mother'},
+       {w:'호랑이', pic:'hd_tiger', en:'tiger'}, {w:'고개', pic:'hd_hill', en:'mountain pass'},
+       {w:'동아줄', pic:'hd_rope', en:'thick rope'}, {w:'해', pic:'hd_sunmoon', en:'sun'}, {w:'달', pic:'chu_fullmoon', en:'moon'}],
+     tip:{who:'dami', t:'미리 말해 두마. 이 이야기에 나오는 호랑이는 이 할아버지가 아니란다! 떡을 욕심내는 욕심쟁이 호랑이지. 오누이는 오빠와 누이, 곧 남매란 뜻이란다.'}},
+    {type:'pairs', title:'이야기 말투', who:'tori',
+     t:'옛이야기를 들려줄 때 자주 쓰는 말이야.',
+     singles:[
+       {w:'옛날 옛적에', pic:'hd_book', en:'once upon a time'}, {w:'살았대요', pic:'hd_sibs', en:'(they say) lived'},
+       {w:'그래서 어떻게 되었을까요?', pic:'what', en:'So what happened next?'}]},
+    {type:'choose', title:'이야기 말 찾기', who:'tori',
+     t:'그림을 보고 알맞은 말을 골라 봐.',
+     qs:[
+       {pic:'hd_sibs', o:['오누이','어머니','호랑이'], a:'오누이'},
+       {pic:'hd_rope', o:['동아줄','고개','나무'], a:'동아줄'},
+       {pic:'hd_tiger', t:'이 호랑이는 담이 할아버지예요?', o:['네, 담이 할아버지예요.','아니요, 욕심쟁이 호랑이예요.'], a:'아니요, 욕심쟁이 호랑이예요.'},
+       {pic:'hd_book', t:'옛이야기는 어떻게 시작해요?', o:['옛날 옛적에','안녕히 주무세요','잘 먹겠습니다'], a:'옛날 옛적에'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 그림을 찾아 봐.',
+     qs:[
+       {say:'고개', o:['hd_hill','hd_tree','hd_rope'], a:'hd_hill'},
+       {say:'어머니', o:['hd_sibs','hd_mother','p_grandma'], a:'hd_mother'},
+       {say:'해와 달', o:['hd_sunmoon','chu_fullmoon','w_sunny'], a:'hd_sunmoon'},
+       {say:'호랑이', o:['cat','hd_tiger','dog'], a:'hd_tiger'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'이야기 말을 써 봐.',
+     items:[{w:'호랑이', en:'tiger'}, {w:'오누이', en:'brother and sister'}, {w:'하늘', en:'sky'}]}
+  ],
+  dictWords:[{w:'호랑이', en:'tiger'}, {w:'오누이', en:'siblings'}, {w:'어머니', en:'mother'}, {w:'고개', en:'mountain pass'}, {w:'동아줄', en:'rope'}, {w:'해', en:'sun'}] },
+
+{ n:11, bundle:4, title:'그래서 어떻게 되었을까요?',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 옛이야기를 들려주는 말투를 배우고, 해님 달님 이야기를 차례대로 맞춰 볼 거야.',
+     big:'오누이가 살았대요'},
+    {type:'tense', title:'일기 말투와 이야기 말투', who:'dami',
+     t:'옛이야기를 들려줄 때는 들은 이야기라서 대요를 붙인단다. 일기의 다를 대요로 바꾸면 되지.',
+     cols:['일기에 쓸 때', '옛이야기를 들려줄 때'],
+     groups:[
+       {rule:'다를 대요로', rows:[['살았다','살았대요'], ['갔다','갔대요'], ['먹었다','먹었대요'], ['내려왔다','내려왔대요'], ['되었다','되었대요']]}],
+     note:'대요는 들은 이야기를 전할 때 쓴단다. 나도 누군가에게 들었다는 뜻이지. 옛이야기는 오래오래 사람들 입에서 입으로 전해졌으니 딱 맞는 말투지.'},
+    {type:'sequence', title:'해님 달님 이야기 순서', who:'moi',
+     t:'이야기가 섞였어. 차례대로 눌러 줘.',
+     qs:[
+       {cards:[{pic:'hd_hill', t:'호랑이가 고개에서 어머니의 떡을 다 빼앗았대요.'}, {pic:'hd_tree', t:'호랑이가 오누이 집에 오자 오누이는 나무 위로 도망쳤대요.'}, {pic:'hd_rope', t:'하늘에서 튼튼한 동아줄이 내려왔대요.'}, {pic:'hd_sunmoon', t:'오빠는 달이 되고 누이는 해가 되었대요.'}]}]},
+    {type:'choose', title:'이야기 말투로 말해요', who:'tori',
+     t:'옛이야기 말투로 바르게 말한 쪽을 골라 봐.',
+     qs:[
+       {pic:'hd_sibs', o:['오누이가 살았대요.','오누이가 살았다요.'], a:'오누이가 살았대요.'},
+       {pic:'hd_rope', o:['동아줄이 내려왔대요.','동아줄이 내려왔데요.'], a:'동아줄이 내려왔대요.', why:'들은 이야기는 대요로 써요. ㅐ를 써요.'},
+       {pic:'hd_sunmoon', t:'누이는 무엇이 되었대요?', o:['해가 되었대요.','달이 되었대요.'], a:'해가 되었대요.'},
+       {pic:'hd_tree', t:'오누이는 어디로 도망쳤대요?', o:['나무 위로','고개 아래로'], a:'나무 위로'}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 옛이야기 문장을 만들어 봐.',
+     qs:[
+       {s:'옛날 옛적에 오누이가 살았대요.', tiles:['옛날','옛적에','오누이가','살았대요.'], en:'Once upon a time, there lived a brother and sister.'},
+       {s:'호랑이가 떡을 다 먹었대요.', tiles:['호랑이가','떡을','다','먹었대요.'], extra:['먹었다요.'], en:'The tiger ate all the rice cakes.'},
+       {s:'하늘에서 동아줄이 내려왔대요.', tiles:['하늘에서','동아줄이','내려왔대요.'], en:'A rope came down from the sky.'},
+       {s:'그래서 어떻게 되었을까요?', tiles:['그래서','어떻게','되었을까요?'], en:'So what happened next?'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'옛이야기 말에는 새로운 소리 비밀이 하나 숨어 있단다.',
+     cmp:[
+       {s:'옛날', d:'옌날', n:'ㅅ 받침이 ㄴ 앞에서 ㄴ처럼 나요'},
+       {s:'떡 하나', d:'떠카나', n:'ㄱ과 ㅎ이 만나 ㅋ 소리가 나요'},
+       {s:'먹었대요', d:'머걷때요', n:'ㅆ은 ㄷ처럼, 대는 때처럼 나요'},
+       {s:'하늘에서', d:'하느레서', n:'ㄹ 받침이 뒤로 건너가요'}],
+     note:'옛날의 [옌날]은 받침이 뒤의 ㄴ을 닮아 ㄴ으로 바뀌는 게야. 첫째 달부터 일곱째 달까지, 한국어 소리는 이웃끼리 서로 닮고 건너가고 세지는 재미가 있단다. 그래도 글자는 늘 제자리란다.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'옛날', en:'long ago', hint:{who:'dami', t:'소리는 [옌날]이지만 ‘옛’에 받침 ㅅ이 있단다.'}},
+       {w:'살았대요', en:'(they say) lived', hint:{who:'dami', t:'‘대’는 ㅐ란다. 들은 이야기를 전하는 대요지.'}},
+       {w:'동아줄', en:'rope'}]}
+  ],
+  dictWords:[{w:'옛날', en:'long ago'}, {w:'살았대요', en:'(they say) lived'}, {w:'되었대요', en:'(they say) became'}] },
+
+{ n:12, bundle:4, title:'해님 달님',
+  steps:[
+    {type:'intro', who:'dami',
+     t:'오늘은 이 할아버지가 해님 달님 이야기를 처음부터 끝까지 들려주마. 다 듣고 나면 너만의 이야기도 지어 보거라. 먼저 귀로만 들어 보거라.',
+     big:'해와 달이 된 오누이'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'dami', t:'옛날 옛적에 산골에 오누이와 어머니가 살았단다.', en:'Once upon a time, a brother, a sister, and their mother lived in the mountains.'},
+       {who:'dami', t:'어머니가 떡을 팔고 돌아오는데, 고개에서 호랑이가 나타났지. 떡 하나 주면 안 잡아먹지!', en:'As the mother came home from selling rice cakes, a tiger appeared at the pass. "Give me a rice cake and I won\'t eat you!"'},
+       {who:'moi', t:'할아버지, 그 호랑이가 할아버지예요?', en:'Grandpa, is that tiger you?'},
+       {who:'dami', t:'허허, 아니란다! 욕심쟁이 호랑이지. 호랑이가 떡을 다 먹는 사이에 어머니는 다른 길로 집에 돌아왔단다.', en:'Ho ho, no! It is a greedy tiger. While it ate all the rice cakes, the mother came home another way.'},
+       {who:'dami', t:'그런데 호랑이가 오누이 집까지 따라왔지. 오누이는 나무 위로 도망쳐서 하늘에 빌었단다.', en:'But the tiger followed them home. The children fled up a tree and prayed to the sky.'},
+       {who:'tori', t:'그래서 어떻게 되었어요?', en:'So what happened?'},
+       {who:'dami', t:'튼튼한 동아줄이 내려왔지. 오빠는 달이 되고 누이는 해가 되었단다. 호랑이는 헌 동아줄을 잡았다가 쿵 떨어졌지.', en:'A strong rope came down. The brother became the moon, and the sister became the sun. The tiger grabbed an old rope and fell with a thud.'},
+       {who:'tori', t:'오빠가 달이 되었으면, 달토끼도 그 달에 살아요?', en:'If the brother became the moon, does the moon rabbit live there too?'}],
+     note:{who:'dami', t:'허허, 그럴지도 모르지. 옛이야기는 지혜롭고 용감한 사람이 어려움을 이겨 낸다는 이야기가 많단다. 오누이는 무서웠지만 함께 힘을 모았지. 이제 네 차례다. 이야기의 끝을 바꿔서 너만의 옛이야기를 지어 보거라.'}},
+    {type:'letter', title:'나만의 옛이야기', who:'tori',
+     t:'칸마다 하나씩 골라서 나만의 옛이야기를 지어 봐. 오른쪽에 이야기가 만들어져.',
+     parts:[
+       {label:'누가', opts:['옛날 옛적에 토끼가 살았대요.', '옛날 옛적에 까치가 살았대요.', '옛날 옛적에 호랑이가 살았대요.']},
+       {label:'어디에서', opts:['산속 작은 집에서 살았대요.', '바닷가 마을에서 살았대요.', '달나라에서 살았대요.']},
+       {label:'무슨 일이', opts:['어느 날 배고픈 호랑이를 만났대요.', '어느 날 반짝이는 보물을 찾았대요.', '어느 날 길을 잃어버렸대요.']},
+       {label:'어떻게', opts:['그래서 떡을 나눠 주었대요.', '그래서 친구들이 도와주었대요.', '그래서 지혜롭게 꾀를 냈대요.']},
+       {label:'끝', opts:['모두 행복하게 살았대요.', '그래서 하늘의 별이 되었대요.', '둘은 좋은 친구가 되었대요.']}],
+     noName:true, readLabel:'이야기 들려주기',
+     tip:{who:'moi', t:'마음에 들면 인쇄해서 그림도 그려 봐. 나만의 그림책이 돼!'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'호랑이는 어머니에게 무엇을 달라고 했어요?', o:['떡','돈','옷'], a:'떡'},
+       {t:'오누이는 어디로 도망쳤어요?', o:['나무 위','집 안','고개 아래'], a:'나무 위'},
+       {t:'오빠는 무엇이 되었어요?', o:['해','달','별'], a:'달'},
+       {t:'호랑이는 어떻게 되었어요?', o:['헌 동아줄을 잡았다가 떨어졌어요','해가 되었어요'], a:'헌 동아줄을 잡았다가 떨어졌어요'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {pic:'hd_sunmoon', line:{who:'moi', t:'토리야, 누이는 뭐가 됐어?'}, en:'Tori, what did the sister become?', o:['해가 됐대.','해가 됐대요.'], a:'해가 됐대.', why:'모이는 친구라서 편한 말로 대답해요.'},
+       {pic:'hd_rope', line:{who:'dami', t:'토리야, 하늘에서 무엇이 내려왔느냐?'}, en:'Tori, what came down from the sky?', o:['동아줄이 내려왔대요.','동아줄이 내려왔대.'], a:'동아줄이 내려왔대요.', why:'할아버지께는 대요로 말해요.'},
+       {pic:'hd_book', t:'할머니께 옛이야기를 들려드려요. 처음 말은?', o:['옛날 옛적에','마지막에','왜냐하면'], a:'옛날 옛적에'}]},
+    {type:'task', title:'이야기 들려주기', who:'moi',
+     t:'가족에게 옛이야기를 들려줘. 해님 달님도 좋고, 내가 지은 이야기도 좋아. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'처음에', say:'옛날 옛적에 ______이 살았대요.', sub:'받침이 없으면 가: 까치가 살았대요.'},
+       {when:'가운데', say:'어느 날 ______었대요. 그래서 ______었대요.', sub:'그리고, 그래서, 그런데로 이어요.'},
+       {when:'끝에', say:'그래서 행복하게 살았대요.', sub:'듣는 가족에게 그래서 어떻게 되었을까요? 하고 물어봐도 좋아요.'}],
+     parent:'해님 달님(해와 달이 된 오누이)은 한국 아이들이 어릴 때 가장 많이 듣는 옛이야기 가운데 하나입니다. 원래 이야기에는 호랑이가 어머니를 해치는 대목이 있지만, 달토끼에서는 호랑이가 떡만 빼앗고 어머니는 다른 길로 무사히 돌아오는 것으로 부드럽게 바꿨습니다. 아이가 원래 이야기를 궁금해하면 나이에 맞게 들려주셔도 됩니다. 조부모님께 이 이야기를 한국어로 들려달라고 부탁드리면, 아이가 오늘 배운 "~었대요" 말투를 실제로 듣게 됩니다.'}
   ],
   dictWords:[] }
 ];
