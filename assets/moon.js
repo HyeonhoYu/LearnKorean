@@ -663,7 +663,8 @@ SCREENS.tense = S => {
   S.groups.forEach(G => {
     const t = h('table', {class:'cmp tense'});
     const hasV = G.rows.some(r => r[2]) || S.groups.some(g => g.rows.some(r => r[2]));
-    t.append(h('tr', {}, h('th', {}, '지금'), h('th', {}, '지난 일'), hasV ? h('th', {}, '앞 글자의 모음') : ''));
+    const [c1, c2] = S.cols || ['지금', '지난 일'];
+    t.append(h('tr', {}, h('th', {}, c1), h('th', {}, c2), hasV ? h('th', {}, '앞 글자의 모음') : ''));
     G.rows.forEach(([now, past, v]) => t.append(h('tr', {},
       h('td', {}, sayBtn(now)), h('td', {}, sayBtn(past)), hasV ? h('td', {class:'vw'}, v || '') : '')));
     card.append(h('p', {class:'rhead', style:'margin:16px 0 6px'}, G.rule), h('div', {class:'cmpwrap'}, t));
@@ -970,7 +971,7 @@ function listClips(){
     seen.add(text);
     out.push({id: clipId(text), text, night: n, month: MOON.num, label, say: sayHow || '자연스러운 속도로 한 번'});
   };
-  const VOICE = {tori:'토리 목소리: 밝은 아이처럼', moi:'모이 목소리: 토리 친구처럼 명랑하게', dami:'담이 목소리: 할아버지처럼 느긋하게'};
+  const VOICE = {tori:'토리 목소리: 밝은 아이처럼', moi:'모이 목소리: 토리 친구처럼 명랑하게', dami:'담이 목소리: 할아버지처럼 느긋하게', halmi:'할머니 목소리: 따뜻하고 느리게'};
   MOON.nights.forEach(N => N.steps.forEach(S => {
     const n = N.n;
     if(S.type === 'intro' && S.big) add(S.big, n, '들어가기');
@@ -989,7 +990,7 @@ function listClips(){
     if(S.type === 'findit') S.qs.forEach(q => add(q.say || q.t, n, '그림에서 찾기'));
     if(S.type === 'birthday'){ add('제 생일은', n, '생일 앞부분'); for(let m = 1; m <= 12; m++) add(monthName(m), n, '달 이름');
       for(let d = 1; d <= 31; d++) add(dayName(d) + '이에요', n, '날짜 끝'); }
-    if(S.type === 'tense') S.groups.forEach(G => G.rows.forEach(([a, b]) => { add(a, n, '지금'); add(b, n, '지난 일'); }));
+    if(S.type === 'tense') S.groups.forEach(G => G.rows.forEach(([a, b]) => { add(a, n, (S.cols || ['지금'])[0]); add(b, n, (S.cols || ['', '지난 일'])[1]); }));
     if(S.type === 'likes') S.items.forEach(x => ['좋아해요', '싫어해요'].forEach(v => add(likeLine(x.w, v), n, '좋아해요와 싫어해요')));
     if(S.type === 'clock') for(let i = 1; i <= 12; i++) add(hourWord(i) + '예요', n, '시계');
     if(S.type === 'sibling') ['형','누나','오빠','언니','동생'].forEach(w => add(w, n, '형제 부르는 말'));

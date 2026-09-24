@@ -194,6 +194,56 @@ M4_ONLY.pl_library = m4Place('library', '도서관', m4Bld(56, 88, 64, '#2D6E8E'
 M4_ONLY.pl_hospital = m4Place('hospital', '병원', '<rect x="50" y="86" width="100" height="64" fill="#FBF7EC" stroke="#221F1C" stroke-width="3"/><path d="M92 104 L108 104 M100 96 L100 112" stroke="#C1403A" stroke-width="6"/><rect x="90" y="126" width="20" height="24" fill="#9DB4C6" stroke="#221F1C" stroke-width="2"/>');
 M4_ONLY.pl_park = m4Place('park', '공원', '<rect x="20" y="96" width="160" height="54" rx="10" fill="#9DBA7E" stroke="#221F1C" stroke-width="2.6"/><circle cx="60" cy="100" r="22" fill="#6E8F58" stroke="#221F1C" stroke-width="2.4"/><rect x="56" y="118" width="8" height="24" fill="#8A6A4A"/><circle cx="140" cy="104" r="18" fill="#6E8F58" stroke="#221F1C" stroke-width="2.4"/><rect x="136" y="118" width="8" height="24" fill="#8A6A4A"/><rect x="88" y="130" width="30" height="6" fill="#8A6A4A" stroke="#221F1C" stroke-width="1.6"/>');
 
+/* ---- 다섯째 묶음: 호랑이 할머니 ----
+   담이 할아버지가 둘째 달에 "산 너머에 우리 누나가 산단다"라고 했던 그 누나입니다.
+   대화에 나오도록 인물(CHAR, NAME)에 더합니다. 털빛이 조금 옅고, 흰 쪽머리에 비녀를 꽂았습니다. */
+/* 홈 화면처럼 인물 정의(assets/dal.js)가 없는 페이지에서도 이 파일을 읽으므로, 있을 때만 더합니다. */
+const m4Halmi = m => {
+  const mouth = m === 'happy'
+    ? '<path d="M96 137 q14 17 28 0 Z" fill="#C1403A" stroke="#221F1C" stroke-width="3" stroke-linejoin="round"/>'
+    : m === 'oops'
+    ? '<path d="M100 142 L120 142" stroke="#221F1C" stroke-width="3" stroke-linecap="round"/>'
+    : '<path d="M110 133 L110 139 M110 139 q-10 9 -17 0 M110 139 q10 9 17 0" stroke="#221F1C" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  return `<svg viewBox="0 0 240 200" aria-hidden="true">
+    <g stroke="#221F1C" stroke-width="3.2" stroke-linejoin="round">
+      <ellipse cx="110" cy="44" rx="24" ry="16" fill="#F4F0E6"/>
+      <path d="M78 40 L146 48" stroke-width="4"/><circle cx="148" cy="48" r="5" fill="#C1403A"/>
+      <circle cx="74" cy="62" r="15" fill="#EFC77A"/><circle cx="146" cy="62" r="15" fill="#EFC77A"/>
+      <ellipse cx="110" cy="112" rx="62" ry="58" fill="#EFC77A"/>
+      <path d="M62 84 Q110 50 158 84 Q134 70 110 72 Q86 70 62 84 Z" fill="#F4F0E6"/>
+      <ellipse cx="110" cy="132" rx="34" ry="26" fill="#F4F0E6"/>
+    </g>
+    <g stroke="#8A6A4A" stroke-width="5" stroke-linecap="round"><path d="M64 100 L82 96"/><path d="M156 100 L138 96"/><path d="M62 114 L80 112"/><path d="M158 114 L140 112"/></g>
+    <path d="M86 104 q6 -6 12 0 M122 104 q6 -6 12 0" stroke="#221F1C" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+    <circle cx="88" cy="118" r="6" fill="#E8A0A0" opacity=".6"/><circle cx="132" cy="118" r="6" fill="#E8A0A0" opacity=".6"/>
+    <path d="M102 124 L118 124 L110 132 Z" fill="#221F1C"/>${mouth}</svg>`;
+};
+if(typeof NAME !== 'undefined') NAME.halmi = '할머니';
+if(typeof CHAR !== 'undefined') CHAR.halmi = m4Halmi;
+M4_ONLY.p_halmi = `<svg viewBox="0 0 240 200" width="150" height="98" role="img" aria-label="호랑이 할머니">${m4Halmi('happy').replace(/<\/?svg[^>]*>/g, '')}</svg>`;
+/* 할머니가 진지를 드시는 그림, 선물을 드리는 그림, 주무시는 그림 */
+M4_ONLY.g_eat = `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="할머니가 진지를 드세요">${m2Ground}
+  ${m2Person('grandma', 64, 'give', 1)}<rect x="90" y="84" width="96" height="8" fill="#B08452" stroke="#221F1C" stroke-width="2.4"/>
+  <path d="M100 92 L100 122 M176 92 L176 122" stroke="#221F1C" stroke-width="4"/>
+  <path d="M112 70 L148 70 Q146 86 130 86 Q114 86 112 70 Z" fill="#FBF7EC" stroke="#221F1C" stroke-width="2.4"/><path d="M116 70 Q130 60 144 70" fill="#FBF7EC" stroke="#221F1C" stroke-width="2"/></svg>`;
+M4_ONLY.g_give = `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="할머니께 선물을 드려요">${m2Ground}
+  ${m2Person('kid', 60, 'give', 1)}${m2Person('grandma', 150, 'stand', -1)}
+  <g transform="translate(88 70) scale(.28)"><rect x="56" y="54" width="88" height="62" fill="#2D6E8E" stroke="#221F1C" stroke-width="8"/><rect x="92" y="54" width="16" height="62" fill="#C1403A"/></g></svg>`;
+M4_ONLY.g_sleep = `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="할머니가 주무세요">
+  <rect x="20" y="78" width="160" height="30" rx="3" fill="#E7D2A8" stroke="#221F1C" stroke-width="2.6"/>
+  <circle cx="54" cy="68" r="15" fill="#F0D9BE" stroke="#221F1C" stroke-width="2.4"/><path d="M40 62 C38 48 70 48 68 62 C60 56 48 56 40 62 Z" fill="#C9C0AE" stroke="#221F1C" stroke-width="2"/>
+  <path d="M47 70 q3 2 6 0 M57 70 q3 2 6 0" stroke="#221F1C" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M66 72 L176 72 L176 106 L66 106 Z" fill="#C1403A" stroke="#221F1C" stroke-width="2.6"/>
+  <g font-family="sans-serif" font-weight="700" fill="#17324A"><text x="92" y="44" font-size="18">Z</text><text x="112" y="30" font-size="14">z</text></g></svg>`;
+M4_ONLY.g_house = `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="할머니 댁">
+  <rect width="200" height="130" rx="6" fill="#DCEBD6"/><path d="M0 110 L200 110 L200 130 L0 130 Z" fill="#B7A57A"/>
+  <path d="M20 64 Q100 30 180 64 Q176 70 168 68 L32 68 Q24 70 20 64 Z" fill="#5A5248" stroke="#221F1C" stroke-width="3"/>
+  <rect x="38" y="68" width="124" height="42" fill="#F5E6BD" stroke="#221F1C" stroke-width="3"/>
+  <path d="M60 68 L60 110 M100 68 L100 110 M140 68 L140 110" stroke="#8A6A4A" stroke-width="3"/>
+  <rect x="68" y="78" width="24" height="24" fill="#FBF7EC" stroke="#221F1C" stroke-width="2"/><path d="M80 78 L80 102 M68 90 L92 90" stroke="#8A6A4A" stroke-width="1.6"/>
+  <rect x="108" y="78" width="24" height="24" fill="#FBF7EC" stroke="#221F1C" stroke-width="2"/><path d="M120 78 L120 102 M108 90 L132 90" stroke="#8A6A4A" stroke-width="1.6"/>
+  <path d="M170 20 Q150 40 172 60" stroke="#6E8F58" stroke-width="3" fill="none"/></svg>`;
+
 const M4_PIC = Object.assign({}, M3_PIC, M4_ONLY);
 
 /* ---- 묶음 ---- */
@@ -202,7 +252,7 @@ const M4_BUNDLES = [
   {k:2, title:'기분이 어때요?', topic:'기분과 까닭', nights:[4, 5, 6], after:'그동안 저녁마다 가족과 오늘 기분을 서로 물어봐.'},
   {k:3, title:'일, 이, 삼', topic:'한자어 수, 날짜와 분', nights:[7, 8, 9], after:'그동안 가족 생일을 모두 물어서 달력에 적어 봐.'},
   {k:4, title:'어디에 있어요?', topic:'자리와 길 찾기', nights:[10, 11, 12], after:'그동안 가족과 보물 숨기기 놀이를 하며 어디에 있는지 말해 봐.'},
-  {k:5, title:'할머니 댁에 가요', topic:'존댓말', nights:[13, 14, 15]}
+  {k:5, title:'할머니 댁에 가요', topic:'존댓말', nights:[13, 14, 15], after:'이제 할머니 할아버지께 전화하거나 뵈러 가서 존댓말로 이야기해 봐.'}
 ];
 
 /* ---- 밤 ---- */
@@ -748,11 +798,168 @@ const M4_NIGHTS = [
        {when:'밖에 나가면 길도 알려 줘요', say:'쭉 가세요. 왼쪽으로 가세요.', sub:'산책할 때 아이가 길잡이가 되어 봐요.'}],
      parent:'집 안에서 작은 장난감을 숨기고 "침대 아래에 있어요", "상자 안에 있어요"처럼 한국어로 힌트를 주세요. 몇 번 한 뒤에는 역할을 바꿔 아이가 숨기고 힌트를 말하게 해 주세요. 영어와 순서가 반대(on the bed, 침대 위)라서 아이가 "위 침대"처럼 말하기 쉬우니, 그때는 "침대 위!" 하고 바르게 되받아 주시면 됩니다. 산책이나 장보러 가는 길에 아이에게 "왼쪽이야? 오른쪽이야?"를 물어 길잡이를 맡겨 보셔도 좋습니다.'}
   ],
+  dictWords:[] },
+
+/* ---- 다섯째 묶음: 할머니 댁에 가요 ---------------------------------
+   어른께 쓰는 말을 짝으로 배웁니다(밥과 진지, 집과 댁, 이름과 성함, 먹어요와 드세요, 자요와 주무세요,
+   있어요와 계세요, 줘요와 드려요). 둘째 밤에 께서, 께와 ~세요를 문장으로 씁니다.
+   셋째 밤은 담이 할아버지의 누나, 호랑이 할머니 댁에 가는 이야기로 넷째 달과 앞선 석 달의 높임말을 모읍니다. */
+{ n:13, bundle:5, title:'밥과 진지',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'넷째 달 마지막 묶음이야. 어른께 쓰는 특별한 말을 모아 왔어. 같은 뜻인데 어른께는 다른 말을 써.',
+     big:'진지 드세요'},
+    {type:'pairs', title:'어른께 쓰는 낱말', who:'dami',
+     t:'왼쪽은 친구에게, 오른쪽은 할머니 할아버지께 쓰는 말이란다. 연세와 생신은 벌써 만났지?',
+     pairs:[
+       {when:'밥', pic:'f_rice', friend:'밥', elder:'진지', en:'meal'},
+       {when:'집', pic:'g_house', friend:'집', elder:'댁', en:'home'},
+       {when:'이름', pic:'nametag', friend:'이름', elder:'성함', en:'name'},
+       {when:'나이', pic:'cake8', friend:'나이', elder:'연세', en:'age'},
+       {when:'생일', pic:'party', friend:'생일', elder:'생신', en:'birthday'}]},
+    {type:'pairs', title:'어른께 쓰는 움직이는 말', who:'dami',
+     t:'움직이는 말도 어른께는 달라진단다. 하나씩 눌러 들어 보거라.',
+     pairs:[
+       {when:'먹을 때', pic:'g_eat', friend:'먹어요', elder:'드세요', en:'eat'},
+       {when:'잘 때', pic:'g_sleep', friend:'자요', elder:'주무세요', en:'sleep'},
+       {when:'있을 때', pic:'p_halmi', friend:'있어요', elder:'계세요', en:'be (somewhere)'},
+       {when:'줄 때', pic:'g_give', friend:'줘요', elder:'드려요', en:'give'}]},
+    {type:'choose', title:'어른께는 어떻게 말해요?', who:'tori',
+     t:'할머니 할아버지께 쓰는 말을 골라 봐.',
+     qs:[
+       {pic:'f_rice', t:'할머니, ______ 드세요.', o:['밥','진지'], a:'진지', why:'어른의 밥은 진지예요.'},
+       {pic:'g_house', t:'할머니 ______에 가요.', o:['집','댁'], a:'댁', why:'어른의 집은 댁이에요.'},
+       {pic:'g_sleep', t:'할머니가 ______.', o:['자요','주무세요'], a:'주무세요', why:'어른이 주무실 때는 주무세요예요.'},
+       {pic:'nametag', t:'할아버지, ______이 어떻게 되세요?', o:['이름','성함'], a:'성함', why:'어른의 이름은 성함이에요.'},
+       {pic:'g_give', t:'할머니께 선물을 ______.', o:['줘요','드려요'], a:'드려요', why:'어른께 줄 때는 드려요예요.'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 그림을 찾아 봐.',
+     qs:[
+       {say:'주무세요', o:['g_eat','g_sleep','g_give'], a:'g_sleep'},
+       {say:'진지', o:['f_rice','f_soup','f_bread'], a:'f_rice'},
+       {say:'댁', o:['s_school','g_house','pl_shop'], a:'g_house'},
+       {say:'드려요', o:['g_give','g_eat','g_sleep'], a:'g_give'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'어른께 쓰는 말을 써 봐.',
+     items:[{w:'진지', en:'meal (for elders)'}, {w:'댁', en:'home (for elders)', hint:{who:'dami', t:'ㄷ에 ㅐ, 받침 ㄱ이란다.'}}, {w:'성함', en:'name (for elders)'}]}
+  ],
+  dictWords:[{w:'진지', en:'meal (elder)'}, {w:'댁', en:'home (elder)'}, {w:'성함', en:'name (elder)'}, {w:'연세', en:'age (elder)'},
+             {w:'생신', en:'birthday (elder)'}, {w:'드세요', en:'please eat'}, {w:'주무세요', en:'sleep (elder)'}] },
+
+{ n:14, bundle:5, title:'할머니께서 주무세요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 어른 이야기를 할 때 쓰는 문장이야. 할머니가 아니라 할머니께서, 할머니에게가 아니라 할머니께. 그리고 끝에 세요가 붙어.',
+     big:'할머니께서 주무세요'},
+    {type:'tense', title:'친구 이야기와 어른 이야기', who:'dami',
+     t:'왼쪽은 친구 이야기, 오른쪽은 어른 이야기란다. 오른쪽에는 대부분 세요가 붙지. 먹어요, 자요, 있어요처럼 아예 다른 말로 바뀌는 것도 있단다.',
+     cols:['친구 이야기', '어른 이야기'],
+     groups:[
+       {rule:'세요를 붙여요', rows:[['가요','가세요'], ['와요','오세요'], ['읽어요','읽으세요'], ['앉아요','앉으세요']]},
+       {rule:'다른 말로 바뀌어요', rows:[['먹어요','드세요'], ['자요','주무세요'], ['있어요','계세요'], ['말해요','말씀하세요']]}],
+     note:'받침이 있는 말 뒤에는 으세요, 없는 말 뒤에는 세요란다. 읽으세요, 가세요. 받침 삼 형제의 막내쯤 되지.'},
+    {type:'pairs', title:'어른 이야기에 붙는 말', who:'moi',
+     t:'어른 이름 뒤에 붙는 말도 달라져.',
+     pairs:[
+       {when:'누가 하는지 말할 때', pic:'p_grandma', friend:'동생이', elder:'할머니께서', en:'(subject marker)'},
+       {when:'누구에게 줄 때', pic:'g_give', friend:'동생에게', elder:'할머니께', en:'to'}],
+     tip:{who:'tori', t:'이/가 대신 께서, 에게 대신 께. 할머니께서 진지를 드세요, 할머니께 선물을 드려요. 이렇게 짝을 맞추면 돼.'}},
+    {type:'choose', title:'어른 이야기로 말해요', who:'tori',
+     t:'할머니 할아버지 이야기를 하는 거야. 알맞은 말을 골라 봐.',
+     qs:[
+       {pic:'g_eat', o:['할머니께서 진지를 드세요.','할머니가 밥을 먹어요.'], a:'할머니께서 진지를 드세요.', en:'Grandma is eating.'},
+       {pic:'g_sleep', o:['할아버지께서 주무세요.','할아버지께서 자요.'], a:'할아버지께서 주무세요.', en:'Grandpa is sleeping.'},
+       {pic:'g_give', o:['할머니께 선물을 드려요.','할머니에게 선물을 줘요.'], a:'할머니께 선물을 드려요.', en:'I give Grandma a present.'},
+       {pic:'p_halmi', t:'할머니가 방에 있어요. 어른 이야기로는?', o:['할머니께서 방에 계세요.','할머니께서 방에 있어요.'], a:'할머니께서 방에 계세요.', en:'Grandma is in the room.', why:'어른이 있을 때는 계세요예요.'}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'할머니께서 진지를 드세요.', tiles:['할머니께서','진지를','드세요.'], extra:['먹어요.'], en:'Grandma is eating.'},
+       {s:'할아버지께 선물을 드려요.', tiles:['할아버지께','선물을','드려요.'], extra:['줘요.'], en:'I give Grandpa a present.'},
+       {s:'주말에 할머니 댁에 가요.', tiles:['주말에','할머니','댁에','가요.'], extra:['집에'], en:"I go to Grandma's house on the weekend."},
+       {s:'할머니, 여기 앉으세요.', tiles:['할머니,','여기','앉으세요.'], extra:['앉아.'], en:'Grandma, please sit here.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'높이는 말에도 받침이 건너가는 소리가 있단다.',
+     cmp:[
+       {s:'댁에', d:'대게', n:'ㄱ 받침이 뒤로 건너가요'},
+       {s:'성함이', d:'성하미', n:'ㅁ 받침이 뒤로 건너가요'},
+       {s:'읽으세요', d:'일그세요', n:'ㄺ 가운데 ㄱ이 뒤로 건너가요'},
+       {s:'앉으세요', d:'안즈세요', n:'ㄵ 가운데 ㅈ이 뒤로 건너가요'}],
+     note:'읽으세요, 앉으세요의 겹받침은 첫 묶음에서 만났지? 한 번 만난 받침은 이렇게 자꾸 다시 나온단다.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'계세요', en:'be (elder)', hint:{who:'dami', t:'‘게’가 아니라 ㅖ가 들어간 ‘계’란다. 모음 줄에서 ㅖ를 찾아보거라.'}},
+       {w:'께서', en:'(honorific subject)', hint:{who:'dami', t:'ㄲ에 ㅔ, 그리고 ‘서’란다.'}},
+       {w:'앉으세요', en:'please sit', hint:{who:'dami', t:'소리는 [안즈세요]지만 ‘앉’에는 ㄴ과 ㅈ이 함께 있단다.'}}]}
+  ],
+  dictWords:[{w:'계세요', en:'be (elder)'}, {w:'께서', en:'(honorific subject)'}, {w:'앉으세요', en:'please sit'}, {w:'드려요', en:'give (to elder)'}] },
+
+{ n:15, bundle:5, title:'산 너머 할머니 댁',
+  steps:[
+    {type:'intro', who:'dami',
+     t:'얘들아, 오늘은 산 너머 우리 누님 댁에 가자꾸나. 둘째 달에 말한 그 누나 말이다. 먼저 글자 없이 귀로만 들어 보고, 그다음에 글자를 같이 보거라.',
+     big:'할머니, 안녕하세요?'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 누가 누구에게 높이는 말을 쓰는지 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'dami', t:'누님, 저 왔어요. 아이들도 데려왔어요.', en:"Sister, I'm here. I brought the children too."},
+       {who:'halmi', t:'어서 오너라. 먼 길 오느라 애썼구나.', en:'Come in. You worked hard to come so far.'},
+       {who:'tori', t:'할머니, 안녕하세요? 저는 토리예요.', en:"Hello, Grandma. I'm Tori."},
+       {who:'halmi', t:'오냐, 토리구나. 밥은 먹었니?', en:'Yes, so you are Tori. Have you eaten?'},
+       {who:'tori', t:'네, 먹었어요. 할머니는 진지 드셨어요?', en:'Yes, I ate. Have you eaten, Grandma?'},
+       {who:'moi', t:'할머니, 이거 선물이에요. 드세요!', en:'Grandma, this is a present. Please have some!'},
+       {who:'halmi', t:'아이고, 고맙구나. 떡이네!', en:"Oh my, thank you. It's rice cake!"},
+       {who:'tori', t:'할머니, 안녕히 주무세요!', en:'Good night, Grandma!'}],
+     note:{who:'dami', t:'할머니는 토리에게 ‘밥은 먹었니?’라고 하셨고, 토리는 할머니께 ‘진지 드셨어요?’라고 여쭈었지. 같은 뜻이라도 누구에게 하느냐에 따라 말이 달라진단다. 그리고 이 할아버지도 누님께는 높이는 말을 쓴단다. 나이가 많아도 윗사람께는 늘 그렇지.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'산 너머 할머니는 담이 할아버지의 누구예요?', o:['누나','동생','딸'], a:'누나', why:'할아버지는 할머니를 ‘누님’이라고 불렀어요. 누님은 누나를 높인 말이에요.'},
+       {t:'토리는 할머니께 무엇을 여쭈었어요?', o:['진지 드셨어요?','밥 먹었어?','몇 살이에요?'], a:'진지 드셨어요?', why:'어른께는 ‘진지 드셨어요?’라고 여쭤요.'},
+       {t:'모이는 할머니께 무엇을 드렸어요?', o:['떡','꽃','책'], a:'떡', why:'할머니가 ‘떡이네!’라고 하셨어요.'},
+       {t:'밤에 토리는 할머니께 뭐라고 인사했어요?', o:['잘 자','안녕히 주무세요','안녕히 계세요'], a:'안녕히 주무세요', why:'주무시는 어른께는 ‘안녕히 주무세요’라고 해요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {line:{who:'halmi', t:'토리야, 몇 살이니?'}, en:'Tori, how old are you?', o:['여덟 살이야.','여덟 살이에요.'], a:'여덟 살이에요.', why:'할머니께는 ‘이에요’로 대답해요.'},
+       {line:{who:'moi', t:'토리야, 할머니 어디 계셔?'}, en:'Tori, where is Grandma?', o:['방에 계셔.','방에 있어.'], a:'방에 계셔.', why:'친구에게 말해도 할머니 이야기라서 ‘계셔’라고 해요.'},
+       {pic:'f_water', t:'할머니께 물을 드려요.', en:'Offer Grandma some water.', o:['할머니, 물 드세요.','할머니, 물 먹어.'], a:'할머니, 물 드세요.', why:'어른께는 ‘드세요’라고 해요.'}]},
+    {type:'task', title:'할머니 할아버지께 존댓말로', who:'moi',
+     t:'넷째 달 마지막 과제야. 할머니 할아버지께 전화하거나 뵈러 가서 해 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'인사하고 여쭤요', say:'할머니, 진지 드셨어요?', sub:'할아버지께도 똑같이 여쭤요.'},
+       {when:'무언가 드릴 때', say:'할머니, 이거 드세요.', sub:'두 손으로 드려요.'},
+       {when:'밤에 헤어질 때', say:'안녕히 주무세요.', sub:'전화를 끊을 때는 ‘안녕히 계세요’도 좋아요.'}],
+     parent:'넷째 달의 마무리이자, 첫째 달부터 이어 온 높임말 공부를 모으는 과제입니다. 조부모님께 영상 통화나 방문 때 "진지 드셨어요?"로 인사하게 해 주세요. 조부모님께서 아이의 높임말을 들으시면 크게 기뻐하시고, 그 반응이 아이에게 가장 큰 동기가 됩니다. 물건을 드릴 때 두 손으로 드리는 예절도 함께 알려 주세요. 이 과제로 넷째 달이 끝납니다. 지난 일, 기분, 날짜, 길 찾기, 존댓말까지 모두 해냈으니 많이 칭찬해 주세요.'}
+  ],
   dictWords:[] }
 ];
 
-/* ---- 빠른 확인: 넷째 달은 묶음이 모두 열린 뒤에 만듭니다 ---- */
-const M4_CHECK = [];
+/* ---- 빠른 확인 ----
+   묶음마다 세 문제, 두 문제 이상 맞히면 그 묶음을 건너뜁니다. */
+const M4_CHECK = [
+  {k:1, qs:[
+    {t:'먹어요 → 어제는?', o:['먹았어요','먹었어요'], a:'먹었어요'},
+    {mode:'pic', say:'놀았어요', t:'듣고 그림을 골라요.', o:['act_sleep','s_play','make'], a:'s_play'},
+    {pic:'act_go', t:'어제 일이에요.', o:['학교에 가요.','학교에 갔어요.'], a:'학교에 갔어요.'}]},
+  {k:2, qs:[
+    {mode:'pic', say:'무서워요', t:'듣고 그림을 골라요.', o:['mood_happy','mood_scared','mood_bored'], a:'mood_scared'},
+    {pic:'fall', t:'그림에 맞는 말을 골라요.', o:['넘어져서 슬펐어요.','넘어져서 기뻤어요.'], a:'넘어져서 슬펐어요.'},
+    {pic:'p_grandma', t:'할머니가 슬퍼 보이세요.', o:['괜찮아?','괜찮으세요?'], a:'괜찮으세요?'}]},
+  {k:3, qs:[
+    {pic:'n23', t:'어떻게 읽어요?', o:['삼십이','이십삼'], a:'이십삼'},
+    {pic:'ck3_10', t:'몇 시 몇 분이에요?', o:['세 시 십 분이에요.','삼 시 십 분이에요.'], a:'세 시 십 분이에요.'},
+    {pic:'cal6_15', t:'몇 월 며칠이에요?', o:['육월 십오일이에요.','유월 십오일이에요.'], a:'유월 십오일이에요.'}]},
+  {k:4, qs:[
+    {mode:'pic', say:'상자 안', t:'듣고 그림을 골라요.', o:['pos_up','pos_in','pos_back'], a:'pos_in'},
+    {pic:'pos_side', t:'고양이가 어디에 있어요?', o:['옆 상자에 있어요.','상자 옆에 있어요.'], a:'상자 옆에 있어요.'},
+    {pic:'go_right', t:'길을 알려 드려요.', o:['오른쪽으로 가세요.','왼쪽으로 가세요.'], a:'오른쪽으로 가세요.'}]},
+  {k:5, qs:[
+    {pic:'f_rice', t:'할머니, ______ 드세요.', o:['밥','진지'], a:'진지'},
+    {pic:'g_sleep', t:'할아버지께서 ______.', o:['자요','주무세요'], a:'주무세요'},
+    {pic:'g_give', t:'할머니께 선물을 ______.', o:['줘요','드려요'], a:'드려요'}]}
+];
 
 /* ---- 받아쓰기 자판: 셋째 달에 앉아요의 ㄵ, 괜찮아요의 ㄶ 을 더합니다 ---- */
 const M4_POOL = Object.assign({}, M3_POOL, {jong: [...M3_POOL.jong, 'ㄵ', 'ㄶ']});
