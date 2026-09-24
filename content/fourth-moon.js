@@ -970,7 +970,7 @@ const FOURTH_MOON = {
   store: 'daltokki:v1:fourth-moon',
   units: M4_NIGHTS.map(x => ({n: x.n, words: x.dictWords || []})),
   extra: [], pool: () => M4_POOL,
-  num: 4, name: '넷째 달', title2: '넷째 달, 어제와 내 마음', nextName: '다섯째 달',
+  num: 4, name: '넷째 달', title2: '넷째 달, 어제와 내 마음', nextName: '다섯째 달', nextPath: 'fifth-moon/',
   topics: '지난 일, 기분, 숫자와 날짜, 길 찾기, 존댓말',
   nights: M4_NIGHTS, bundles: M4_BUNDLES, pic: M4_PIC, keys: M4_POOL, total: M4_TOTAL, check: M4_CHECK,
   prev: {store: 'daltokki:v1:third-moon', total: 15},

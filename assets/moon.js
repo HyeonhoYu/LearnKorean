@@ -263,7 +263,7 @@ function startCheck(){
 /* ══════════════════════════════════════════════════════════════
    밤 진행
    ══════════════════════════════════════════════════════════════ */
-const SCORED = {findit: S => S.qs.length, choose: S => S.qs.length, josa: S => S.names.length, build: S => S.qs.length, dict: S => S.items.length};
+const SCORED = {sequence: S => S.qs.length, findit: S => S.qs.length, choose: S => S.qs.length, josa: S => S.names.length, build: S => S.qs.length, dict: S => S.items.length};
 function startNight(n){
   night = MOON.nights.find(m => m.n === n);
   if(!night){ showPicker(); return; }
@@ -769,6 +769,63 @@ SCREENS.findit = S => {
   draw();
 };
 
+/* ---- 이야기 순서: 섞인 그림 카드를 일이 일어난 차례대로 누릅니다 ----
+   카드마다 그림과 문장이 있습니다. 맞는 카드를 누르면 자리에 놓이고 문장을 들려줍니다.
+   끝나면 먼저, 그다음에, 마지막에를 붙여 이야기 전체를 다시 들려줍니다. 한 번도 틀리지 않으면 1점. */
+const orderWords = k => k === 3 ? ['먼저', '그다음에', '마지막에'] : ['먼저', ...Array(k - 2).fill('그다음에'), '마지막에'];
+SCREENS.sequence = S => {
+  head2(S);
+  hideNext();
+  const box = h('div', {});
+  card.append(box);
+  let qi = 0;
+  const draw = () => {
+    const q = S.qs[qi], words = orderWords(q.cards.length);
+    let placed = 0, miss = 0;
+    box.innerHTML = ''; setFeedback('');
+    box.append(h('p', {class:'qcount'}, (qi + 1) + ' / ' + S.qs.length));
+    if(q.t) box.append(h('p', {class:'qtext'}, q.t));
+    const slots = h('div', {class:'seqslots'});
+    q.cards.forEach((c, i) => slots.append(h('div', {class:'seqslot'}, h('span', {class:'seqno'}, words[i]))));
+    const deck = h('div', {class:'seqdeck'});
+    const after = h('div', {style:'margin-top:12px'});
+    shuffled(q.cards.map((c, i) => [c, i])).forEach(([c, i]) => {
+      const b = h('button', {class:'seqcard', 'aria-label': c.t});
+      b.innerHTML = MOON.pic[c.pic] || '';
+      b.addEventListener('click', () => {
+        if(i === placed){
+          const slot = slots.children[placed];
+          slot.append(h('div', {class:'pic', html: MOON.pic[c.pic] || ''}), h('p', {}, c.t));
+          slot.classList.add('filled');
+          b.remove(); placed++;
+          talk(c.t); setFeedback('');
+          if(placed === q.cards.length) done();
+        } else {
+          miss++; b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+          react('oops'); setFeedback('그 일은 조금 뒤에 일어났어요. 다른 카드를 눌러 봐요.', 'no');
+        }
+      });
+      deck.append(b);
+    });
+    box.append(slots, deck, after);
+    function done(){
+      if(!miss){ score++; react('happy'); setFeedback('차례를 다 맞혔어요.', 'ok'); }
+      else setFeedback('다 놓았어요. 이야기를 처음부터 들어 봐요.', 'ok');
+      const whole = q.cards.map((c, i) => words[i] + ' ' + c.t);
+      const playAll = () => { let k = 0; const nx = () => { if(k < whole.length) talkThen(whole[k++], nx); }; nx(); };
+      after.append(h('button', {class:'btn quiet play', onclick: playAll}, '이야기 전체 듣기'),
+        h('button', {class:'btn play', style:'margin-left:8px', onclick: nextQ}, qi + 1 < S.qs.length ? '다음 이야기' : '다 했어요'));
+      later(playAll, 900);
+    }
+  };
+  function nextQ(){
+    qi++;
+    if(qi < S.qs.length) draw();
+    else { box.innerHTML = ''; box.append(h('p', {class:'qdone'}, '다 했어요. 아래 다음을 눌러요.')); setFeedback('다 했어요.', 'ok'); showNext(); }
+  }
+  draw();
+};
+
 /* ---- 소리와 글자 (담이) ---- */
 SCREENS.sound = S => {
   head2(S);
@@ -987,6 +1044,7 @@ function listClips(){
     if(S.type === 'rule') [...S.yes, ...S.no].forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙'));
     if(S.type === 'josa') S.names.forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙 고르기'));
     if(S.type === 'shrink') S.rows.forEach(([full, short]) => { add(full, n, '세는 말'); S.units.forEach(u => add(short + ' ' + u, n, '줄어드는 숫자')); });
+    if(S.type === 'sequence') S.qs.forEach(q => { const w = orderWords(q.cards.length); q.cards.forEach((c, i) => { add(c.t, n, '이야기 카드'); add(w[i] + ' ' + c.t, n, '이야기 전체'); }); });
     if(S.type === 'findit') S.qs.forEach(q => add(q.say || q.t, n, '그림에서 찾기'));
     if(S.type === 'birthday'){ add('제 생일은', n, '생일 앞부분'); for(let m = 1; m <= 12; m++) add(monthName(m), n, '달 이름');
       for(let d = 1; d <= 31; d++) add(dayName(d) + '이에요', n, '날짜 끝'); }

@@ -438,3 +438,16 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
 .findscene [data-spot].show .hot{fill-opacity:.45;stroke-width:4}
 .findprompt{text-align:center;margin-bottom:10px}
 .findprompt .qtext{font-size:22px;margin:4px 0 8px}
+
+/* ---- 다섯째 달: 이야기 순서 ---- */
+.seqslots{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:8px 0 14px}
+.seqslot{border:3px dashed #B7A57A;border-radius:14px;min-height:150px;padding:8px;text-align:center;background:#F7EFD8}
+.seqslot.filled{border-style:solid;border-color:var(--meok);background:var(--dalbit)}
+.seqslot .seqno{display:inline-block;font-family:var(--display);font-size:16px;color:var(--juhong);margin-bottom:4px}
+.seqslot .pic svg{width:100%;max-width:130px;height:auto}
+.seqslot p{margin:4px 0 0;font-size:15px;line-height:1.4}
+.seqdeck{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.seqcard{border:3px solid var(--meok);border-radius:14px;background:var(--dalbit);padding:6px;cursor:pointer;box-shadow:0 4px 0 var(--meok)}
+.seqcard svg{width:130px;height:auto;display:block}
+.seqcard.shake{animation:seqshake .4s}
+@keyframes seqshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
