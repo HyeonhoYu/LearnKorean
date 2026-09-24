@@ -75,13 +75,50 @@ function m5Play(kind){
   return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
 }
 ['hide', 'bike', 'rope', 'swim', 'together', 'fight', 'ball'].forEach(k => { M5_ONLY['pl5_' + k] = m5Play(k); });
+/* ---- 셋째 묶음 그림: 여행 준비 ---- */
+function m5Trip(kind){
+  const S = '#221F1C';
+  const plane = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k || 1})">
+    <path d="M-50 0 Q-50 -10 -30 -10 L40 -10 Q58 -10 60 0 Q58 10 40 10 L-30 10 Q-50 10 -50 0 Z" fill="#FBF7EC" stroke="${S}" stroke-width="2.6"/>
+    <path d="M-4 -8 L-24 -34 L-12 -34 L20 -8 Z M-4 8 L-24 34 L-12 34 L20 8 Z M-42 -8 L-52 -24 L-42 -24 L-30 -8 Z" fill="#9DB4C6" stroke="${S}" stroke-width="2.2" stroke-linejoin="round"/>
+    ${[-20, -8, 4, 16, 28].map(cx => `<circle cx="${cx}" cy="-2" r="2.6" fill="#2D6E8E"/>`).join('')}</g>`;
+  const g = {
+    plane:    `<rect width="200" height="130" rx="6" fill="#CFE0EA"/><path d="M20 30 Q40 20 60 30 Q80 24 90 34 L20 34 Z M130 96 Q150 86 170 96 Q186 92 190 100 L130 100 Z" fill="#FBF7EC"/>${plane(100, 64, 1.1)}`,
+    airport:  `<rect width="200" height="130" rx="6" fill="#DCEBD6"/><rect x="0" y="108" width="200" height="22" fill="#8C8577"/>
+      <rect x="20" y="68" width="120" height="40" fill="#F5E6BD" stroke="${S}" stroke-width="3"/>${[30, 50, 70, 90, 110].map(x => `<rect x="${x}" y="78" width="14" height="20" fill="#9DB4C6" stroke="${S}" stroke-width="1.6"/>`).join('')}
+      <rect x="150" y="40" width="14" height="68" fill="#F5E6BD" stroke="${S}" stroke-width="3"/><rect x="142" y="26" width="30" height="16" rx="4" fill="#9DB4C6" stroke="${S}" stroke-width="3"/>
+      ${plane(100, 34, .55)}`,
+    passport: `<rect x="62" y="12" width="76" height="106" rx="6" fill="#17324A" stroke="${S}" stroke-width="3"/>
+      <circle cx="100" cy="56" r="18" fill="none" stroke="#E3A93C" stroke-width="3"/><path d="M82 56 L118 56 M100 38 Q88 56 100 74 Q112 56 100 38" stroke="#E3A93C" stroke-width="2" fill="none"/>
+      <rect x="80" y="88" width="40" height="6" rx="3" fill="#E3A93C"/><rect x="86" y="100" width="28" height="4" rx="2" fill="#E3A93C"/>`,
+    korea:    `<rect width="200" height="130" rx="6" fill="#DCEBD6"/>
+      <path d="M0 80 Q40 40 80 70 Q120 30 160 64 Q180 50 200 60 L200 130 L0 130 Z" fill="#9DBA7E" stroke="${S}" stroke-width="2"/>
+      <path d="M36 72 Q100 44 164 72 Q160 78 152 76 L48 76 Q40 78 36 72 Z" fill="#5A5248" stroke="${S}" stroke-width="3"/>
+      <rect x="54" y="76" width="92" height="36" fill="#F5E6BD" stroke="${S}" stroke-width="3"/><path d="M76 76 L76 112 M100 76 L100 112 M124 76 L124 112" stroke="#8A6A4A" stroke-width="3"/>
+      <circle cx="170" cy="24" r="12" fill="#F2C14E" stroke="${S}" stroke-width="2"/>`,
+    pack:     `<path d="M36 64 L164 64 L164 118 L36 118 Z" fill="#C1403A" stroke="${S}" stroke-width="3"/>
+      <path d="M36 64 L56 28 L184 28 L164 64 Z" fill="#D9695F" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M50 64 Q60 50 76 58 L80 64 Z" fill="#9DC3DC" stroke="${S}" stroke-width="2"/><path d="M84 64 L90 48 L110 48 L116 64 Z" fill="#F2C14E" stroke="${S}" stroke-width="2"/>
+      <rect x="124" y="50" width="22" height="14" fill="#17324A" stroke="${S}" stroke-width="2"/>
+      <path d="M84 118 L84 124 M116 118 L116 124" stroke="${S}" stroke-width="4"/>`,
+    vacation: `<rect x="40" y="10" width="120" height="112" rx="8" fill="#FBF7EC" stroke="${S}" stroke-width="3"/>
+      <rect x="40" y="10" width="120" height="26" rx="8" fill="#E3A93C" stroke="${S}" stroke-width="3"/><rect x="42" y="26" width="116" height="10" fill="#E3A93C"/>
+      ${[0, 1, 2, 3, 4].map(r => [0, 1, 2, 3, 4, 5].map(c => `<rect x="${50 + c * 17}" y="${44 + r * 14}" width="12" height="9" fill="${r > 1 ? '#F6D98F' : '#E7DCC4'}" stroke="#C9C0AE" stroke-width="1"/>`).join('')).join('')}
+      <circle cx="148" cy="46" r="10" fill="#F2C14E" stroke="${S}" stroke-width="2"/>`,
+    clothes:  `<path d="M70 26 L90 18 Q100 30 110 18 L130 26 L150 50 L134 60 L128 52 L128 116 L72 116 L72 52 L66 60 L50 50 Z" fill="#6FA8D0" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M90 18 Q100 30 110 18" fill="none" stroke="${S}" stroke-width="2.6"/>`
+  }[kind];
+  const label = {plane:'비행기', airport:'공항', passport:'여권', korea:'한국', pack:'가방을 싸요', vacation:'방학', clothes:'옷'}[kind];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
+}
+['plane', 'airport', 'passport', 'korea', 'pack', 'vacation', 'clothes'].forEach(k => { M5_ONLY['tr_' + k] = m5Trip(k); });
 const M5_PIC = Object.assign({}, M4_PIC, M5_ONLY);
 
 /* ---- 묶음 ---- */
 const M5_BUNDLES = [
   {k:1, title:'그리고, 그래서', topic:'문장 잇기와 이야기 순서', nights:[1, 2, 3], after:'그동안 날마다 그림일기를 한 장씩 그리고 세 문장으로 이어 써 봐.'},
   {k:2, title:'같이 놀자', topic:'친구와 놀기, 할 수 있어요', nights:[4, 5, 6], after:'그동안 가족이나 친구에게 한국어로 같이 놀자고 해 봐.'},
-  {k:3, title:'한국에 갈 거예요', topic:'앞날 말하기와 여행 준비', nights:[7, 8, 9]},
+  {k:3, title:'한국에 갈 거예요', topic:'앞날 말하기와 여행 준비', nights:[7, 8, 9], after:'그동안 가족에게 이번 방학이나 주말에 무엇을 할 건지 말해 봐.'},
   {k:4, title:'이거 얼마예요?', topic:'돈과 가게', nights:[10, 11, 12]},
   {k:5, title:'할머니 댁까지', topic:'한국 방문', nights:[13, 14, 15]}
 ];
@@ -366,6 +403,135 @@ const M5_NIGHTS = [
        {when:'엄마, 아빠, 할머니 할아버지께', say:'같이 하실래요?', sub:'어른께는 여쭙는 말로.'},
        {when:'놀다가 다투면', say:'미안해. 같이 하자.', sub:'사과를 들으면 ‘괜찮아’로 받아 줘요.'}],
      parent:'아이가 형제나 친구에게 한국어로 놀이를 제안하게 해 주세요. 부모님께는 "같이 하실래요?"로 여쭙게 하시고 흔쾌히 응해 주시면 좋습니다. 놀다가 다툼이 생기면 "미안해"와 "괜찮아"를 한국어로 주고받게 이끌어 주세요. 오늘 배운 "못 해요"는 하고 싶지만 아직 할 수 없다는 뜻이라, 아이가 새로 배우는 것이 있으면 "아직 못 해요. 그런데 배우고 있어요"처럼 말하게 해 보셔도 좋습니다.'}
+  ],
+  dictWords:[] },
+
+/* ---- 셋째 묶음: 한국에 갈 거예요 ------------------------------------
+   여행 준비 말(한국, 비행기, 공항, 여권, 방학, 옷, 가방을 싸요)과 앞날을 말하는 "-ㄹ 거예요".
+   받침이 없으면 ㄹ 거예요, 있으면 을 거예요로, 둘째 묶음의 ㄹ 수 있어요와 같은 규칙입니다.
+   넷째 달의 지난 일(갔어요)과 나란히 놓아 어제, 오늘, 내일을 한 번에 정리합니다. */
+{ n:7, bundle:3, title:'여행 준비',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'토리가 곧 한국에 간대! 오늘은 여행 준비에 쓰는 말을 모아 왔어. 너도 한국에 가 본 적 있어?',
+     big:'한국에 가요'},
+    {type:'pairs', title:'여행에 쓰는 말', who:'moi',
+     t:'여행 갈 때 쓰는 말이야. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'한국', pic:'tr_korea', en:'Korea'}, {w:'비행기', pic:'tr_plane', en:'airplane'}, {w:'공항', pic:'tr_airport', en:'airport'},
+       {w:'여권', pic:'tr_passport', en:'passport'}, {w:'방학', pic:'tr_vacation', en:'school vacation'}, {w:'옷', pic:'tr_clothes', en:'clothes'}],
+     tip:{who:'dami', t:'미국에서 한국까지는 비행기로 열서너 시간쯤 걸린단다. 하루의 반보다 길지. 그래서 비행기에서 자고, 먹고, 또 잔단다.'}},
+    {type:'pairs', title:'여행 준비', who:'moi',
+     t:'여행 가기 전에 하는 일이야.',
+     singles:[
+       {w:'가방을 싸요', pic:'tr_pack', en:'pack a bag'}, {w:'비행기를 타요', pic:'tr_plane', en:'take a plane'},
+       {w:'공항에 가요', pic:'tr_airport', en:'go to the airport'}, {w:'할머니를 만나요', pic:'p_grandma', en:'meet grandma'}],
+     tip:{who:'tori', t:'비행기도 자전거처럼 타요. 버스도, 지하철도 다 타요. 올라서 가는 건 다 타요야.'}},
+    {type:'sequence', title:'여행 순서', who:'tori',
+     t:'한국에 가는 날의 일이 섞였어. 차례대로 눌러 줘.',
+     qs:[
+       {cards:[{pic:'tr_pack', t:'가방을 싸요.'}, {pic:'tr_airport', t:'공항에 가요.'}, {pic:'tr_plane', t:'비행기를 타요.'}, {pic:'tr_korea', t:'한국에 도착해요.'}]}]},
+    {type:'choose', title:'이건 뭐예요?', who:'tori',
+     t:'그림을 보고 알맞은 말을 골라 봐.',
+     qs:[
+       {pic:'tr_passport', o:['여권','가방','옷'], a:'여권'},
+       {pic:'tr_airport', o:['학교','공항','병원'], a:'공항'},
+       {pic:'tr_plane', o:['비행기를 타요.','비행기를 해요.'], a:'비행기를 타요.', en:'I take a plane.', why:'비행기는 타요예요.'},
+       {pic:'tr_pack', o:['가방을 싸요.','가방을 타요.'], a:'가방을 싸요.', en:'I pack my bag.'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 그림을 찾아 봐.',
+     qs:[
+       {say:'방학', o:['tr_vacation','tr_passport','tr_korea'], a:'tr_vacation'},
+       {say:'한국', o:['tr_airport','tr_korea','tr_plane'], a:'tr_korea'},
+       {say:'옷', o:['tr_clothes','tr_pack','tr_passport'], a:'tr_clothes'},
+       {say:'비행기', o:['tr_plane','tr_airport','pl5_bike'], a:'tr_plane'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'여행 말을 써 봐.',
+     items:[{w:'한국', en:'Korea'}, {w:'여권', en:'passport', hint:{who:'dami', t:'소리는 [여꿘]처럼 세게 들리지만 글자는 ‘권’이란다.'}}, {w:'방학', en:'vacation'}]}
+  ],
+  dictWords:[{w:'한국', en:'Korea'}, {w:'비행기', en:'airplane'}, {w:'공항', en:'airport'}, {w:'여권', en:'passport'},
+             {w:'방학', en:'vacation'}, {w:'옷', en:'clothes'}] },
+
+{ n:8, bundle:3, title:'갈 거예요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'어제 한 일은 갔어요, 앞으로 할 일은 갈 거예요! 오늘은 앞날을 말하는 법을 배워.',
+     big:'한국에 갈 거예요'},
+    {type:'tense', title:'어제 한 일, 앞으로 할 일', who:'dami',
+     t:'앞으로 할 일은 ㄹ 거예요를 붙인단다. 받침이 있는 말에는 을 거예요지. 둘째 묶음의 ㄹ 수 있어요와 똑같은 규칙이란다.',
+     cols:['어제 한 일', '앞으로 할 일'],
+     groups:[
+       {rule:'받침이 없으면 ㄹ 거예요', rows:[['갔어요','갈 거예요'], ['탔어요','탈 거예요'], ['만났어요','만날 거예요'], ['했어요','할 거예요']]},
+       {rule:'받침이 있으면 을 거예요', rows:[['먹었어요','먹을 거예요'], ['읽었어요','읽을 거예요']]}],
+     note:'만나요의 ‘나’에는 받침이 없으니 만날 거예요, 먹어요의 ‘먹’에는 받침이 있으니 먹을 거예요. 친구에게는 끝을 거야로 바꾸면 된단다. 갈 거야, 먹을 거야.'},
+    {type:'choose', title:'어제 일일까요, 앞으로 할 일일까요?', who:'tori',
+     t:'그림과 말을 잘 보고 맞는 쪽을 골라 봐.',
+     qs:[
+       {pic:'tomorrow', t:'내일 한국에 ______.', o:['갔어요','갈 거예요'], a:'갈 거예요', en:"I'll go to Korea tomorrow.", why:'내일은 앞으로 할 일이라서 갈 거예요예요.'},
+       {pic:'yesterday', t:'어제 가방을 ______.', o:['쌌어요','쌀 거예요'], a:'쌌어요', en:'I packed my bag yesterday.', why:'어제는 지난 일이라서 쌌어요예요.'},
+       {pic:'f_kimchi', t:'한국에서 김치를 ______.', o:['먹을 거예요','먹 거예요'], a:'먹을 거예요', en:"I'll eat kimchi in Korea.", why:'먹에는 받침이 있어서 을 거예요예요.'},
+       {pic:'p_grandma', t:'방학에 할머니를 ______.', o:['만날 거예요','만났 거예요'], a:'만날 거예요', en:"I'll meet Grandma during vacation."}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'방학에 한국에 갈 거예요.', tiles:['방학에','한국에','갈','거예요.'], extra:['갔어요.'], en:"I'll go to Korea during vacation."},
+       {s:'비행기를 탈 거예요.', tiles:['비행기를','탈','거예요.'], en:"I'll take a plane."},
+       {s:'한국에서 떡볶이를 먹을 거예요.', tiles:['한국에서','떡볶이를','먹을','거예요.'], extra:['먹'], en:"I'll eat tteokbokki in Korea.", hint:'에서는 어디에서 하는지 말할 때 써요.'},
+       {s:'어제 가방을 쌌어요. 내일 갈 거예요.', tiles:['어제','가방을','쌌어요.','내일','갈','거예요.'], en:"I packed my bag yesterday. I'll go tomorrow."}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'ㄹ 거예요의 거는 늘 꺼처럼 세게 들린단다. 들어 보거라.',
+     cmp:[
+       {s:'갈 거예요', d:'갈 꺼예요', n:'ㄹ 뒤의 거는 꺼처럼 나요'},
+       {s:'먹을 거예요', d:'머글 꺼예요', n:'ㄱ이 건너가고, 거는 꺼처럼 나요'},
+       {s:'할 거야', d:'할 꺼야', n:'친구에게 말할 때도 꺼처럼 나요'},
+       {s:'한국에', d:'한구게', n:'ㄱ 받침이 뒤로 건너가요'}],
+     note:'[갈 꺼예요]로 들려도 쓸 때는 늘 ‘거예요’란다. 할 수 있어요의 [쑤]와 같은 이치지. ㄹ 뒤에 오는 ㄱ, ㅅ은 힘을 주어 소리 나지만 글자는 그대로 두거라.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'비행기', en:'airplane'},
+       {w:'공항', en:'airport'},
+       {w:'거예요', en:'will (future)', hint:{who:'dami', t:'소리는 [꺼예요]지만 ‘거’란다. ㄲ이 아니라 ㄱ을 쓰거라.'}}]}
+  ],
+  dictWords:[{w:'거예요', en:'will (future)'}, {w:'내일', en:'tomorrow'}, {w:'싸요', en:'pack'}] },
+
+{ n:9, bundle:3, title:'짐 싸는 날',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'내일 한국에 가! 오늘 밤에 가방을 싸는데 모이가 놀러 왔어. 먼저 글자 없이 귀로만 들어 보고, 그다음에 글자를 같이 보자.',
+     big:'내일 한국에 갈 거야!'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 앞으로 할 일(거야, 거예요)을 잘 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'moi', t:'토리야, 뭐 해?', en:'Tori, what are you doing?'},
+       {who:'tori', t:'가방을 싸. 내일 한국에 갈 거야!', en:"I'm packing. I'm going to Korea tomorrow!"},
+       {who:'moi', t:'와! 비행기를 탈 거야?', en:'Wow! Are you going to take a plane?'},
+       {who:'tori', t:'응. 비행기에서 영화도 볼 거야.', en:"Yes. I'll watch a movie on the plane too."},
+       {who:'moi', t:'여권은 있어?', en:'Do you have your passport?'},
+       {who:'tori', t:'앗, 여권이 없어! 어디에 있지?', en:"Oh no, my passport is missing! Where is it?"},
+       {who:'dami', t:'허허, 여권은 책상 위에 있단다. 한국에서 할머니를 만나면 안부 전해 주거라.', en:"Ho ho, your passport is on the desk. When you meet Grandma in Korea, give her my regards."},
+       {who:'tori', t:'네, 할아버지! 할머니께 꼭 인사드릴 거예요.', en:"Yes, Grandpa! I'll be sure to greet her."}],
+     note:{who:'dami', t:'토리가 모이에게는 ‘갈 거야’, 나에게는 ‘인사드릴 거예요’라고 했지? 앞날을 말할 때도 친구와 어른에게 하는 말이 다르단다. 그리고 여행 가기 전날 여권 찾기는 어른들도 자주 하는 일이지.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'토리는 언제 한국에 가요?', o:['오늘','내일','어제'], a:'내일', why:'토리는 ‘내일 한국에 갈 거야!’라고 했어요.'},
+       {t:'비행기에서 무엇을 할 거예요?', o:['영화를 볼 거예요','수영을 할 거예요','숙제를 할 거예요'], a:'영화를 볼 거예요', why:'토리는 ‘영화도 볼 거야’라고 했어요.'},
+       {t:'여권은 어디에 있었어요?', o:['가방 안','책상 위','침대 아래'], a:'책상 위', why:'할아버지가 ‘여권은 책상 위에 있단다’라고 하셨어요.'},
+       {t:'토리는 한국에서 누구를 만날 거예요?', o:['선생님','할머니','모이'], a:'할머니', why:'할아버지가 할머니께 안부를 전해 달라고 하셨어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {pic:'tr_vacation', line:{who:'moi', t:'토리야, 방학에 뭐 할 거야?'}, en:'Tori, what will you do during vacation?', o:['한국에 갈 거야.','한국에 갈 거예요.'], a:'한국에 갈 거야.', why:'모이는 친구라서 편한 말로 대답해요.'},
+       {pic:'p_grandma', line:{who:'dami', t:'토리야, 한국에서 누구를 만날 거냐?'}, en:'Tori, who will you meet in Korea?', o:['할머니를 만났어요.','할머니를 만날 거예요.'], a:'할머니를 만날 거예요.', why:'앞으로 할 일이라서 만날 거예요예요.'},
+       {pic:'yesterday', t:'어제 가방을 쌌어요. 할아버지께 어떻게 말해요?', en:'You packed yesterday. Tell Grandpa.', o:['어제 가방을 쌌어요.','어제 가방을 쌀 거예요.'], a:'어제 가방을 쌌어요.', why:'어제 일이라서 쌌어요예요.'}]},
+    {type:'task', title:'방학 계획 말하기', who:'moi',
+     t:'다음 방학이나 주말에 무엇을 할지 가족에게 말해 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'어디에 갈지', say:'방학에 ______에 갈 거예요.', sub:'한국, 할머니 댁, 공원, 도서관 어디든 좋아요.'},
+       {when:'무엇을 할지', say:'______을 할 거예요.', sub:'받침이 없으면 를: 수영을 할 거예요, 여행을 할 거예요.'},
+       {when:'누구를 만날지', say:'______를 만날 거예요.', sub:'받침이 있으면 을: 친구를 만날 거예요, 선생님을 만날 거예요.'}],
+     parent:'아이와 다음 방학이나 주말 계획을 한국어로 이야기해 보세요. 한국에 갈 계획이 없어도 괜찮습니다. 공원, 도서관, 할머니 댁처럼 가까운 곳도 좋습니다. 계획이 끝나고 나면 "어제 공원에 갔어요"처럼 지난 일로 다시 말하게 해 보시면 넷째 달과 다섯째 달이 자연스럽게 이어집니다. 한국에 갈 계획이 있다면 달력에 날짜를 적고 "몇 밤 남았어요?"를 세어 보셔도 좋습니다.'}
   ],
   dictWords:[] }
 ];
