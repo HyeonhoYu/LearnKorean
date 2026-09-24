@@ -112,6 +112,88 @@ M4_ONLY.party = `<svg viewBox="0 0 200 130" width="150" height="98" role="img" a
   <g stroke="#221F1C" stroke-width="2"><path d="M20 30 L40 60 L10 56 Z" fill="#6FA8D0"/><path d="M180 30 L160 60 L190 56 Z" fill="#E3A93C"/></g>
   <g fill="#C1403A"><circle cx="30" cy="96" r="3"/><circle cx="170" cy="92" r="3"/><circle cx="60" cy="20" r="2.4"/><circle cx="146" cy="16" r="2.4"/></g></svg>`;
 
+/* ---- 넷째 묶음 그림: 자리와 길 ----
+   고양이와 상자로 위, 안, 앞, 뒤, 옆을, 탁자로 아래를 보여 줍니다.
+   방과 동네 그림에는 누를 수 있는 영역(data-spot)이 있습니다. 영역 안의 .hot 사각형이 눌렀을 때 빛납니다. */
+const m4Cat = (x, y, k, peek) => `<g transform="translate(${x} ${y}) scale(${k || 1})">
+  ${peek ? '' : `<path d="M16 8 Q34 4 30 -14" stroke="#221F1C" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M16 8 Q34 4 30 -14" stroke="#E3A93C" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="0" cy="6" rx="20" ry="13" fill="#E3A93C" stroke="#221F1C" stroke-width="2.6"/>`}
+  <circle cx="-14" cy="-10" r="12" fill="#E3A93C" stroke="#221F1C" stroke-width="2.6"/>
+  <path d="M-24 -16 L-24 -30 L-16 -21 Z M-4 -16 L-4 -30 L-12 -21 Z" fill="#E3A93C" stroke="#221F1C" stroke-width="2.2" stroke-linejoin="round"/>
+  <circle cx="-18" cy="-11" r="1.8" fill="#221F1C"/><circle cx="-10" cy="-11" r="1.8" fill="#221F1C"/><path d="M-16 -6 q2 2 4 0" stroke="#221F1C" stroke-width="1.6" fill="none"/></g>`;
+const m4Box = (x, y, w, hgt) => `<rect x="${x}" y="${y}" width="${w}" height="${hgt}" fill="#C9A06A" stroke="#221F1C" stroke-width="3"/><path d="M${x} ${y} L${x + w / 2} ${y + 10} L${x + w} ${y}" fill="none" stroke="#8A6A4A" stroke-width="2"/>`;
+function m4Pos(kind){
+  const S = '#221F1C', floor = '<path d="M10 118 L190 118" stroke="#221F1C" stroke-width="2.6"/>';
+  const g = {
+    up:    `${m4Box(70, 70, 60, 48)}${m4Cat(104, 56, 1)}`,
+    in:    `${m4Cat(98, 70, 1, true)}${m4Box(70, 70, 60, 48)}<path d="M70 70 L56 56 M130 70 L144 56" stroke="${S}" stroke-width="3"/>`,
+    front: `${m4Box(76, 44, 60, 48)}${m4Cat(104, 104, 1)}`,
+    back:  `${m4Cat(128, 52, 1)}${m4Box(66, 60, 68, 58)}`,
+    side:  `${m4Box(44, 70, 60, 48)}${m4Cat(146, 104, 1)}`,
+    under: `<rect x="40" y="58" width="120" height="10" fill="#B08452" stroke="${S}" stroke-width="2.6"/><path d="M50 68 L50 118 M150 68 L150 118" stroke="${S}" stroke-width="5"/>${m4Cat(104, 104, 1)}`
+  }[kind];
+  const label = {up:'위', in:'안', front:'앞', back:'뒤', side:'옆', under:'아래'}[kind];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${floor}${g}</svg>`;
+}
+['up', 'in', 'front', 'back', 'side', 'under'].forEach(k => { M4_ONLY['pos_' + k] = m4Pos(k); });
+M4_ONLY.cat = `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="고양이"><path d="M10 118 L190 118" stroke="#221F1C" stroke-width="2.6"/>${m4Cat(104, 100, 1.6)}</svg>`;
+
+/* 누를 수 있는 영역 */
+const m4Spot = (id, label, x, y, w, hgt, inner) => `<g data-spot="${id}" data-label="${label}">${inner || ''}<rect class="hot" x="${x}" y="${y}" width="${w}" height="${hgt}" rx="10"/></g>`;
+/* 방: 침대, 책상, 의자, 상자, 문 */
+M4_ONLY.room = `<svg viewBox="0 0 400 260" role="img" aria-label="방">
+  <rect width="400" height="260" fill="#EFE2C2"/><rect y="200" width="400" height="60" fill="#D9C39A"/><path d="M0 200 L400 200" stroke="#221F1C" stroke-width="3"/>
+  <rect x="26" y="58" width="62" height="142" fill="#B08452" stroke="#221F1C" stroke-width="3"/><circle cx="78" cy="132" r="4" fill="#E3A93C" stroke="#221F1C" stroke-width="1.6"/>
+  <rect x="160" y="40" width="80" height="60" fill="#9DB4C6" stroke="#221F1C" stroke-width="3"/><path d="M200 40 L200 100 M160 70 L240 70" stroke="#221F1C" stroke-width="2.4"/>
+  <rect x="110" y="150" width="130" height="30" rx="4" fill="#FBF7EC" stroke="#221F1C" stroke-width="3"/><rect x="118" y="138" width="34" height="16" rx="6" fill="#FBF7EC" stroke="#221F1C" stroke-width="2.4"/>
+  <path d="M160 146 L240 146 L240 180 L160 180 Z" fill="#2D6E8E" stroke="#221F1C" stroke-width="2.6"/><rect x="104" y="130" width="10" height="70" fill="#8A6A4A" stroke="#221F1C" stroke-width="2.4"/>
+  <path d="M112 180 L112 200 M236 180 L236 200" stroke="#221F1C" stroke-width="5"/>
+  <rect x="270" y="120" width="112" height="10" fill="#B08452" stroke="#221F1C" stroke-width="2.6"/><path d="M278 130 L278 200 M374 130 L374 200" stroke="#221F1C" stroke-width="5"/>
+  <rect x="292" y="98" width="40" height="22" fill="#C1403A" stroke="#221F1C" stroke-width="2.4"/>
+  <rect x="340" y="150" width="34" height="8" fill="#6E8F58" stroke="#221F1C" stroke-width="2"/><path d="M344 158 L344 200 M370 158 L370 200 M372 150 L372 112" stroke="#221F1C" stroke-width="4"/>
+  ${m4Box(250, 212, 56, 40)}
+  ${m4Spot('bed_up', '침대 위', 116, 100, 124, 48)}
+  ${m4Spot('bed_under', '침대 아래', 116, 182, 120, 18)}
+  ${m4Spot('desk_up', '책상 위', 272, 76, 70, 42)}
+  ${m4Spot('desk_under', '책상 아래', 282, 132, 54, 66)}
+  ${m4Spot('box_in', '상자 안', 250, 206, 56, 48)}
+  ${m4Spot('box_side', '상자 옆', 312, 206, 70, 48)}
+  ${m4Spot('door_front', '문 앞', 20, 202, 80, 52)}
+  ${m4Spot('window', '창문', 156, 36, 88, 68)}</svg>`;
+/* 동네: 길을 따라 가게, 학교, 도서관. 학교 뒤에 공원, 길 건너 병원. 왼쪽과 오른쪽은 그림을 보는 쪽에서 셉니다. */
+const m4Bld = (x, w, hgt, roof, sign) => `<rect x="${x}" y="${150 - hgt}" width="${w}" height="${hgt}" fill="#F5E6BD" stroke="#221F1C" stroke-width="3"/>
+  <path d="M${x - 6} ${150 - hgt} L${x + w / 2} ${150 - hgt - 22} L${x + w + 6} ${150 - hgt} Z" fill="${roof}" stroke="#221F1C" stroke-width="3" stroke-linejoin="round"/>
+  <rect x="${x + w / 2 - 10}" y="${126}" width="20" height="24" fill="#8A6A4A" stroke="#221F1C" stroke-width="2"/>${sign || ''}`;
+M4_ONLY.town = `<svg viewBox="0 0 400 260" role="img" aria-label="동네 지도">
+  <rect width="400" height="260" fill="#DCEBD6"/>
+  <rect x="140" y="12" width="120" height="50" rx="10" fill="#9DBA7E" stroke="#221F1C" stroke-width="2.6"/>
+  <circle cx="170" cy="36" r="12" fill="#6E8F58" stroke="#221F1C" stroke-width="2"/><circle cx="228" cy="34" r="14" fill="#6E8F58" stroke="#221F1C" stroke-width="2"/><rect x="190" y="40" width="22" height="6" fill="#8A6A4A"/>
+  ${m4Bld(24, 90, 60, '#E3A93C', '<rect x="44" y="104" width="50" height="14" fill="#E3A93C" stroke="#221F1C" stroke-width="1.6"/>')}
+  ${m4Bld(150, 100, 70, '#C1403A', '<circle cx="200" cy="100" r="6" fill="#F5E6BD" stroke="#221F1C" stroke-width="1.6"/>')}
+  ${m4Bld(286, 90, 64, '#2D6E8E', '<path d="M312 106 L324 100 L336 106 L348 100 L360 106" stroke="#221F1C" stroke-width="2" fill="none"/>')}
+  <rect y="150" width="400" height="40" fill="#8C8577"/><path d="M0 170 L400 170" stroke="#F5E6BD" stroke-width="3" stroke-dasharray="16 12"/>
+  <rect x="150" y="196" width="100" height="56" fill="#FBF7EC" stroke="#221F1C" stroke-width="3"/><path d="M192 214 L208 214 M200 206 L200 222" stroke="#C1403A" stroke-width="6"/>
+  ${m4Spot('park', '공원', 136, 8, 128, 58)}
+  ${m4Spot('shop', '가게', 16, 64, 106, 88)}
+  ${m4Spot('school', '학교', 142, 54, 116, 98)}
+  ${m4Spot('library', '도서관', 278, 60, 106, 92)}
+  ${m4Spot('hospital', '병원', 144, 192, 112, 64)}</svg>`;
+/* 길 안내 화살표 */
+const m4Arrow = dir => {
+  const road = '<rect x="80" y="10" width="40" height="120" fill="#8C8577"/><rect x="10" y="44" width="180" height="40" fill="#8C8577"/>';
+  const path = {straight:'M100 124 L100 22', left:'M100 124 L100 64 L24 64', right:'M100 124 L100 64 L176 64'}[dir];
+  const head = {straight:'M88 34 L100 18 L112 34', left:'M36 52 L20 64 L36 76', right:'M164 52 L180 64 L164 76'}[dir];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${{straight:'쭉 가요', left:'왼쪽', right:'오른쪽'}[dir]}">${road}
+    <path d="${path}" stroke="#C1403A" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${head}" stroke="#C1403A" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+};
+['straight', 'left', 'right'].forEach(d => { M4_ONLY['go_' + d] = m4Arrow(d); });
+/* 장소 하나씩: 동네 그림의 건물을 따로 크게 */
+const m4Place = (id, label, inner) => `<svg viewBox="0 30 200 130" width="150" height="98" role="img" aria-label="${label}"><rect x="0" y="150" width="200" height="10" fill="#8C8577"/>${inner}</svg>`;
+M4_ONLY.pl_shop = m4Place('shop', '가게', m4Bld(56, 88, 60, '#E3A93C', '<rect x="72" y="104" width="56" height="14" fill="#E3A93C" stroke="#221F1C" stroke-width="1.6"/>'));
+M4_ONLY.pl_library = m4Place('library', '도서관', m4Bld(56, 88, 64, '#2D6E8E', '<path d="M76 106 L88 100 L100 106 L112 100 L124 106" stroke="#221F1C" stroke-width="2" fill="none"/>'));
+M4_ONLY.pl_hospital = m4Place('hospital', '병원', '<rect x="50" y="86" width="100" height="64" fill="#FBF7EC" stroke="#221F1C" stroke-width="3"/><path d="M92 104 L108 104 M100 96 L100 112" stroke="#C1403A" stroke-width="6"/><rect x="90" y="126" width="20" height="24" fill="#9DB4C6" stroke="#221F1C" stroke-width="2"/>');
+M4_ONLY.pl_park = m4Place('park', '공원', '<rect x="20" y="96" width="160" height="54" rx="10" fill="#9DBA7E" stroke="#221F1C" stroke-width="2.6"/><circle cx="60" cy="100" r="22" fill="#6E8F58" stroke="#221F1C" stroke-width="2.4"/><rect x="56" y="118" width="8" height="24" fill="#8A6A4A"/><circle cx="140" cy="104" r="18" fill="#6E8F58" stroke="#221F1C" stroke-width="2.4"/><rect x="136" y="118" width="8" height="24" fill="#8A6A4A"/><rect x="88" y="130" width="30" height="6" fill="#8A6A4A" stroke="#221F1C" stroke-width="1.6"/>');
+
 const M4_PIC = Object.assign({}, M3_PIC, M4_ONLY);
 
 /* ---- 묶음 ---- */
@@ -119,7 +201,7 @@ const M4_BUNDLES = [
   {k:1, title:'어제 뭐 했어요?', topic:'지난 일 말하기', nights:[1, 2, 3], after:'그동안 저녁마다 가족에게 오늘 한 일을 하나씩 말해 봐.'},
   {k:2, title:'기분이 어때요?', topic:'기분과 까닭', nights:[4, 5, 6], after:'그동안 저녁마다 가족과 오늘 기분을 서로 물어봐.'},
   {k:3, title:'일, 이, 삼', topic:'한자어 수, 날짜와 분', nights:[7, 8, 9], after:'그동안 가족 생일을 모두 물어서 달력에 적어 봐.'},
-  {k:4, title:'어디에 있어요?', topic:'자리와 길 찾기', nights:[10, 11, 12]},
+  {k:4, title:'어디에 있어요?', topic:'자리와 길 찾기', nights:[10, 11, 12], after:'그동안 가족과 보물 숨기기 놀이를 하며 어디에 있는지 말해 봐.'},
   {k:5, title:'할머니 댁에 가요', topic:'존댓말', nights:[13, 14, 15]}
 ];
 
@@ -523,6 +605,148 @@ const M4_NIGHTS = [
        {when:'할머니 할아버지께', say:'생신이 언제예요?', sub:'어른의 생일은 생신이에요.'},
        {when:'내 생일도 말해요', say:'제 생일은 ______월 ______일이에요.', sub:'6월은 유월, 10월은 시월이에요.'}],
      parent:'집에 있는 달력에 가족 생일을 함께 적어 보세요. 아이가 날짜를 한국어로 읽고, 숫자는 아라비아 숫자로 적어도 괜찮습니다. 조부모님 생신을 여쭐 때는 "생신"이라는 말을 쓰도록 이끌어 주세요. 한국에서는 조부모님 생신을 음력으로 지내는 댁도 많으니, 그런 이야기가 나오면 음력이 무엇인지 가볍게 들려주셔도 좋습니다. 시계를 볼 때마다 "지금 몇 시 몇 분이에요?"를 물어 주시면 두 가지 숫자를 구별하는 연습이 됩니다.'}
+  ],
+  dictWords:[] },
+
+/* ---- 넷째 묶음: 어디에 있어요? ------------------------------------
+   자리(위, 아래, 앞, 뒤, 옆, 안)와 길 찾기(왼쪽, 오른쪽, 쭉 가세요)와 동네 장소.
+   한국어는 "책상 위에"처럼 물건이 먼저, 자리가 나중이라 영어(on the desk)와 순서가 반대입니다.
+   방 그림과 동네 그림에서 말한 곳을 직접 누르는 화면을 씁니다.
+   왼쪽과 오른쪽은 그림을 보는 아이 쪽에서 셉니다. */
+{ n:10, bundle:4, title:'위, 아래, 앞, 뒤',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'오늘은 자리를 말하는 말을 모아 왔어. 무엇이 어디에 있는지 말할 수 있으면 숨바꼭질도 할 수 있지!',
+     big:'어디에 있어요?'},
+    {type:'pairs', title:'고양이가 어디에 있어요?', who:'moi',
+     t:'고양이가 여기저기 숨었어. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'위', pic:'pos_up', en:'on, above'}, {w:'아래', pic:'pos_under', en:'under'},
+       {w:'앞', pic:'pos_front', en:'in front'}, {w:'뒤', pic:'pos_back', en:'behind'},
+       {w:'옆', pic:'pos_side', en:'next to'}, {w:'안', pic:'pos_in', en:'inside'},
+       {w:'고양이', pic:'cat', en:'cat'}, {w:'상자', pic:'pos_side', en:'box'}, {w:'탁자', pic:'pos_under', en:'table'}],
+     tip:{who:'dami', t:'한국어는 물건을 먼저, 자리를 나중에 말한단다. 상자 위, 책상 아래. 영어의 on the box와 순서가 반대지. 그리고 뒤에 ‘에’를 붙여 상자 위에 있어요, 이렇게 말하거라.'}},
+    {type:'findit', title:'방에서 찾아요', who:'tori',
+     t:'내가 말하는 곳을 그림에서 눌러 봐.',
+     scene:'room',
+     qs:[
+       {say:'침대 위', spot:'bed_up'}, {say:'책상 아래', spot:'desk_under'}, {say:'상자 안', spot:'box_in'},
+       {say:'문 앞', spot:'door_front'}, {say:'책상 위', spot:'desk_up'}, {say:'상자 옆', spot:'box_side'}]},
+    {type:'choose', title:'고양이가 어디에 있어요?', who:'tori',
+     t:'그림을 보고 알맞은 말을 골라 봐.',
+     qs:[
+       {pic:'pos_in', o:['상자 위에 있어요.','상자 안에 있어요.'], a:'상자 안에 있어요.', en:"It's in the box."},
+       {pic:'pos_under', o:['탁자 아래에 있어요.','탁자 위에 있어요.'], a:'탁자 아래에 있어요.', en:"It's under the table."},
+       {pic:'pos_back', o:['상자 앞에 있어요.','상자 뒤에 있어요.'], a:'상자 뒤에 있어요.', en:"It's behind the box."},
+       {pic:'pos_side', o:['상자 옆에 있어요.','옆 상자에 있어요.'], a:'상자 옆에 있어요.', en:"It's next to the box.", why:'물건이 먼저, 자리가 나중이에요.'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 그림을 찾아 봐.',
+     qs:[
+       {say:'상자 위', o:['pos_in','pos_up','pos_front'], a:'pos_up'},
+       {say:'상자 앞', o:['pos_front','pos_back','pos_side'], a:'pos_front'},
+       {say:'아래', o:['pos_up','pos_in','pos_under'], a:'pos_under'},
+       {say:'고양이', o:['cat','pos_side','pos_in'], a:'cat'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'자리를 말하는 말을 써 봐.',
+     items:[{w:'위', en:'on'}, {w:'아래', en:'under'}, {w:'옆', en:'next to', hint:{who:'dami', t:'받침은 ㅍ이란다. 옆에는 [여페]로 소리 나지.'}}]}
+  ],
+  dictWords:[{w:'위', en:'on'}, {w:'아래', en:'under'}, {w:'앞', en:'in front'}, {w:'뒤', en:'behind'},
+             {w:'옆', en:'next to'}, {w:'안', en:'inside'}, {w:'고양이', en:'cat'}, {w:'상자', en:'box'}] },
+
+{ n:11, bundle:4, title:'왼쪽으로 가세요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 동네에서 길을 찾아볼 거야. 어디에 있는지 묻고, 어느 쪽으로 가는지 말해 봐.',
+     big:'도서관이 어디에 있어요?'},
+    {type:'pairs', title:'동네의 곳', who:'moi',
+     t:'동네에 있는 곳이야. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'도서관', pic:'pl_library', en:'library'}, {w:'공원', pic:'pl_park', en:'park'},
+       {w:'가게', pic:'pl_shop', en:'store'}, {w:'병원', pic:'pl_hospital', en:'hospital'}]},
+    {type:'pairs', title:'길을 알려 주는 말', who:'moi',
+     t:'어느 쪽으로 가는지 알려 주는 말이야.',
+     singles:[
+       {w:'왼쪽으로 가세요', pic:'go_left', en:'go left'}, {w:'오른쪽으로 가세요', pic:'go_right', en:'go right'},
+       {w:'쭉 가세요', pic:'go_straight', en:'go straight'}],
+     tip:{who:'tori', t:'길을 알려 줄 때는 모르는 사람이 어른이 많으니까 ‘가세요’라고 해. 친구에게는 ‘왼쪽으로 가’라고 하면 돼.'}},
+    {type:'findit', title:'동네 지도에서 찾아요', who:'tori',
+     t:'내가 말하는 곳을 지도에서 눌러 봐. 왼쪽과 오른쪽은 지도를 보는 네 쪽에서 세.',
+     scene:'town',
+     qs:[
+       {say:'도서관', spot:'library'},
+       {say:'학교 왼쪽에 있어요', t:'학교 왼쪽에 있어요. 어디일까요?', spot:'shop', why:'학교 왼쪽에는 가게가 있어요.'},
+       {say:'학교 뒤에 있어요', t:'학교 뒤에 있어요. 어디일까요?', spot:'park', why:'학교 뒤에는 공원이 있어요.'},
+       {say:'학교 앞, 길 건너에 있어요', t:'학교 앞, 길 건너에 있어요. 어디일까요?', spot:'hospital', why:'길 건너에는 병원이 있어요.'},
+       {say:'학교 오른쪽에 있어요', t:'학교 오른쪽에 있어요. 어디일까요?', spot:'library', why:'학교 오른쪽에는 도서관이 있어요.'}]},
+    {type:'choose', title:'어느 쪽으로 가요?', who:'tori',
+     t:'빨간 화살표를 보고 길을 알려 줘.',
+     qs:[
+       {pic:'go_left', o:['왼쪽으로 가세요.','오른쪽으로 가세요.','쭉 가세요.'], a:'왼쪽으로 가세요.', en:'Go left.'},
+       {pic:'go_straight', o:['오른쪽으로 가세요.','쭉 가세요.','왼쪽으로 가세요.'], a:'쭉 가세요.', en:'Go straight.'},
+       {pic:'go_right', o:['쭉 가세요.','왼쪽으로 가세요.','오른쪽으로 가세요.'], a:'오른쪽으로 가세요.', en:'Go right.'},
+       {pic:'town', t:'지도를 봐요. 도서관이 어디에 있어요?', o:['학교 옆에 있어요.','공원 안에 있어요.'], a:'학교 옆에 있어요.', en:"It's next to the school."}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'도서관이 어디에 있어요?', tiles:['도서관이','어디에','있어요?'], extra:['도서관가'], en:'Where is the library?'},
+       {s:'학교 옆에 있어요.', tiles:['학교','옆에','있어요.'], extra:['옆','학교에'], en:"It's next to the school.", hint:'물건(학교)이 먼저, 자리(옆)가 나중이에요.'},
+       {s:'쭉 가서 왼쪽으로 가세요.', tiles:['쭉','가서','왼쪽으로','가세요.'], en:'Go straight, then go left.'},
+       {s:'공원은 학교 뒤에 있어요.', tiles:['공원은','학교','뒤에','있어요.'], en:'The park is behind the school.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'자리를 말하는 말 뒤에 ‘에’가 붙으면 받침이 건너가지.',
+     cmp:[
+       {s:'옆에', d:'여페', n:'ㅍ 받침이 뒤로 건너가요'},
+       {s:'앞에', d:'아페', n:'ㅍ 받침이 뒤로 건너가요'},
+       {s:'안에', d:'아네', n:'ㄴ 받침이 뒤로 건너가요'},
+       {s:'병원에', d:'병워네', n:'ㄴ 받침이 뒤로 건너가요'}],
+     note:'옆과 앞은 ㅍ 받침이란다. [여페], [아페]로 들려도 ‘옆’, ‘앞’을 먼저 쓰고 ‘에’를 붙이거라.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'앞에', en:'in front (with 에)', hint:{who:'dami', t:'소리는 [아페]지만 ‘앞’에 받침 ㅍ이 있단다.'}},
+       {w:'공원', en:'park'},
+       {w:'왼쪽', en:'left'}]}
+  ],
+  dictWords:[{w:'앞에', en:'in front'}, {w:'옆에', en:'next to'}, {w:'공원', en:'park'}, {w:'가게', en:'store'},
+             {w:'병원', en:'hospital'}, {w:'도서관', en:'library'}, {w:'왼쪽', en:'left'}, {w:'오른쪽', en:'right'}] },
+
+{ n:12, bundle:4, title:'모이네 집 찾기',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘이 모이 생일 파티야! 그런데 모이네 집을 몰라. 먼저 글자 없이 귀로만 들어 보고, 그다음에 글자를 같이 보자.',
+     big:'모이야, 너희 집이 어디에 있어?'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 길을 잘 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'tori', t:'모이야, 너희 집이 어디에 있어?', en:'Moi, where is your house?'},
+       {who:'moi', t:'공원 알아? 공원 앞에서 오른쪽으로 가.', en:'Do you know the park? Turn right in front of the park.'},
+       {who:'tori', t:'오른쪽으로? 그다음은?', en:'Right? And then?'},
+       {who:'moi', t:'쭉 가면 큰 나무가 있어. 우리 집은 그 나무 위에 있어!', en:"Go straight and there's a big tree. My house is up in that tree!"},
+       {who:'tori', t:'할아버지, 공원이 어디에 있어요?', en:'Grandpa, where is the park?'},
+       {who:'dami', t:'허허, 학교 뒤에 있단다. 쭉 가거라.', en:"Ho ho, it's behind the school. Go straight."},
+       {who:'tori', t:'네, 감사합니다!', en:'Okay, thank you!'},
+       {who:'moi', t:'토리야, 여기야! 나무 위를 봐!', en:"Tori, over here! Look up in the tree!"}],
+     note:{who:'dami', t:'까치는 나무 위에 집을 짓는단다. 한국에서는 까치가 반가운 손님이 온다는 소식을 전한다고들 하지. 그리고 토리가 모이에게는 ‘어디에 있어?’, 나에게는 ‘어디에 있어요?’라고 물었지?'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'모이네 집은 어디에 있어요?', o:['나무 위','공원 안','학교 옆'], a:'나무 위', why:'모이는 ‘우리 집은 그 나무 위에 있어!’라고 했어요.'},
+       {t:'공원 앞에서 어느 쪽으로 가요?', o:['왼쪽','오른쪽','뒤쪽'], a:'오른쪽', why:'모이는 ‘공원 앞에서 오른쪽으로 가’라고 했어요.'},
+       {t:'공원은 어디에 있어요?', o:['학교 뒤','병원 앞','도서관 안'], a:'학교 뒤', why:'할아버지는 ‘학교 뒤에 있단다’라고 하셨어요.'},
+       {t:'토리는 할아버지께 길을 여쭤보고 뭐라고 했어요?', o:['잘 자','감사합니다','미안해'], a:'감사합니다', why:'토리는 ‘네, 감사합니다!’라고 했어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {pic:'pos_under', line:{who:'moi', t:'토리야, 고양이 어디에 있어?'}, en:'Tori, where is the cat?', o:['탁자 아래에 있어.','탁자 아래에 있어요.'], a:'탁자 아래에 있어.', why:'모이는 친구라서 편한 말로 대답해요.'},
+       {pic:'town', line:{who:'dami', t:'토리야, 도서관이 어디에 있느냐?'}, en:'Tori, where is the library?', o:['학교 옆에 있어.','학교 옆에 있어요.'], a:'학교 옆에 있어요.', why:'할아버지는 어른이라서 ‘있어요’라고 해요.'},
+       {pic:'go_right', t:'길을 모르는 할머니께 알려 드려요.', en:'Tell a grandma who is lost which way to go.', o:['오른쪽으로 가.','오른쪽으로 가세요.'], a:'오른쪽으로 가세요.', why:'어른께 길을 알려 드릴 때는 ‘가세요’라고 해요.'}]},
+    {type:'task', title:'보물 숨기기 놀이', who:'moi',
+     t:'가족과 보물 숨기기 놀이를 해 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'가족이 장난감을 숨기고 힌트를 줘요', say:'침대 아래에 있어요.', sub:'위, 아래, 앞, 뒤, 옆, 안으로 힌트를 바꿔 가며 해요.'},
+       {when:'이번엔 아이가 숨기고 힌트를 줘요', say:'______ ______에 있어요.', sub:'물건이 먼저, 자리가 나중: 책상 위에 있어요.'},
+       {when:'밖에 나가면 길도 알려 줘요', say:'쭉 가세요. 왼쪽으로 가세요.', sub:'산책할 때 아이가 길잡이가 되어 봐요.'}],
+     parent:'집 안에서 작은 장난감을 숨기고 "침대 아래에 있어요", "상자 안에 있어요"처럼 한국어로 힌트를 주세요. 몇 번 한 뒤에는 역할을 바꿔 아이가 숨기고 힌트를 말하게 해 주세요. 영어와 순서가 반대(on the bed, 침대 위)라서 아이가 "위 침대"처럼 말하기 쉬우니, 그때는 "침대 위!" 하고 바르게 되받아 주시면 됩니다. 산책이나 장보러 가는 길에 아이에게 "왼쪽이야? 오른쪽이야?"를 물어 길잡이를 맡겨 보셔도 좋습니다.'}
   ],
   dictWords:[] }
 ];

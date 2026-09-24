@@ -263,7 +263,7 @@ function startCheck(){
 /* ══════════════════════════════════════════════════════════════
    밤 진행
    ══════════════════════════════════════════════════════════════ */
-const SCORED = {choose: S => S.qs.length, josa: S => S.names.length, build: S => S.qs.length, dict: S => S.items.length};
+const SCORED = {findit: S => S.qs.length, choose: S => S.qs.length, josa: S => S.names.length, build: S => S.qs.length, dict: S => S.items.length};
 function startNight(n){
   night = MOON.nights.find(m => m.n === n);
   if(!night){ showPicker(); return; }
@@ -716,6 +716,58 @@ SCREENS.birthday = S => {
   if(S.tip) card.append(guide(S.tip.who, S.tip.t, true));
 };
 
+/* ---- 그림에서 찾기: 방이나 동네 그림에서 말한 곳을 누릅니다 ----
+   그림(MOON.pic[S.scene])에 data-spot 이름이 붙은 영역이 있고, 문제마다 누를 곳(spot)을 정합니다.
+   q.say 는 들려주는 말, q.t 는 화면에 쓰는 말(없으면 say 로 만듭니다). 맞으면 그 자리가 빛납니다. */
+SCREENS.findit = S => {
+  head2(S);
+  hideNext();
+  const qs = S.qs;
+  let qi = 0, locked = false;
+  const prompt = h('div', {class:'findprompt'});
+  const wrap = h('div', {class:'findscene', html: MOON.pic[S.scene]});
+  const after = h('div', {});
+  card.append(prompt, wrap, after);
+  const spots = [...wrap.querySelectorAll('[data-spot]')];
+  spots.forEach(el => {
+    el.setAttribute('role', 'button'); el.setAttribute('tabindex', '0');
+    el.setAttribute('aria-label', el.dataset.label || el.dataset.spot);
+    const go = () => pick(el);
+    el.addEventListener('click', go);
+    el.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } });
+  });
+  const draw = () => {
+    const q = qs[qi]; locked = false;
+    spots.forEach(el => el.classList.remove('hit', 'miss', 'show'));
+    prompt.innerHTML = ''; after.innerHTML = ''; setFeedback('');
+    prompt.append(h('p', {class:'qcount'}, (qi + 1) + ' / ' + qs.length),
+      h('p', {class:'qtext'}, q.t || (josa(q.say, '을') + ' 눌러 봐요.')),
+      h('button', {class:'btn quiet play', onclick: () => talk(q.say || q.t)}, '다시 듣기'));
+    later(() => talk(q.say || q.t), 300);
+  };
+  function pick(el){
+    if(locked) return;
+    const q = qs[qi];
+    if(el.dataset.spot === q.spot){
+      locked = true; el.classList.add('hit'); score++;
+      react('happy'); setFeedback('맞았어요.' + (q.why ? ' ' + q.why : ''), 'ok');
+      later(nextQ, q.why ? 2200 : 1400);
+    } else {
+      locked = true; el.classList.add('miss');
+      const good = spots.find(x => x.dataset.spot === q.spot); if(good) good.classList.add('show');
+      react('oops'); setFeedback(q.why || '여기가 아니에요. 빛나는 곳을 봐요.', 'no');
+      after.append(h('button', {class:'btn play', onclick: nextQ}, qi + 1 < qs.length ? '다음 문제' : '다 풀었어요'));
+    }
+  }
+  function nextQ(){
+    qi++;
+    if(qi < qs.length) draw();
+    else { prompt.innerHTML = ''; after.innerHTML = ''; spots.forEach(el => el.classList.remove('hit', 'miss', 'show'));
+      prompt.append(h('p', {class:'qdone'}, '다 풀었어요. 아래 다음을 눌러요.')); setFeedback('다 풀었어요.', 'ok'); showNext(); }
+  }
+  draw();
+};
+
 /* ---- 소리와 글자 (담이) ---- */
 SCREENS.sound = S => {
   head2(S);
@@ -934,6 +986,7 @@ function listClips(){
     if(S.type === 'rule') [...S.yes, ...S.no].forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙'));
     if(S.type === 'josa') S.names.forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙 고르기'));
     if(S.type === 'shrink') S.rows.forEach(([full, short]) => { add(full, n, '세는 말'); S.units.forEach(u => add(short + ' ' + u, n, '줄어드는 숫자')); });
+    if(S.type === 'findit') S.qs.forEach(q => add(q.say || q.t, n, '그림에서 찾기'));
     if(S.type === 'birthday'){ add('제 생일은', n, '생일 앞부분'); for(let m = 1; m <= 12; m++) add(monthName(m), n, '달 이름');
       for(let d = 1; d <= 31; d++) add(dayName(d) + '이에요', n, '날짜 끝'); }
     if(S.type === 'tense') S.groups.forEach(G => G.rows.forEach(([a, b]) => { add(a, n, '지금'); add(b, n, '지난 일'); }));

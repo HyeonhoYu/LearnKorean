@@ -425,3 +425,16 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
 .bdout{margin:16px 0 8px}
 .bdout .saybtn.big{font-size:24px}
 @media (max-width:520px){.bdgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* ---- 넷째 달: 그림에서 찾기 ---- */
+.findscene{max-width:640px;margin:0 auto 10px;border:3px solid var(--meok);border-radius:16px;overflow:hidden;background:var(--dalbit)}
+.findscene svg{width:100%;height:auto;display:block}
+.findscene [data-spot]{cursor:pointer}
+.findscene [data-spot] .hot{fill:#F6D98F;fill-opacity:0;stroke:#C1403A;stroke-width:0;stroke-dasharray:8 5;transition:fill-opacity .15s}
+.findscene [data-spot]:hover .hot,.findscene [data-spot]:focus .hot{fill-opacity:.25}
+.findscene [data-spot]:focus{outline:none}
+.findscene [data-spot].hit .hot{fill:#6E8F58;fill-opacity:.35;stroke:#3E6B2E;stroke-width:4}
+.findscene [data-spot].miss .hot{fill:#C1403A;fill-opacity:.25}
+.findscene [data-spot].show .hot{fill-opacity:.45;stroke-width:4}
+.findprompt{text-align:center;margin-bottom:10px}
+.findprompt .qtext{font-size:22px;margin:4px 0 8px}
