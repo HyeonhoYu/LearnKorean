@@ -89,13 +89,54 @@ Object.assign(M6_ONLY, {
   hair_long: M5_PIC.p_aunt, hair_short: M5_PIC.p_uncle, tall: M5_PIC.p_dad, short_kid: M5_PIC.p_baby,
   glasses: M5_PIC.p_grandpa, wear: M5_PIC.p_mom
 });
+/* ---- 셋째 묶음 그림: 설날 ---- */
+/* 한복 입은 아이: 저고리 소매에 색동 줄 */
+const m6Hanbok = (x, k, face) => `<g transform="translate(${x} 122) scale(${k || 1})">
+  <path d="M-26 0 L-18 -46 L18 -46 L26 0 Z" fill="#C1403A" stroke="#221F1C" stroke-width="2.6" stroke-linejoin="round"/>
+  <path d="M-18 -46 L-16 -64 L16 -64 L18 -46 Z" fill="#F2C14E" stroke="#221F1C" stroke-width="2.4"/>
+  <circle cx="2" cy="-56" r="3.4" fill="#C1403A" stroke="#221F1C" stroke-width="1.2"/><path d="M2 -54 L-2 -34 M2 -54 L8 -36" stroke="#C1403A" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+  ${[0, 1, 2, 3].map(i => `<rect x="${-34 + i * 0}" y="${-62 + i * 5}" width="18" height="5" fill="${['#C1403A', '#2D6E8E', '#F2C14E', '#6E8F58'][i]}" stroke="#221F1C" stroke-width="1"/><rect x="16" y="${-62 + i * 5}" width="18" height="5" fill="${['#C1403A', '#2D6E8E', '#F2C14E', '#6E8F58'][i]}" stroke="#221F1C" stroke-width="1"/>`).join('')}
+  <circle cx="-34" cy="-40" r="4" fill="#F0D9BE" stroke="#221F1C" stroke-width="1.6"/><circle cx="34" cy="-40" r="4" fill="#F0D9BE" stroke="#221F1C" stroke-width="1.6"/>
+  <circle cx="0" cy="-78" r="14" fill="#F0D9BE" stroke="#221F1C" stroke-width="2.4"/>
+  <path d="M-14 -82 C-16 -98 16 -98 14 -82 C8 -90 -8 -90 -14 -82 Z" fill="#221F1C"/>
+  ${face === 'bow' ? '' : '<circle cx="-5" cy="-78" r="1.8" fill="#221F1C"/><circle cx="5" cy="-78" r="1.8" fill="#221F1C"/><path d="M-4 -72 q4 3 8 0" stroke="#221F1C" stroke-width="1.6" fill="none"/>'}</g>`;
+function m6Seol(kind){
+  const S = '#221F1C', ground = '<path d="M8 122 L192 122" stroke="#221F1C" stroke-width="2.6"/>';
+  const g = {
+    hanbok: `${ground}${m6Hanbok(100, 1.15)}`,
+    sebae: `<rect width="200" height="130" rx="6" fill="#F3E3C0"/><rect y="104" width="200" height="26" fill="#E0C49A"/>
+      <g transform="translate(-6 0)">${m2Person('grandma', 58, 'stand', 1).replace('translate(58 122)', 'translate(58 110)')}</g>${m2Person('grandpa', 30, 'stand', 1).replace('translate(30 122)', 'translate(30 110)')}
+      <g transform="translate(142 112)"><path d="M-30 0 Q-30 -22 -6 -24 L14 -22 Q24 -14 20 0 Z" fill="#C1403A" stroke="${S}" stroke-width="2.4"/>
+        <circle cx="-34" cy="-6" r="11" fill="#F0D9BE" stroke="${S}" stroke-width="2.2"/><path d="M-44 -8 C-46 -20 -24 -20 -24 -8 Z" fill="#221F1C"/>
+        <path d="M-40 4 L-20 4" stroke="#F0D9BE" stroke-width="6" stroke-linecap="round"/></g>`,
+    money: `<rect x="44" y="30" width="112" height="72" rx="4" fill="#FBF7EC" stroke="${S}" stroke-width="3"/>
+      <path d="M44 30 L100 70 L156 30" fill="#F2D4CC" stroke="${S}" stroke-width="2.4" stroke-linejoin="round"/>
+      <rect x="58" y="16" width="84" height="34" fill="#8FB8D6" stroke="${S}" stroke-width="2" transform="rotate(-6 100 33)"/>
+      <circle cx="100" cy="82" r="10" fill="#C1403A"/><circle cx="100" cy="82" r="4" fill="#F6D98F"/>`,
+    tteokguk: `<path d="M40 56 L160 56 Q156 106 100 108 Q44 106 40 56 Z" fill="#FBF7EC" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <ellipse cx="100" cy="56" rx="60" ry="12" fill="#EFE2C2" stroke="${S}" stroke-width="2.6"/>
+      ${[[76, 54], [92, 58], [108, 53], [124, 58], [86, 50], [116, 49]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="8" ry="4.4" fill="#FBF7EC" stroke="#C9C0AE" stroke-width="1.4"/>`).join('')}
+      <path d="M96 48 L112 44 M100 60 L116 56" stroke="#E3A93C" stroke-width="2.4"/><path d="M84 46 L90 52" stroke="#6E8F58" stroke-width="3"/>
+      <path d="M86 40 Q82 30 88 22 M106 40 Q102 30 108 22" stroke="#8C7F63" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+    yut: `<rect x="20" y="70" width="160" height="50" rx="6" fill="#E0C49A" stroke="${S}" stroke-width="2.4"/>
+      ${[[50, 30, -20], [84, 26, 10], [118, 32, -6], [150, 28, 18]].map(([x, y, r]) => `<g transform="translate(${x} ${y}) rotate(${r})"><rect x="-7" y="-26" width="14" height="52" rx="7" fill="${r > 0 ? '#E3A93C' : '#FBF7EC'}" stroke="${S}" stroke-width="2.4"/>${r > 0 ? '' : '<path d="M-3 -14 L3 -8 M-3 -2 L3 4 M-3 10 L3 16" stroke="#221F1C" stroke-width="1.6"/>'}</g>`).join('')}
+      <g fill="#C1403A" stroke="${S}" stroke-width="1.4"><circle cx="54" cy="96" r="6"/><circle cx="142" cy="92" r="6"/></g><g fill="#2D6E8E" stroke="${S}" stroke-width="1.4"><circle cx="100" cy="100" r="6"/></g>`,
+    newyear: `<rect width="200" height="130" rx="6" fill="#F3D9B5"/><circle cx="100" cy="84" r="30" fill="#E0703C" stroke="${S}" stroke-width="2.4"/>
+      <path d="M0 96 Q40 70 80 92 Q120 64 160 90 Q180 80 200 88 L200 130 L0 130 Z" fill="#5A7A8E" stroke="${S}" stroke-width="2"/>
+      <g stroke="#E3A93C" stroke-width="3" stroke-linecap="round"><path d="M100 40 L100 30 M70 50 L64 42 M130 50 L136 42 M52 72 L42 68 M148 72 L158 68"/></g>`,
+    family: `<rect width="200" height="130" rx="6" fill="#F3E3C0"/>${ground}${m2Person('grandpa', 26, 'stand', 1)}${m2Person('grandma', 60, 'stand', 1)}${m6Hanbok(100, .78)}${m2Person('mom', 140, 'stand', -1)}${m2Person('dad', 174, 'stand', -1)}`
+  }[kind];
+  const label = {hanbok:'한복', sebae:'세배', money:'세뱃돈', tteokguk:'떡국', yut:'윷놀이', newyear:'새해', family:'설날'}[kind];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
+}
+['hanbok', 'sebae', 'money', 'tteokguk', 'yut', 'newyear', 'family'].forEach(k => { M6_ONLY['seol_' + k] = m6Seol(k); });
 const M6_PIC = Object.assign({}, M5_PIC, M6_ONLY);
 
 /* ---- 묶음 ---- */
 const M6_BUNDLES = [
   {k:1, title:'더 커요, 제일 커요', topic:'견주는 말', nights:[1, 2, 3], after:'그동안 가족끼리 누가 더 큰지, 누가 제일 빠른지 견주어 말해 봐.'},
   {k:2, title:'어떻게 생겼어요?', topic:'꾸미는 말과 설명하기', nights:[4, 5, 6], after:'그동안 가족과 수수께끼 놀이를 하며 물건을 설명해 봐.'},
-  {k:3, title:'설날', topic:'세배, 떡국, 새해 인사', nights:[7, 8, 9]},
+  {k:3, title:'설날', topic:'세배, 떡국, 새해 인사', nights:[7, 8, 9], after:'그동안 가족에게 세배하는 법을 연습하고 새해 인사를 해 봐.'},
   {k:4, title:'추석', topic:'송편, 보름달, 달토끼 옛이야기', nights:[10, 11, 12]},
   {k:5, title:'세종대왕과 한글', topic:'한글이 생긴 이야기', nights:[13, 14, 15]}
 ];
@@ -374,6 +415,138 @@ const M6_NIGHTS = [
        {when:'가족을 설명해 봐요', say:'키가 크고 안경을 써요. 누구일까요?', sub:'머리가 길어요, 짧아요도 써 봐요.'},
        {when:'이번엔 가족이 내는 수수께끼를 맞혀요', say:'______예요!', sub:'받침이 있으면 이에요: 연필이에요!'}],
      parent:'집 안 물건이나 가족을 한국어로 설명하고 맞히는 놀이를 해 주세요. 한국에서는 이런 놀이를 스무고개라고 부릅니다. 아이가 "크고, 파랗고, 둥글어요"처럼 꾸미는 말을 여러 개 이어서 설명하면 크게 칭찬해 주세요. "큰"과 "커요"처럼 이름 앞과 문장 끝의 모양이 다르다는 점을 헷갈려하면, 이름이 뒤에 오는지를 함께 살펴봐 주시면 됩니다.'}
+  ],
+  dictWords:[] },
+
+/* ---- 셋째 묶음: 설날 ---------------------------------------------
+   설날, 새해, 한복, 세배, 세뱃돈, 떡국, 윷놀이와 새해 인사(새해 복 많이 받으세요).
+   둘째 밤에 세배 순서를 이야기 순서 화면으로 익히고, "~으면"(떡국을 먹으면)을 말 덩어리로 씁니다.
+   셋째 밤은 한국 할머니 댁의 설날. 둘째 달에서 여덟 살이던 토리가 떡국을 먹고 아홉 살이 됩니다.
+   약속대로 차례는 밤 내용에 넣지 않고 부모님 안내에서만 짧게 소개합니다. */
+{ n:7, bundle:3, title:'설날이에요',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'한국에서 가장 큰 명절 가운데 하나, 설날이야! 새해 첫날을 가족과 함께 보내는 날이지. 오늘은 설날에 쓰는 말을 모아 왔어.',
+     big:'새해 복 많이 받으세요'},
+    {type:'pairs', title:'설날에 만나는 말', who:'moi',
+     t:'설날에 보고 듣는 것이야. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'설날', pic:'seol_family', en:'Lunar New Year'}, {w:'새해', pic:'seol_newyear', en:'new year'},
+       {w:'한복', pic:'seol_hanbok', en:'hanbok (traditional clothes)'}, {w:'세배', pic:'seol_sebae', en:'New Year bow'},
+       {w:'세뱃돈', pic:'seol_money', en:'New Year money'}, {w:'떡국', pic:'seol_tteokguk', en:'rice cake soup'},
+       {w:'윷놀이', pic:'seol_yut', en:'yut (stick game)'}],
+     tip:{who:'dami', t:'설날은 음력 새해 첫날이라 해마다 날짜가 조금씩 달라진단다. 양력으로는 보통 일월 끝에서 이월 사이에 오지. 미국에서도 음력 설날이라고 부르며 함께 지내는 이웃이 많단다.'}},
+    {type:'pairs', title:'새해 인사', who:'dami',
+     t:'새해 첫 인사란다. 친구에게, 그리고 어른께 하는 말이 다르지.',
+     pairs:[
+       {when:'새해 인사', pic:'seol_newyear', friend:'새해 복 많이 받아!', elder:'새해 복 많이 받으세요.', en:'Happy New Year! (lit. receive many blessings)'}],
+     tip:{who:'tori', t:'복은 좋은 일이라는 뜻이야. 새해에 좋은 일이 많이 생기라는 인사지.'}},
+    {type:'choose', title:'설날의 말', who:'tori',
+     t:'그림을 보고 알맞은 말을 골라 봐.',
+     qs:[
+       {pic:'seol_tteokguk', o:['떡국','떡볶이','김밥'], a:'떡국', why:'설날에는 떡국을 먹어요.'},
+       {pic:'seol_hanbok', o:['한복','한국','옷'], a:'한복'},
+       {pic:'seol_yut', o:['숨바꼭질','윷놀이','줄넘기'], a:'윷놀이'},
+       {pic:'seol_sebae', o:['세배','세뱃돈','설날'], a:'세배', why:'어른께 절하며 새해 인사를 하는 것이 세배예요.'},
+       {pic:'p_grandma', t:'설날 아침, 할머니께 인사해요.', o:['새해 복 많이 받아!','새해 복 많이 받으세요.'], a:'새해 복 많이 받으세요.', why:'어른께는 받으세요로 해요.'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 그림을 찾아 봐.',
+     qs:[
+       {say:'세뱃돈', o:['seol_money','seol_yut','seol_tteokguk'], a:'seol_money'},
+       {say:'새해', o:['seol_family','seol_newyear','seol_hanbok'], a:'seol_newyear'},
+       {say:'윷놀이', o:['seol_sebae','seol_yut','pl5_rope'], a:'seol_yut'},
+       {say:'한복', o:['seol_hanbok','tr_clothes','hat_red'], a:'seol_hanbok'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'설날 말을 써 봐.',
+     items:[{w:'설날', en:'Lunar New Year', hint:{who:'dami', t:'소리는 [설랄]이지만 ‘설’과 ‘날’이란다. ㄹ 뒤의 ㄴ이 ㄹ처럼 소리 나지.'}}, {w:'한복', en:'hanbok'}, {w:'세배', en:'New Year bow'}]}
+  ],
+  dictWords:[{w:'설날', en:'Lunar New Year'}, {w:'새해', en:'new year'}, {w:'한복', en:'hanbok'}, {w:'세배', en:'New Year bow'},
+             {w:'떡국', en:'rice cake soup'}, {w:'복', en:'blessing, luck'}] },
+
+{ n:8, bundle:3, title:'세배를 드려요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 세배하는 순서를 배울 거야. 그리고 떡국을 먹으면 무슨 일이 생기는지도 알려 줄게!',
+     big:'세배를 드려요'},
+    {type:'sequence', title:'세배하는 순서', who:'dami',
+     t:'세배는 차례가 있단다. 차례대로 눌러 보거라.',
+     qs:[
+       {t:'세배하는 순서', cards:[{pic:'seol_hanbok', t:'한복을 입어요.'}, {pic:'p_grandma', t:'할머니 할아버지께서 앉으세요.'}, {pic:'seol_sebae', t:'절을 하고 새해 인사를 드려요.'}, {pic:'seol_money', t:'덕담을 듣고 세뱃돈을 받아요.'}]}]},
+    {type:'tense', title:'~하면', who:'dami',
+     t:'무엇을 하면 어떻게 되는지 말할 때는 면을 붙인단다. 받침이 있는 말에는 으면이지. 받침 삼 형제가 또 나왔구나.',
+     cols:['움직이는 말', '~하면'],
+     groups:[
+       {rule:'받침이 없으면 면', rows:[['가요','가면'], ['해요','하면'], ['자요','자면']]},
+       {rule:'받침이 있으면 으면', rows:[['먹어요','먹으면'], ['입어요','입으면'], ['받아요','받으면']]}],
+     note:'떡국을 먹으면 한 살 더 먹는다고들 한단다. 그래서 설날 아침에 떡국을 먹으며 몇 그릇 먹었느냐고 농담을 하지. 나이도 먹고 떡국도 먹으니 먹는다는 말이 두 번 쓰이는 게야.'},
+    {type:'choose', title:'설날에는 어떻게 해요?', who:'tori',
+     t:'설날에 맞는 말을 골라 봐.',
+     qs:[
+       {pic:'seol_tteokguk', o:['떡국을 먹으면 한 살 더 먹어요.','떡국을 먹으면 한 살 덜 먹어요.'], a:'떡국을 먹으면 한 살 더 먹어요.', en:'If you eat tteokguk, you get a year older.'},
+       {pic:'seol_sebae', t:'할머니께 세배해요.', o:['할머니께 세배를 드려요.','할머니에게 세배를 줘요.'], a:'할머니께 세배를 드려요.', en:'I give Grandma a New Year bow.', why:'어른께는 께, 드려요를 써요.'},
+       {pic:'seol_money', t:'세뱃돈을 받을 때는?', o:['두 손으로 받고 감사합니다라고 해요.','한 손으로 받고 고마워라고 해요.'], a:'두 손으로 받고 감사합니다라고 해요.', en:'Receive it with both hands and say thank you.'},
+       {pic:'seol_hanbok', o:['설날에 한복을 입어요.','설날에 한복을 써요.'], a:'설날에 한복을 입어요.', en:'I wear hanbok on Seollal.', why:'옷은 입어요예요.'}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'새해 복 많이 받으세요.', tiles:['새해','복','많이','받으세요.'], en:'Happy New Year.'},
+       {s:'설날에 한복을 입어요.', tiles:['설날에','한복을','입어요.'], extra:['써요.'], en:'I wear hanbok on Seollal.'},
+       {s:'할머니께 세배를 드려요.', tiles:['할머니께','세배를','드려요.'], extra:['줘요.'], en:'I give Grandma a New Year bow.'},
+       {s:'떡국을 먹으면 한 살 더 먹어요.', tiles:['떡국을','먹으면','한','살','더','먹어요.'], extra:['먹면'], en:'If you eat tteokguk, you get a year older.', hint:'먹에는 받침이 있어서 먹으면이에요.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'설날 말에는 소리 비밀이 유난히 많단다.',
+     cmp:[
+       {s:'설날', d:'설랄', n:'ㄹ 뒤의 ㄴ이 ㄹ처럼 나요'},
+       {s:'떡국', d:'떡꾹', n:'ㄱ 받침 뒤의 ㄱ은 ㄲ처럼 나요'},
+       {s:'세뱃돈', d:'세배똔', n:'사이에 든 ㅅ 때문에 ㄷ이 ㄸ처럼 나요'},
+       {s:'한복을', d:'한보글', n:'ㄱ 받침이 뒤로 건너가요'}],
+     note:'설날의 [설랄]은 새로운 소리 비밀이란다. ㄹ과 ㄴ이 만나면 ㄴ이 ㄹ로 바뀌지. 설날, 달나라, 물놀이도 모두 그렇단다. [달라라], [물로리]. 하지만 쓸 때는 제 글자대로 쓰거라.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'떡국', en:'rice cake soup', hint:{who:'dami', t:'소리는 [떡꾹]이지만 ‘떡’과 ‘국’이란다.'}},
+       {w:'세뱃돈', en:'New Year money', hint:{who:'dami', t:'세배와 돈 사이에 ㅅ이 들어가 ‘뱃’이 된단다.'}},
+       {w:'받으면', en:'if you receive'}]}
+  ],
+  dictWords:[{w:'세뱃돈', en:'New Year money'}, {w:'윷놀이', en:'yut game'}, {w:'먹으면', en:'if you eat'}, {w:'받으면', en:'if you receive'}] },
+
+{ n:9, bundle:3, title:'할머니 댁의 설날',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'한국 할머니 댁에서 맞는 첫 설날이야! 한복을 입고 할머니께 세배를 드릴 거야. 먼저 글자 없이 귀로만 들어 봐.',
+     big:'할머니, 새해 복 많이 받으세요!'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 토리와 할머니가 주고받는 새해 인사를 잘 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'tori', t:'할머니, 새해 복 많이 받으세요!', en:'Grandma, Happy New Year!'},
+       {who:'halmi', t:'오냐, 우리 토리도 새해 복 많이 받아라. 올해도 튼튼하게 잘 자라거라.', en:'Yes, Happy New Year to you too, Tori. Grow up healthy and strong this year.'},
+       {who:'halmi', t:'자, 세뱃돈이란다.', en:"Here's your New Year money."},
+       {who:'tori', t:'감사합니다, 할머니!', en:'Thank you, Grandma!'},
+       {who:'moi', t:'할머니, 저도 세배할래요!', en:'Grandma, I want to bow too!'},
+       {who:'halmi', t:'허허, 모이도 복 많이 받아라. 이제 떡국 먹자.', en:"Ho ho, blessings to you too, Moi. Now let's eat tteokguk."},
+       {who:'tori', t:'떡국을 먹으면 한 살 더 먹지요? 그럼 저는 이제 아홉 살이에요!', en:"If I eat tteokguk, I get a year older, right? Then I'm nine now!"},
+       {who:'halmi', t:'그렇지. 떡국 먹고 다 같이 윷놀이하자!', en:"That's right. Let's eat and then all play yut together!"}],
+     note:{who:'halmi', t:'올해도 튼튼하게 잘 자라라, 이렇게 어른이 해 주시는 좋은 말을 덕담이라고 한단다. 세뱃돈은 두 손으로 받고 감사합니다라고 하는 게 예의지. 우리 담이 동생 말로는 토리가 여덟 살이라더니, 벌써 아홉 살이구나.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'토리는 할머니께 뭐라고 인사했어요?', o:['새해 복 많이 받으세요','안녕히 주무세요','잘 먹겠습니다'], a:'새해 복 많이 받으세요'},
+       {t:'할머니가 토리에게 무엇을 주셨어요?', o:['세뱃돈','한복','떡'], a:'세뱃돈', why:'할머니는 ‘자, 세뱃돈이란다’라고 하셨어요.'},
+       {t:'떡국을 먹고 토리는 몇 살이 됐어요?', o:['여덟 살','아홉 살','열 살'], a:'아홉 살', why:'토리는 ‘저는 이제 아홉 살이에요!’라고 했어요.'},
+       {t:'떡국을 먹고 무엇을 할 거예요?', o:['윷놀이','숨바꼭질','수영'], a:'윷놀이', why:'할머니는 ‘다 같이 윷놀이하자’라고 하셨어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 말하는지 잘 보고 대답해 봐.',
+     qs:[
+       {line:{who:'halmi', t:'토리야, 새해 복 많이 받아라.'}, en:'Tori, Happy New Year.', o:['할머니도 새해 복 많이 받으세요.','너도 새해 복 많이 받아.'], a:'할머니도 새해 복 많이 받으세요.', why:'어른께는 받으세요로 되돌려 드려요.'},
+       {line:{who:'moi', t:'토리야, 새해 복 많이 받아!'}, en:'Tori, Happy New Year!', o:['너도 새해 복 많이 받아!','새해 복 많이 받으세요.'], a:'너도 새해 복 많이 받아!', why:'모이는 친구라서 편한 말로 해요.'},
+       {pic:'seol_money', t:'할머니께서 세뱃돈을 주세요. 어떻게 받아요?', en:'Grandma gives you New Year money.', o:['두 손으로 받으며 감사합니다.','한 손으로 받으며 고마워.'], a:'두 손으로 받으며 감사합니다.', why:'어른께 받을 때는 두 손으로 받아요.'}]},
+    {type:'task', title:'우리 집 설날', who:'moi',
+     t:'설날이 오면, 아니면 오늘 연습으로 해 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'할머니 할아버지께 절하며', say:'새해 복 많이 받으세요.', sub:'영상 통화로 해도 좋아요.'},
+       {when:'세뱃돈이나 선물을 받을 때', say:'감사합니다.', sub:'두 손으로 받아요.'},
+       {when:'떡국을 먹으며', say:'떡국을 먹으면 한 살 더 먹어요!', sub:'가족과 윷놀이도 해 봐요.'}],
+     parent:'설날에 조부모님께 세배를 드리거나, 멀리 계시면 영상 통화로 새해 인사를 드리게 해 주세요. 세배는 남자아이와 여자아이의 절하는 방법이 조금 다르니 부모님이 한 번 보여 주시면 좋습니다. 설날 아침에 조상께 차례를 지내는 집도 있고, 교회나 성당에 가거나 가족끼리 떡국만 나누는 집도 있습니다. 어느 쪽이든 집안의 방식대로 설명해 주시면 됩니다. 한국은 2023년부터 공식적으로 만 나이를 쓰지만, "떡국 먹으면 한 살 더 먹는다"는 말은 지금도 설날의 정다운 인사로 쓰입니다.'}
   ],
   dictWords:[] }
 ];
