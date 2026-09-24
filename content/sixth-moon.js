@@ -170,6 +170,51 @@ function m6Chu(kind){
   return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
 }
 ['songpyeon', 'fullmoon', 'moonrabbit', 'ganggang', 'wish', 's_dough', 's_fill', 's_shape', 's_steam', 'family'].forEach(k => { M6_ONLY['chu_' + k] = m6Chu(k); });
+/* ---- 다섯째 묶음 그림: 세종대왕과 한글 ----
+   임금님은 누구의 얼굴도 닮지 않게 다른 인물들과 같은 그림체로 그리고, 붉은 곤룡포와 익선관으로만 나타냅니다.
+   한자는 실제 글자가 아닌 복잡한 획 모양으로만 보여 줍니다. */
+const m6Txt = (x, y, t, sz, c) => `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-family="'Noto Sans KR',sans-serif" font-weight="700" font-size="${sz}" fill="${c || '#17324A'}">${t}</text>`;
+function m6Han(kind){
+  const S = '#221F1C';
+  const g = {
+    king: `<rect width="200" height="130" rx="6" fill="#F3E3C0"/><path d="M8 122 L192 122" stroke="${S}" stroke-width="2.6"/>
+      <g transform="translate(100 122)"><path d="M-30 0 L-22 -58 L22 -58 L30 0 Z" fill="#C1403A" stroke="${S}" stroke-width="2.6" stroke-linejoin="round"/>
+      <circle cx="0" cy="-36" r="10" fill="#E3A93C" stroke="${S}" stroke-width="1.8"/><path d="M-6 -36 q6 -8 12 0 q-6 8 -12 0" stroke="#C1403A" stroke-width="1.6" fill="none"/>
+      <path d="M-30 -30 L-40 -10 M30 -30 L40 -10" stroke="#C1403A" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="0" cy="-74" r="15" fill="#F0D9BE" stroke="${S}" stroke-width="2.4"/>
+      <path d="M-15 -80 L-15 -94 Q0 -102 15 -94 L15 -80 Z" fill="#221F1C" stroke="${S}" stroke-width="2"/><path d="M-22 -86 L-15 -86 M15 -86 L22 -86" stroke="#221F1C" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="-5" cy="-74" r="1.8" fill="${S}"/><circle cx="5" cy="-74" r="1.8" fill="${S}"/><path d="M-5 -66 q5 3 10 0" stroke="${S}" stroke-width="1.6" fill="none"/></g>`,
+    people: `<rect width="200" height="130" rx="6" fill="#DCEBD6"/><path d="M0 110 L200 110 L200 130 L0 130 Z" fill="#B7A57A"/>
+      ${[50, 100, 150].map((x, i) => `<g transform="translate(${x} 112)"><path d="M-14 0 L-12 -34 L12 -34 L14 0 Z" fill="#E7DCC4" stroke="${S}" stroke-width="2"/>
+        <circle cx="0" cy="-44" r="10" fill="#F0D9BE" stroke="${S}" stroke-width="2"/><path d="M-18 -50 Q0 -64 18 -50 Z" fill="#D9BD6A" stroke="${S}" stroke-width="1.8"/>
+        ${i === 1 ? '<path d="M14 -30 L26 -2" stroke="#8A6A4A" stroke-width="3"/>' : ''}</g>`).join('')}`,
+    hanja: `<rect x="40" y="16" width="120" height="100" rx="6" fill="#FBF7EC" stroke="${S}" stroke-width="3"/>
+      <g stroke="#221F1C" stroke-width="3" fill="none" stroke-linecap="round">
+        <path d="M58 32 L90 32 M74 26 L74 60 M60 44 L88 44 M62 52 L86 58 M110 30 L142 30 L138 58 M112 42 L140 42 M118 30 L114 60 M126 48 L134 60"/>
+        <path d="M60 74 L90 74 L86 104 M64 86 L88 86 M70 74 L66 104 M110 72 L144 72 M126 66 L126 106 M112 88 L140 88 M116 96 L136 104"/></g>
+      ${m6Txt(160, 20, '?', 22, '#C1403A')}`,
+    hangeul: `<rect x="30" y="20" width="140" height="90" rx="8" fill="#FBF7EC" stroke="${S}" stroke-width="3"/>
+      ${m6Txt(70, 50, 'ㄱ', 30)}${m6Txt(100, 50, 'ㄴ', 30)}${m6Txt(130, 50, 'ㄷ', 30)}${m6Txt(70, 86, 'ㅏ', 30, '#C1403A')}${m6Txt(100, 86, 'ㅓ', 30, '#C1403A')}${m6Txt(130, 86, 'ㅗ', 30, '#C1403A')}`,
+    book: `<path d="M40 22 L100 30 L160 22 L160 110 L100 118 L40 110 Z" fill="#E8D9B4" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M100 30 L100 118" stroke="${S}" stroke-width="2.4"/>
+      <g stroke="#8A6A4A" stroke-width="2"><path d="M52 40 L52 100 M62 40 L62 100 M72 40 L72 100 M82 40 L82 100 M118 40 L118 100 M128 40 L128 100 M138 40 L138 100 M148 40 L148 100"/></g>
+      ${m6Txt(70, 70, 'ㄱ', 18, '#221F1C')}${m6Txt(132, 70, 'ㅏ', 18, '#221F1C')}`,
+    sky: `<rect width="200" height="130" rx="6" fill="#CFE0EA"/><circle cx="100" cy="65" r="26" fill="#221F1C"/>`,
+    earth: `<rect width="200" height="130" rx="6" fill="#DCEBD6"/><rect x="0" y="70" width="200" height="60" fill="#B7A57A"/><path d="M20 70 L180 70" stroke="#221F1C" stroke-width="10" stroke-linecap="round"/>`,
+    person: `<rect width="200" height="130" rx="6" fill="#F3E3C0"/><path d="M100 20 L100 112" stroke="#221F1C" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="140" cy="46" r="12" fill="#F0D9BE" stroke="#221F1C" stroke-width="2"/><path d="M140 58 L140 96 M126 72 L154 72 M140 96 L130 114 M140 96 L150 114" stroke="#221F1C" stroke-width="3" stroke-linecap="round"/>`,
+    mouth: `<rect width="200" height="130" rx="6" fill="#FBF7EC"/><path d="M40 64 Q70 40 100 52 Q130 40 160 64 Q130 92 100 88 Q70 92 40 64 Z" fill="#D98B7E" stroke="${S}" stroke-width="3"/>
+      <rect x="84" y="50" width="32" height="30" fill="none" stroke="#17324A" stroke-width="5"/>`,
+    tooth: `<rect width="200" height="130" rx="6" fill="#FBF7EC"/><path d="M60 36 L80 36 L78 96 L70 110 L62 96 Z M120 36 L140 36 L138 96 L130 110 L122 96 Z" fill="#FBF7EC" stroke="${S}" stroke-width="2.6"/>
+      <path d="M86 96 L100 56 L114 96" stroke="#17324A" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
+    throat: `<rect width="200" height="130" rx="6" fill="#FBF7EC"/><circle cx="100" cy="65" r="34" fill="#E8A0A0" stroke="${S}" stroke-width="3"/><circle cx="100" cy="65" r="18" fill="none" stroke="#17324A" stroke-width="6"/>`,
+    present: `<rect width="200" height="130" rx="6" fill="#EFE2C2"/><rect x="40" y="10" width="120" height="50" fill="#3E5B4A" stroke="${S}" stroke-width="3"/>
+      ${m6Txt(100, 35, '한글', 22, '#FBF7EC')}${m2Person('kid', 80, 'wave', 1)}${m2Person('teacher', 150, 'stand', -1)}`
+  }[kind];
+  const label = {king:'세종대왕', people:'백성', hanja:'한자', hangeul:'한글', book:'훈민정음', sky:'하늘', earth:'땅', person:'사람', mouth:'입 모양', tooth:'이 모양', throat:'목구멍 모양', present:'발표'}[kind];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
+}
+['king', 'people', 'hanja', 'hangeul', 'book', 'sky', 'earth', 'person', 'mouth', 'tooth', 'throat', 'present'].forEach(k => { M6_ONLY['hg_' + k] = m6Han(k); });
 const M6_PIC = Object.assign({}, M5_PIC, M6_ONLY);
 
 /* ---- 묶음 ---- */
@@ -178,7 +223,7 @@ const M6_BUNDLES = [
   {k:2, title:'어떻게 생겼어요?', topic:'꾸미는 말과 설명하기', nights:[4, 5, 6], after:'그동안 가족과 수수께끼 놀이를 하며 물건을 설명해 봐.'},
   {k:3, title:'설날', topic:'세배, 떡국, 새해 인사', nights:[7, 8, 9], after:'그동안 가족에게 세배하는 법을 연습하고 새해 인사를 해 봐.'},
   {k:4, title:'추석', topic:'송편, 보름달, 달토끼 옛이야기', nights:[10, 11, 12], after:'그동안 보름달이 뜨면 가족과 달을 보며 소원을 빌어 봐.'},
-  {k:5, title:'세종대왕과 한글', topic:'한글이 생긴 이야기', nights:[13, 14, 15]}
+  {k:5, title:'세종대왕과 한글', topic:'한글이 생긴 이야기', nights:[13, 14, 15], after:'이제 가족 앞에서 한글을 소개하는 발표를 해 봐.'}
 ];
 
 /* ---- 밤 ---- */
@@ -719,11 +764,163 @@ const M6_NIGHTS = [
        {when:'가족에게 이야기를 들려줘요', say:'달에는 토끼가 떡방아를 찧어요.', sub:'달토끼 이야기를 한국어로 짧게 들려줘요.'}],
      parent:'보름달이 뜨는 날 아이와 함께 달을 보며 "토끼가 보여요?"라고 물어봐 주세요. 한국에서는 달의 어두운 무늬를 계수나무 아래에서 방아를 찧는 토끼로 보아 왔습니다. 추석은 음력 팔월 보름으로 보통 구월이나 시월에 옵니다. 추석에는 조상의 산소에 가거나(성묘) 차례를 지내는 집도 있고, 가족끼리 음식을 나누며 지내는 집도 있으니 집안의 방식대로 이야기해 주시면 됩니다. 송편 대신 반달 모양 쿠키나 떡을 사서 함께 먹으며 이야기해도 충분합니다.'}
   ],
+  dictWords:[] },
+
+/* ---- 다섯째 묶음: 세종대왕과 한글 ---------------------------------
+   세종대왕이 백성을 위해 한글(훈민정음)을 만든 이야기, 모음(하늘, 땅, 사람)과 자음(입, 이, 목구멍 모양)의 짜임, 한글날.
+   역사는 교과서에 나오는 사실만 씁니다. 연도는 숫자 부담을 줄이려고 "오백 년도 더 전"으로 말합니다.
+   셋째 밤은 한글학교 한글날 발표. 첫째 달에 한글을 떼던 아이가 여섯째 달에 한글을 소개하며 한 바퀴가 닫힙니다. */
+{ n:13, bundle:5, title:'세종대왕',
+  steps:[
+    {type:'intro', who:'dami',
+     t:'여섯째 달 마지막 묶음이란다. 첫째 달에 배운 한글, 그 한글은 누가 왜 만들었을까? 오늘은 그 이야기를 해 주마.',
+     big:'한글을 만든 세종대왕'},
+    {type:'pairs', title:'한글 이야기에 나오는 말', who:'moi',
+     t:'오늘 이야기에 나오는 말이야. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'세종대왕', pic:'hg_king', en:'King Sejong the Great'}, {w:'왕', pic:'hg_king', en:'king'},
+       {w:'백성', pic:'hg_people', en:'the common people'}, {w:'한자', pic:'hg_hanja', en:'Chinese characters'},
+       {w:'한글', pic:'hg_hangeul', en:'Hangul, the Korean alphabet'}, {w:'글자', pic:'hg_hangeul', en:'letter, character'},
+       {w:'한글날', pic:'cal10_9', en:'Hangul Day (October 9)'}],
+     tip:{who:'dami', t:'오백 년도 더 전, 조선이라는 나라에 세종대왕이 계셨단다. 그때는 한자로만 글을 썼는데, 한자는 너무 많고 어려워서 백성 대부분이 글을 읽지 못했지. 세종대왕은 백성이 쉽게 배우는 글자를 만들고 싶어 하셨단다.'}},
+    {type:'sequence', title:'한글이 생긴 이야기', who:'tori',
+     t:'한글이 생긴 이야기를 차례대로 눌러 봐.',
+     qs:[
+       {cards:[{pic:'hg_hanja', t:'옛날에는 한자로만 글을 썼어요.'}, {pic:'hg_people', t:'백성은 한자가 어려워서 글을 못 읽었어요.'}, {pic:'hg_king', t:'세종대왕이 새 글자를 만들었어요.'}, {pic:'hg_hangeul', t:'누구나 쉽게 한글을 읽고 써요.'}]}]},
+    {type:'choose', title:'한글 이야기', who:'tori',
+     t:'알맞은 말을 골라 봐.',
+     qs:[
+       {pic:'hg_king', t:'한글을 만든 사람은 누구예요?', o:['세종대왕','토리','담이 할아버지'], a:'세종대왕'},
+       {pic:'hg_people', t:'세종대왕은 누구를 위해 한글을 만들었어요?', o:['백성','왕','친구'], a:'백성', why:'한자를 모르는 백성을 위해 만들었어요.'},
+       {pic:'cal10_9', t:'한글날은 언제예요?', o:['시월 구일','유월 십오일','삼월 오일'], a:'시월 구일', why:'넷째 달에 나온 모이 생일과 같은 날이에요.'},
+       {pic:'mo10000', t:'세종대왕은 한국 돈 어디에 있어요?', o:['만 원','천 원','백 원'], a:'만 원', why:'세종대왕은 만 원짜리 지폐에 있어요.'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 그림을 찾아 봐.',
+     qs:[
+       {say:'백성', o:['hg_king','hg_people','hg_hangeul'], a:'hg_people'},
+       {say:'한자', o:['hg_hanja','hg_hangeul','hg_book'], a:'hg_hanja'},
+       {say:'세종대왕', o:['hg_people','p_grandpa','hg_king'], a:'hg_king'},
+       {say:'한글', o:['hg_hangeul','hg_hanja','t_book'], a:'hg_hangeul'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'한글 이야기의 말을 써 봐.',
+     items:[{w:'한글', en:'Hangul'}, {w:'왕', en:'king'}, {w:'글자', en:'letter', hint:{who:'dami', t:'소리는 [글짜]지만 글자는 ‘자’란다. ㄹ 받침 뒤라서 세게 들리지.'}}]}
+  ],
+  dictWords:[{w:'한글', en:'Hangul'}, {w:'세종대왕', en:'King Sejong'}, {w:'왕', en:'king'}, {w:'백성', en:'the people'},
+             {w:'한자', en:'Chinese characters'}, {w:'글자', en:'letter'}, {w:'한글날', en:'Hangul Day'}] },
+
+{ n:14, bundle:5, title:'하늘, 땅, 사람',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'한글은 아무렇게나 만든 글자가 아니야. 모음은 하늘, 땅, 사람을 보고, 자음은 말할 때 입과 혀 모양을 보고 만들었어!',
+     big:'하늘, 땅, 사람'},
+    {type:'pairs', title:'모음의 세 뿌리', who:'dami',
+     t:'모음은 세 가지로 시작한단다. 둥근 하늘, 평평한 땅, 서 있는 사람.',
+     singles:[
+       {w:'하늘', pic:'hg_sky', en:'sky (the round dot ·)'}, {w:'땅', pic:'hg_earth', en:'earth (the flat line ㅡ)'}, {w:'사람', pic:'hg_person', en:'person (the standing line ㅣ)'}],
+     tip:{who:'dami', t:'사람(ㅣ) 오른쪽에 하늘(점)을 찍으면 ㅏ, 왼쪽에 찍으면 ㅓ. 땅(ㅡ) 위에 찍으면 ㅗ, 아래에 찍으면 ㅜ란다. 지금은 점이 짧은 줄이 되었지.'}},
+    {type:'pairs', title:'자음은 소리 내는 모양', who:'dami',
+     t:'자음은 소리를 낼 때 입, 이, 목구멍의 모양을 본떴단다.',
+     singles:[
+       {w:'미음, 입 모양', pic:'hg_mouth', en:'ㅁ looks like a mouth'}, {w:'시옷, 이 모양', pic:'hg_tooth', en:'ㅅ looks like a tooth'},
+       {w:'이응, 목구멍 모양', pic:'hg_throat', en:'ㅇ looks like the throat'}],
+     tip:{who:'tori', t:'ㄱ은 혀뿌리가 목구멍을 막는 모양, ㄴ은 혀끝이 윗잇몸에 닿는 모양이래. 거울 보고 ㄱ, ㄴ, ㅁ을 소리 내 봐!'}},
+    {type:'choose', title:'어떻게 만들었을까요?', who:'tori',
+     t:'한글의 짜임을 떠올리며 골라 봐.',
+     qs:[
+       {pic:'hg_person', t:'ㅣ는 무엇을 본떴어요?', o:['사람','하늘','땅'], a:'사람'},
+       {pic:'hg_earth', t:'ㅡ는 무엇을 본떴어요?', o:['하늘','땅','사람'], a:'땅'},
+       {t:'ㅏ는 무엇과 무엇을 합쳤어요?', o:['사람과 하늘','땅과 하늘'], a:'사람과 하늘', why:'ㅣ(사람) 오른쪽에 점(하늘)이 붙어서 ㅏ예요.'},
+       {t:'ㅗ는 무엇과 무엇을 합쳤어요?', o:['사람과 하늘','땅과 하늘'], a:'땅과 하늘', why:'ㅡ(땅) 위에 점(하늘)이 붙어서 ㅗ예요.'},
+       {pic:'hg_mouth', t:'이 모양을 본뜬 자음은?', o:['ㅁ','ㅅ','ㅇ'], a:'ㅁ'}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'세종대왕이 한글을 만들었어요.', tiles:['세종대왕이','한글을','만들었어요.'], extra:['만들 거예요.'], en:'King Sejong made Hangul.'},
+       {s:'백성을 위해 만들었어요.', tiles:['백성을','위해','만들었어요.'], en:'He made it for the people.'},
+       {s:'한글은 배우기 아주 쉬워요.', tiles:['한글은','배우기','아주','쉬워요.'], en:'Hangul is very easy to learn.'},
+       {s:'한글날은 시월 구일이에요.', tiles:['한글날은','시월','구일이에요.'], extra:['십월'], en:'Hangul Day is October 9.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'한글 이야기에도 소리 비밀이 있단다. 설날과 같은 비밀도 하나 숨어 있지.',
+     cmp:[
+       {s:'한글날', d:'한글랄', n:'ㄹ 뒤의 ㄴ이 ㄹ처럼 나요'},
+       {s:'글자', d:'글짜', n:'ㄹ 받침 뒤의 ㅈ이 ㅉ처럼 나요'},
+       {s:'백성', d:'백썽', n:'ㄱ 받침 뒤의 ㅅ이 ㅆ처럼 나요'},
+       {s:'만들었어요', d:'만드러써요', n:'ㄹ과 ㅆ이 차례로 건너가요'}],
+     note:'한글날의 [한글랄]은 설날의 [설랄]과 같은 이치란다. 여섯 달 동안 만난 소리 비밀을 모두 알면, 들리는 것과 쓰는 것이 왜 다른지 이제 스스로 풀 수 있을 게야.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'한글날', en:'Hangul Day', hint:{who:'dami', t:'소리는 [한글랄]이지만 ‘한글’과 ‘날’이란다.'}},
+       {w:'백성', en:'the people', hint:{who:'dami', t:'소리는 [백썽]이지만 ‘성’이란다.'}},
+       {w:'하늘', en:'sky'}]}
+  ],
+  dictWords:[{w:'하늘', en:'sky'}, {w:'땅', en:'earth'}, {w:'사람', en:'person'}, {w:'자음', en:'consonant'}, {w:'모음', en:'vowel'}] },
+
+{ n:15, bundle:5, title:'한글날 발표',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'여섯째 달 마지막 밤이야. 오늘은 한글날, 한글학교에서 모이랑 한글 발표를 해! 먼저 글자 없이 귀로만 들어 봐.',
+     big:'한글을 소개할게요'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 토리와 모이가 여섯 달 동안 배운 말로 한글을 소개해. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'dami', t:'오늘은 한글날이에요. 토리와 모이가 발표를 할 거예요.', en:"Today is Hangul Day. Tori and Moi will give a presentation."},
+       {who:'tori', t:'안녕하세요. 저는 토리예요. 오늘은 한글을 소개할게요.', en:"Hello. I'm Tori. Today I'll introduce Hangul."},
+       {who:'tori', t:'한글은 세종대왕이 백성을 위해 만들었어요. 그전에는 글이 아주 어려웠어요.', en:'King Sejong made Hangul for the people. Before that, writing was very hard.'},
+       {who:'moi', t:'모음은 하늘, 땅, 사람을 보고 만들었어요. 점이 하늘, ㅡ가 땅, ㅣ가 사람이에요.', en:'Vowels were made from sky, earth, and person. The dot is sky, ㅡ is earth, ㅣ is person.'},
+       {who:'tori', t:'자음은 입과 혀 모양을 보고 만들었어요. ㅁ은 입 모양이에요.', en:'Consonants were made from the shapes of the mouth and tongue. ㅁ is the shape of a mouth.'},
+       {who:'moi', t:'그래서 한글은 한자보다 훨씬 쉬워요. 스물네 글자로 거의 모든 소리를 쓸 수 있어요!', en:'So Hangul is much easier than Chinese characters. With 24 letters you can write almost any sound!'},
+       {who:'tori', t:'저도 첫째 달에 한글을 배웠어요. 이제는 한국어로 발표도 할 수 있어요!', en:'I learned Hangul in my first month too. Now I can even give a presentation in Korean!'},
+       {who:'dami', t:'참 잘했어요! 여러분, 큰 박수!', en:'Very well done! Everyone, a big round of applause!'}],
+     note:{who:'dami', t:'여섯 달 전, 토리는 ㄱ, ㄴ, ㄷ부터 배웠지. 그 한글로 인사하고, 가족을 부르고, 하루를 말하고, 어제와 내일을 잇고, 한국에 다녀오고, 이제는 한글을 남에게 설명하는구나. 세종대왕께서 바라신 것이 바로 이런 게 아니었을까.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 발표를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'오늘은 무슨 날이에요?', o:['한글날','설날','추석'], a:'한글날'},
+       {t:'모음 ㅡ는 무엇을 본떴어요?', o:['하늘','땅','사람'], a:'땅', why:'모이는 ‘ㅡ가 땅’이라고 했어요.'},
+       {t:'ㅁ은 무슨 모양이에요?', o:['입 모양','이 모양','목구멍 모양'], a:'입 모양', why:'토리는 ‘ㅁ은 입 모양이에요’라고 했어요.'},
+       {t:'한글은 몇 글자로 거의 모든 소리를 써요?', o:['스물네 글자','열 글자','백 글자'], a:'스물네 글자', why:'모이는 ‘스물네 글자로’라고 했어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {pic:'hg_king', line:{who:'dami', t:'토리, 한글은 누가 만들었어요?'}, en:'Tori, who made Hangul?', o:['세종대왕이 만들었어요.','세종대왕이 만들 거예요.'], a:'세종대왕이 만들었어요.', why:'옛날 일이라서 만들었어요예요.'},
+       {pic:'hg_hangeul', line:{who:'moi', t:'토리야, 한글 쉬워?'}, en:'Tori, is Hangul easy?', o:['응, 아주 쉬워!','응, 아주 쉬워요!'], a:'응, 아주 쉬워!', why:'모이는 친구라서 편한 말로 대답해요.'},
+       {pic:'cal10_9', t:'할머니께 한글날을 알려 드려요.', en:'Tell Grandma the date of Hangul Day.', o:['한글날은 시월 구일이에요.','한글날은 십월 구일이에요.'], a:'한글날은 시월 구일이에요.', why:'10월은 시월이에요.'}]},
+    {type:'task', title:'나의 한글 발표', who:'moi',
+     t:'여섯째 달 마지막 과제야. 가족 앞에서 한글을 소개하는 발표를 해 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'인사하고 시작해요', say:'안녕하세요. 오늘은 한글을 소개할게요.', sub:'가족을 청중으로 모셔요.'},
+       {when:'한글 이야기', say:'한글은 세종대왕이 백성을 위해 만들었어요.', sub:'모음은 하늘, 땅, 사람, 자음은 입과 혀 모양.'},
+       {when:'나의 이야기로 끝내요', say:'저는 ______에 한글을 배웠어요. 이제 ______.', sub:'이제 한국어로 무엇을 할 수 있는지 말해요.'}],
+     parent:'여섯째 달의 마무리 과제입니다. 아이가 가족 앞에서 한글을 소개하는 짧은 발표를 하게 해 주세요. 종이에 ㅏ, ㅗ를 그려 하늘, 땅, 사람으로 설명하게 하면 더 좋습니다. 한글날(10월 9일)은 한국의 국경일로, 한글학교에서도 글짓기나 발표 행사를 많이 합니다. 발표를 영상으로 찍어 조부모님께 보내 드리면 아이에게 큰 자랑이 됩니다. 이 과제로 여섯째 달이 끝납니다. 비교하기, 설명하기, 설날, 추석, 한글 이야기까지 모두 해냈으니 많이 칭찬해 주세요.'}
+  ],
   dictWords:[] }
 ];
 
-/* ---- 빠른 확인: 여섯째 달은 묶음이 모두 열린 뒤에 만듭니다 ---- */
-const M6_CHECK = [];
+/* ---- 빠른 확인 ----
+   묶음마다 세 문제, 두 문제 이상 맞히면 그 묶음을 건너뜁니다. */
+const M6_CHECK = [
+  {k:1, qs:[
+    {mode:'pic', say:'더 커요', t:'둘 가운데 더 큰 쪽을 눌러요.', o:['mouse','elephant'], a:'elephant'},
+    {pic:'cmp_three', t:'셋 가운데 누가 제일 커요?', o:['기린이 더 커요.','기린이 제일 커요.'], a:'기린이 제일 커요.'},
+    {t:'빨라요의 반대말은?', o:['느려요','짧아요','낮아요'], a:'느려요'}]},
+  {k:2, qs:[
+    {mode:'pic', say:'작은 가방', t:'듣고 그림을 골라요.', o:['bag_big','bag_small'], a:'bag_small'},
+    {pic:'big', t:'바르게 꾸민 말은?', o:['큰 코끼리','커 코끼리'], a:'큰 코끼리'},
+    {pic:'glasses', t:'할아버지는 안경을 ______.', o:['써요','입어요'], a:'써요'}]},
+  {k:3, qs:[
+    {mode:'pic', say:'떡국', t:'듣고 그림을 골라요.', o:['chu_songpyeon','seol_tteokguk'], a:'seol_tteokguk'},
+    {pic:'p_grandma', t:'설날 아침, 할머니께 인사해요.', o:['새해 복 많이 받아!','새해 복 많이 받으세요.'], a:'새해 복 많이 받으세요.'},
+    {pic:'seol_money', t:'세뱃돈은 어떻게 받아요?', o:['두 손으로 받아요.','한 손으로 받아요.'], a:'두 손으로 받아요.'}]},
+  {k:4, qs:[
+    {mode:'pic', say:'송편', t:'듣고 그림을 골라요.', o:['seol_tteokguk','chu_songpyeon','f_tteok'], a:'chu_songpyeon'},
+    {pic:'chu_moonrabbit', t:'달에서 누가 방아를 찧어요?', o:['토끼','거북이','까치'], a:'토끼'},
+    {pic:'p_grandma', t:'할머니를 위해 소원을 빌어요.', o:['할머니가 건강하게 해 주세요.','할머니가 건강해 해 주세요.'], a:'할머니가 건강하게 해 주세요.'}]},
+  {k:5, qs:[
+    {pic:'hg_king', t:'한글을 만든 사람은?', o:['세종대왕','토리','모이'], a:'세종대왕'},
+    {pic:'cal10_9', t:'한글날은 언제예요?', o:['십월 구일','시월 구일'], a:'시월 구일'},
+    {pic:'hg_person', t:'모음 ㅣ는 무엇을 본떴어요?', o:['하늘','땅','사람'], a:'사람'}]}
+];
 
 /* ---- 받아쓰기 자판: 다섯째 달과 같습니다 ---- */
 const M6_POOL = M5_POOL;
