@@ -856,12 +856,13 @@ SCREENS.letter = S => {
     const L = lines();
     paper.innerHTML = '';
     L.forEach((t, i) => paper.append(h('p', {class: 'lp' + (i === 0 ? ' to' : '') + (t ? '' : ' empty')}, t || S.parts[i].label + ' 칸을 골라요')));
-    paper.append(h('p', {class:'lp from' + (name ? '' : ' empty')}, (name || '______') + ' ' + (S.sign || '올림')));
+    if(!S.noName) paper.append(h('p', {class:'lp from' + (name ? '' : ' empty')}, (name || '______') + ' ' + (S.sign || '올림')));
     tools.innerHTML = '';
     if(L.every(Boolean)){
-      const all = [...L, (name || '') + ' ' + (S.sign || '올림')].filter(Boolean);
+      const all = S.noName ? L : [...L, (name || '') + ' ' + (S.sign || '올림')].filter(Boolean);
       tools.append(h('button', {class:'btn quiet play', onclick: () => { let k = 0; const nx = () => { if(k < all.length) talkThen(all[k++], nx); }; nx(); }}, '편지 읽어 주기'),
         h('button', {class:'btn quiet play', style:'margin-left:8px', onclick: () => printOnly(paper)}, '인쇄하기'));
+      if(S.readLabel) tools.firstChild.textContent = S.readLabel;
       showNext();
     }
   };
@@ -871,7 +872,8 @@ SCREENS.letter = S => {
       picked[i] = j; [...row.children].forEach((b, k) => b.classList.toggle('on', k === j)); talk(t); draw(); }}, t)));
     pickers.append(h('p', {class:'rhead'}, (i + 1) + '. ' + P.label), row);
   });
-  pickers.append(h('p', {class:'rhead'}, (S.parts.length + 1) + '. 보내는 사람'), h('div', {class:'namerow'}, nameIn, h('span', {}, ' ' + (S.sign || '올림'))),
+  /* 일기처럼 이름을 쓰지 않는 글은 S.noName 으로 이름 칸을 뺍니다. */
+  if(!S.noName) pickers.append(h('p', {class:'rhead'}, (S.parts.length + 1) + '. 보내는 사람'), h('div', {class:'namerow'}, nameIn, h('span', {}, ' ' + (S.sign || '올림'))),
     h('p', {class:'sub'}, '이름은 이 화면에만 보이고 어디에도 저장되지 않아요.'));
   card.append(h('div', {class:'letterwrap'}, pickers, h('div', {}, paper, tools)));
   draw();

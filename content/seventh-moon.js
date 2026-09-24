@@ -42,12 +42,34 @@ function m7Mail(kind){
 }
 const M7_ONLY = {};
 ['letter', 'envelope', 'stamp', 'postbox', 'p_to', 'p_hello', 'p_body', 'p_bye', 'p_from', 'reply'].forEach(k => { M7_ONLY['ml_' + k] = m7Mail(k); });
+/* ---- 둘째 묶음 그림: 일기장 ----
+   한국 일기장은 맨 위에 날짜와 날씨 칸, 가운데 그림 칸, 아래에 글 줄이 있습니다. 부분마다 노란 칸으로 짚어 줍니다. */
+function m7Diary(part){
+  const S = '#221F1C';
+  const hi = (x, y, w, hh) => `<rect x="${x}" y="${y}" width="${w}" height="${hh}" rx="3" fill="#F6D98F" fill-opacity=".7" stroke="#C1403A" stroke-width="2.4" stroke-dasharray="5 3"/>`;
+  const icons = `<circle cx="112" cy="20" r="5" fill="#F2C14E" stroke="${S}" stroke-width="1.2"/><path d="M122 22 q2 -6 8 -4 q4 -4 8 0 q4 2 0 6 Z" fill="#FBF7EC" stroke="${S}" stroke-width="1.2"/>
+    <path d="M144 22 Q150 12 156 22 Z" fill="#6FA8D0" stroke="${S}" stroke-width="1.2"/>`;
+  const base = `<rect x="40" y="8" width="120" height="116" rx="4" fill="#FFFDF6" stroke="${S}" stroke-width="3"/>
+    <path d="M48 28 L100 28" stroke="#C9C0AE" stroke-width="2"/>${icons}
+    <rect x="48" y="34" width="104" height="44" fill="#E7F0F4" stroke="${S}" stroke-width="1.6"/><circle cx="130" cy="46" r="6" fill="#F2C14E"/><path d="M52 74 L74 54 L90 68 L102 60 L148 74 Z" fill="#9DBA7E"/>
+    ${[88, 100, 112].map(y => `<path d="M48 ${y} L152 ${y}" stroke="#C9C0AE" stroke-width="2"/>`).join('')}`;
+  const g = {
+    page: base,
+    date: base + hi(46, 12, 58, 18),
+    weather: base + hi(104, 10, 54, 20),
+    did: base + hi(46, 82, 108, 22),
+    felt: base + hi(46, 104, 108, 14)
+  }[part];
+  const label = {page:'일기장', date:'날짜', weather:'날씨', did:'한 일', felt:'느낀 점'}[part];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
+}
+['page', 'date', 'weather', 'did', 'felt'].forEach(k => { M7_ONLY['dy_' + k] = m7Diary(k); });
 const M7_PIC = Object.assign({}, M6_PIC, M7_ONLY);
 
 /* ---- 묶음 ---- */
 const M7_BUNDLES = [
   {k:1, title:'편지를 써요', topic:'편지의 틀과 안부', nights:[1, 2, 3], after:'그동안 할머니 할아버지께 손으로 편지를 한 장 써 봐.'},
-  {k:2, title:'일기를 써요', topic:'글에서 쓰는 ~다 말투', nights:[4, 5, 6]},
+  {k:2, title:'일기를 써요', topic:'글에서 쓰는 ~다 말투', nights:[4, 5, 6], after:'그동안 날마다 일기를 한 편씩 써 봐.'},
   {k:3, title:'내 생각은요', topic:'의견과 까닭, 토론', nights:[7, 8, 9]},
   {k:4, title:'옛날이야기', topic:'해님 달님과 이야기 짓기', nights:[10, 11, 12]},
   {k:5, title:'나의 이야기', topic:'나를 소개하고 꿈 말하기', nights:[13, 14, 15]}
@@ -191,6 +213,138 @@ const M7_NIGHTS = [
        {when:'가운데에', say:'할머니, 보고 싶어요. 방학에 꼭 갈게요.', sub:'요즘 나의 이야기도 한두 줄 더 써요.'},
        {when:'맨 아래에', say:'______ 올림', sub:'날짜도 함께 써요.'}],
      parent:'편지 꾸미기 화면에서 인쇄한 편지를 그대로 보내셔도 좋지만, 가능하면 아이가 종이에 손으로 옮겨 쓰게 해 주세요. 조부모님께는 손글씨 편지가 무엇보다 큰 선물입니다. 한국으로 보내는 국제 우편은 우체국에서 보낼 수 있고, 사진을 찍어 메신저로 보내도 괜찮습니다. 조부모님께 답장을 부탁드리면, 아이가 한국어로 쓴 글을 직접 읽는 좋은 기회가 됩니다.'}
+  ],
+  dictWords:[] },
+
+/* ---- 둘째 묶음: 일기를 써요 -------------------------------------------
+   일기의 차례(날짜, 날씨, 한 일, 느낀 점)와 글에서만 쓰는 "~다" 말투.
+   일기는 지난 일이라 "갔어요 → 갔다", "기뻤어요 → 기뻤다"처럼 지난 일의 ~었다만 다룹니다.
+   지금 일의 ~는다/~ㄴ다는 규칙이 복잡해서 넣지 않습니다.
+   일기는 듣는 사람이 없는 글이라 "저는" 대신 "나는"을 씁니다. */
+{ n:4, bundle:2, title:'일기의 모양',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'다섯째 달에 그림일기를 썼던 거 기억나? 오늘은 조금 더 큰 형, 누나들이 쓰는 일기야. 일기에는 말할 때와 다른 특별한 말투가 있어.',
+     big:'오늘은 즐거웠다'},
+    {type:'pairs', title:'일기장', who:'moi',
+     t:'일기장의 부분이야. 노란 칸을 잘 봐. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'일기장', pic:'dy_page', en:'diary notebook'}, {w:'날짜', pic:'dy_date', en:'date'}, {w:'날씨', pic:'dy_weather', en:'weather'},
+       {w:'한 일', pic:'dy_did', en:'what I did'}, {w:'느낀 점', pic:'dy_felt', en:'how I felt'}],
+     tip:{who:'dami', t:'한국 일기장은 맨 위에 날짜와 날씨를 적는 칸이 있단다. 해, 구름, 비 그림에 동그라미를 치는 일기장도 많지.'}},
+    {type:'sequence', title:'일기의 차례', who:'tori',
+     t:'일기는 이 차례로 써. 위에서 아래로 눌러 줘.',
+     qs:[
+       {cards:[{pic:'dy_date', t:'날짜를 써요.'}, {pic:'dy_weather', t:'날씨를 써요.'}, {pic:'dy_did', t:'한 일을 써요.'}, {pic:'dy_felt', t:'느낀 점을 써요.'}]}]},
+    {type:'tense', title:'말할 때와 일기에 쓸 때', who:'dami',
+     t:'일기에는 말할 때의 어요 대신 다를 쓴단다. 었어요에서 어요를 떼고 다를 붙이면 되지.',
+     cols:['말할 때', '일기에 쓸 때'],
+     groups:[
+       {rule:'어요를 떼고 다', rows:[['갔어요','갔다'], ['먹었어요','먹었다'], ['놀았어요','놀았다'], ['했어요','했다'], ['기뻤어요','기뻤다'], ['재미있었어요','재미있었다']]}],
+     note:'이 다 말투는 듣는 사람이 없는 글에서 쓴단다. 일기, 책, 신문이 다 이렇게 쓰지. 그래서 일기에는 저는 대신 나는이라고 쓴단다. 누구에게 높일 필요가 없으니까.'},
+    {type:'choose', title:'일기에는 어떻게 써요?', who:'tori',
+     t:'일기에 알맞게 쓴 쪽을 골라 봐.',
+     qs:[
+       {pic:'act_go', t:'학교에 갔어요. 일기에는?', o:['학교에 갔다.','학교에 갔어요.'], a:'학교에 갔다.'},
+       {pic:'mood_happy', t:'기뻤어요. 일기에는?', o:['기뻤어요.','기뻤다.'], a:'기뻤다.'},
+       {pic:'dy_page', t:'일기에서 나를 말할 때는?', o:['저는','나는'], a:'나는', why:'일기는 누구에게 높일 필요가 없어서 나는이에요.'},
+       {pic:'p_grandma', t:'할머니께 말씀드릴 때는?', o:['학교에 갔다.','학교에 갔어요.'], a:'학교에 갔어요.', why:'말할 때는 어요를 써요. 다는 글에서 써요.'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 일기장 부분을 찾아 봐.',
+     qs:[
+       {say:'날짜', o:['dy_weather','dy_date','dy_felt'], a:'dy_date'},
+       {say:'느낀 점', o:['dy_felt','dy_did','dy_date'], a:'dy_felt'},
+       {say:'날씨', o:['dy_page','dy_did','dy_weather'], a:'dy_weather'},
+       {say:'한 일', o:['dy_did','dy_felt','dy_weather'], a:'dy_did'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'일기 말을 써 봐.',
+     items:[{w:'일기', en:'diary'}, {w:'날짜', en:'date'}, {w:'했다', en:'did (written style)'}]}
+  ],
+  dictWords:[{w:'일기', en:'diary'}, {w:'일기장', en:'diary notebook'}, {w:'날짜', en:'date'}, {w:'했다', en:'did'}, {w:'나는', en:'I (written style)'}] },
+
+{ n:5, bundle:2, title:'오늘은 재미있었다',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 일기 한 장을 직접 만들어 볼 거야. 날짜, 날씨, 한 일, 느낀 점을 골라서 ~다로 써 봐.',
+     big:'오늘은 재미있었다'},
+    {type:'pairs', title:'일기에 자주 쓰는 말', who:'moi',
+     t:'일기에 자주 쓰는 말이야. 눌러서 들어 봐.',
+     singles:[
+       {w:'맑았다', pic:'w_sunny', en:'it was sunny'}, {w:'비가 왔다', pic:'w_rain', en:'it rained'},
+       {w:'재미있었다', pic:'mood_happy', en:'it was fun'}, {w:'힘들었다', pic:'mood_tired', en:'it was hard'},
+       {w:'다음에 또 하고 싶다', pic:'s_play', en:'I want to do it again'}],
+     tip:{who:'tori', t:'하고 싶어요도 일기에는 하고 싶다라고 써. 끝을 다로 바꾸는 거야.'}},
+    {type:'letter', title:'나의 일기 한 장', who:'tori',
+     t:'칸마다 하나씩 골라 봐. 오른쪽에 일기 한 장이 만들어져.',
+     parts:[
+       {label:'날짜', opts:['시월 구일 토요일', '구월 이십일 일요일', '십이월 이십오일 금요일']},
+       {label:'날씨', opts:['날씨: 맑았다.', '날씨: 비가 왔다.', '날씨: 눈이 왔다.']},
+       {label:'한 일 하나', opts:['나는 친구와 공원에 갔다.', '나는 한글학교에 갔다.', '나는 할머니께 전화를 드렸다.']},
+       {label:'한 일 둘', opts:['같이 자전거를 탔다.', '책을 읽고 숙제를 했다.', '떡볶이를 먹었다.']},
+       {label:'느낀 점', opts:['정말 재미있었다.', '조금 힘들었지만 기뻤다.', '다음에 또 하고 싶다.']}],
+     noName:true, readLabel:'일기 읽어 주기',
+     tip:{who:'moi', t:'인쇄해서 일기장에 붙여도 좋아. 하지만 제일 좋은 건 네 손으로 직접 쓰는 거야!'}},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 일기 문장을 만들어 봐.',
+     qs:[
+       {s:'오늘은 날씨가 맑았다.', tiles:['오늘은','날씨가','맑았다.'], extra:['맑았어요.'], en:'The weather was clear today.'},
+       {s:'나는 친구와 공원에 갔다.', tiles:['나는','친구와','공원에','갔다.'], extra:['저는'], en:'I went to the park with a friend.', hint:'일기에는 나는을 써요.'},
+       {s:'떡볶이를 먹었다.', tiles:['떡볶이를','먹었다.'], extra:['먹었어요.'], en:'I ate tteokbokki.'},
+       {s:'정말 재미있었다.', tiles:['정말','재미있었다.'], en:'It was really fun.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'~었다의 다는 앞의 ㅆ 받침 때문에 따처럼 세게 들린단다.',
+     cmp:[
+       {s:'갔다', d:'갇따', n:'ㅆ 받침은 ㄷ처럼, 뒤의 ㄷ은 ㄸ처럼 나요'},
+       {s:'먹었다', d:'머걷따', n:'ㄱ이 건너가고, 뒤의 다는 따처럼 나요'},
+       {s:'맑았다', d:'말갇따', n:'ㄺ의 ㄱ이 건너가고, 다는 따처럼 나요'},
+       {s:'재미있었다', d:'재미이썯따', n:'ㅆ이 건너가고, 다는 따처럼 나요'}],
+     note:'[갇따]로 들려도 쓸 때는 ‘갔다’란다. 가와 ㅆ 받침, 그리고 다. 지난 일의 ㅆ을 꼭 챙기거라. 이 ㅆ이 없으면 일기가 지난 일이 아니게 되지.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'갔다', en:'went', hint:{who:'dami', t:'소리는 [갇따]지만 ‘가’ 아래 ㅆ, 그리고 ‘다’란다.'}},
+       {w:'먹었다', en:'ate', hint:{who:'dami', t:'소리는 [머걷따]지만 ‘먹’, ‘었’, ‘다’를 차례로 쓴단다.'}},
+       {w:'맑았다', en:'was clear'}]}
+  ],
+  dictWords:[{w:'갔다', en:'went'}, {w:'먹었다', en:'ate'}, {w:'맑았다', en:'was clear'}, {w:'재미있었다', en:'was fun'}, {w:'기뻤다', en:'was happy'}] },
+
+{ n:6, bundle:2, title:'토리의 일기장',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'한글날 발표를 한 날, 나는 일기를 썼어. 할아버지께 읽어 드릴 거야. 먼저 글자 없이 귀로만 들어 봐.',
+     big:'나의 일기'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 토리가 일기를 읽을 때와 말할 때 말투가 어떻게 다른지 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'tori', t:'할아버지, 제 일기를 읽어 드릴게요.', en:"Grandpa, I'll read you my diary."},
+       {who:'tori', t:'시월 구일 토요일. 날씨는 맑았다.', en:'Saturday, October 9. The weather was clear.'},
+       {who:'tori', t:'오늘은 한글날이었다. 나는 한글학교에서 발표를 했다.', en:'Today was Hangul Day. I gave a presentation at Korean school.'},
+       {who:'tori', t:'처음에는 무서웠다. 그런데 모이가 옆에서 도와주었다.', en:'At first I was scared. But Moi helped me from beside me.'},
+       {who:'tori', t:'발표가 끝나고 모두 박수를 쳤다. 정말 기뻤다.', en:'When the presentation ended, everyone clapped. I was really happy.'},
+       {who:'dami', t:'허허, 일기를 참 잘 썼구나. 말할 때는 기뻤어요, 일기에는 기뻤다라고 썼지?', en:'Ho ho, you wrote your diary very well. You say "기뻤어요" when talking, but wrote "기뻤다" in your diary, right?'},
+       {who:'moi', t:'토리야, 나도 네 일기에 나와?', en:'Tori, am I in your diary too?'},
+       {who:'tori', t:'응, 모이가 도와줬다고 썼어!', en:'Yes, I wrote that you helped me!'}],
+     note:{who:'dami', t:'토리가 일기를 읽을 때는 ~다로, 나에게 말할 때는 ~요로, 모이에게는 편한 말로 했구나. 한 사람이 세 가지 말투를 쓸 줄 알면 한국어를 제대로 쓰는 게지. 여섯째 달의 한글날 발표가 이렇게 일기가 되었구나.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 일기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'일기의 날짜는 언제예요?', o:['시월 구일','유월 십오일','삼월 오일'], a:'시월 구일'},
+       {t:'그날 날씨는 어땠어요?', o:['맑았다','비가 왔다','눈이 왔다'], a:'맑았다'},
+       {t:'발표 처음에 토리는 기분이 어땠어요?', o:['무서웠다','심심했다','화났다'], a:'무서웠다'},
+       {t:'누가 토리를 도와주었어요?', o:['모이','할머니','선생님'], a:'모이'}]},
+    {type:'choose', title:'토리가 되어 써요', who:'tori',
+     t:'이번엔 네가 토리야. 말할 때와 쓸 때를 잘 구별해 봐.',
+     qs:[
+       {pic:'dy_page', t:'일기장에 오늘 한 일을 써요.', en:'Write in your diary.', o:['나는 공원에 갔다.','저는 공원에 갔어요.'], a:'나는 공원에 갔다.', why:'일기에는 나는과 ~다를 써요.'},
+       {line:{who:'dami', t:'토리야, 오늘 어디에 갔느냐?'}, en:'Tori, where did you go today?', o:['공원에 갔다.','공원에 갔어요.'], a:'공원에 갔어요.', why:'할아버지께 말할 때는 ~요로 해요.'},
+       {line:{who:'moi', t:'토리야, 오늘 어디 갔어?'}, en:'Tori, where did you go today?', o:['공원에 갔어.','공원에 갔다.'], a:'공원에 갔어.', why:'친구에게 말할 때는 편한 말로 해요.'}]},
+    {type:'task', title:'사흘 일기', who:'moi',
+     t:'사흘 동안 날마다 일기를 한 편씩 써 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'맨 위에', say:'______월 ______일 ______요일. 날씨: ______.', sub:'맑았다, 흐렸다, 비가 왔다처럼.'},
+       {when:'한 일을 두세 문장으로', say:'나는 ______에 갔다. 그리고 ______을 했다.', sub:'다섯째 달의 그리고, 그래서, 그런데로 이어요.'},
+       {when:'맨 끝에 느낀 점', say:'정말 ______었다.', sub:'재미있었다, 기뻤다, 힘들었다.'}],
+     parent:'사흘 동안 아이가 공책에 손으로 일기를 쓰게 해 주세요. 세 문장이면 충분합니다. 이번 묶음에서 처음 배운 "~다" 말투는 한국 책과 신문이 쓰는 글말이라, 앞으로 한국어 책을 읽는 데 꼭 필요합니다. 맞춤법은 틀려도 괜찮고, 문장 끝이 "~었다"로 끝났는지만 봐 주세요. 아이가 원하면 일기를 조부모님께 사진으로 보내 드려도 좋습니다.'}
   ],
   dictWords:[] }
 ];
