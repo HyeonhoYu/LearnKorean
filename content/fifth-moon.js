@@ -43,12 +43,44 @@ const M5_ONLY = {
     ${m2Person('kid', 70, 'wave', 1)}
     <g fill="#E3A93C" stroke="#221F1C" stroke-width="1.2"><path d="M100 30 l3 6 l6 1 l-5 4 l2 6 l-6 -3 l-6 3 l2 -6 l-5 -4 l6 -1 Z"/></g></svg>`
 };
+/* ---- 둘째 묶음 그림: 놀이 ---- */
+function m5Play(kind){
+  const S = '#221F1C';
+  const g = {
+    hide: `${m2Ground}<rect x="46" y="60" width="14" height="62" fill="#8A6A4A" stroke="${S}" stroke-width="2"/><circle cx="53" cy="44" r="30" fill="#6E8F58" stroke="${S}" stroke-width="2.6"/>
+      ${m2Person('kid', 84, 'stand', -1)}<path d="M76 50 L92 50" stroke="#F0D9BE" stroke-width="7" stroke-linecap="round"/>
+      <rect x="150" y="84" width="40" height="38" fill="#C9A06A" stroke="${S}" stroke-width="2.6"/>
+      <g transform="translate(166 86) scale(.7)"><circle cx="0" cy="-8" r="14" fill="#F0D9BE" stroke="${S}" stroke-width="3"/><path d="M-14 -12 C-16 -30 16 -30 14 -12 C8 -20 -8 -20 -14 -12 Z" fill="#221F1C"/><circle cx="-5" cy="-8" r="2" fill="${S}"/><circle cx="5" cy="-8" r="2" fill="${S}"/></g>
+      <text x="100" y="24" font-family="sans-serif" font-weight="700" font-size="14" fill="#17324A">1, 2, 3...</text>`,
+    bike: `${m2Ground}<circle cx="64" cy="100" r="20" fill="none" stroke="${S}" stroke-width="4"/><circle cx="136" cy="100" r="20" fill="none" stroke="${S}" stroke-width="4"/>
+      <path d="M64 100 L92 70 L126 70 L136 100 M92 70 L100 100 L126 70 M84 60 L100 60 M122 58 L132 58" stroke="#C1403A" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <g transform="translate(98 92) scale(.85)">${m2Person('kid', 0, 'give', 1).replace('translate(0 122)', 'translate(0 0)')}</g>`,
+    rope: `${m2Ground}${m2Person('kid', 100, 'wave', 1).replace('translate(100 122)', 'translate(100 108)')}
+      <path d="M78 76 Q100 150 122 76" stroke="#C1403A" stroke-width="3.4" fill="none"/>
+      <path d="M80 122 L90 118 M110 118 L120 122" stroke="#8C7F63" stroke-width="2.4" stroke-linecap="round"/>`,
+    swim: `<rect width="200" height="130" rx="6" fill="#CFE0EA"/><path d="M0 70 Q25 62 50 70 T100 70 T150 70 T200 70 L200 130 L0 130 Z" fill="#6FA8D0" stroke="${S}" stroke-width="2"/>
+      <circle cx="96" cy="62" r="13" fill="#F0D9BE" stroke="${S}" stroke-width="2.6"/><path d="M83 58 C82 44 110 44 109 58 C102 52 90 52 83 58 Z" fill="#221F1C"/>
+      <circle cx="92" cy="62" r="1.8" fill="${S}"/><circle cx="100" cy="62" r="1.8" fill="${S}"/>
+      <path d="M112 66 Q130 52 146 62" stroke="#F0D9BE" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M80 70 Q66 80 54 74" stroke="#F0D9BE" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M40 90 q10 -6 20 0 M120 100 q10 -6 20 0" stroke="#FBF7EC" stroke-width="3" fill="none"/>`,
+    together: `${m2Ground}${m2Person('kid', 76, 'stand', 1)}${m2Person('friend', 124, 'stand', -1)}
+      <path d="M90 84 Q100 92 110 84" stroke="#221F1C" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M96 30 C96 22 104 22 104 30 C104 22 112 22 112 30 C112 38 104 42 104 46 C104 42 96 38 96 30 Z" fill="#C1403A" stroke="${S}" stroke-width="1.8"/>`,
+    fight: `${m2Ground}${m2Person('kid', 60, 'give', 1)}${m2Person('friend', 140, 'give', -1)}
+      <circle cx="100" cy="78" r="12" fill="#C1403A" stroke="${S}" stroke-width="2.6"/>
+      <path d="M84 52 l6 -8 l6 8 l6 -8 l6 8 l6 -8" stroke="#C1403A" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
+    ball: `${m2Ground}<circle cx="100" cy="80" r="30" fill="#C1403A" stroke="${S}" stroke-width="3"/><path d="M70 80 Q100 60 130 80 M100 50 Q86 80 100 110" stroke="${S}" stroke-width="2.4" fill="none"/>`
+  }[kind];
+  const label = {hide:'숨바꼭질', bike:'자전거', rope:'줄넘기', swim:'수영', together:'같이', fight:'싸워요', ball:'공'}[kind];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
+}
+['hide', 'bike', 'rope', 'swim', 'together', 'fight', 'ball'].forEach(k => { M5_ONLY['pl5_' + k] = m5Play(k); });
 const M5_PIC = Object.assign({}, M4_PIC, M5_ONLY);
 
 /* ---- 묶음 ---- */
 const M5_BUNDLES = [
   {k:1, title:'그리고, 그래서', topic:'문장 잇기와 이야기 순서', nights:[1, 2, 3], after:'그동안 날마다 그림일기를 한 장씩 그리고 세 문장으로 이어 써 봐.'},
-  {k:2, title:'같이 놀자', topic:'친구와 놀기, 할 수 있어요', nights:[4, 5, 6]},
+  {k:2, title:'같이 놀자', topic:'친구와 놀기, 할 수 있어요', nights:[4, 5, 6], after:'그동안 가족이나 친구에게 한국어로 같이 놀자고 해 봐.'},
   {k:3, title:'한국에 갈 거예요', topic:'앞날 말하기와 여행 준비', nights:[7, 8, 9]},
   {k:4, title:'이거 얼마예요?', topic:'돈과 가게', nights:[10, 11, 12]},
   {k:5, title:'할머니 댁까지', topic:'한국 방문', nights:[13, 14, 15]}
@@ -192,6 +224,148 @@ const M5_NIGHTS = [
        {when:'그림을 그리고 한 일을 이어 써요', say:'______고 ______었어요.', sub:'밥을 먹고 공원에 갔어요처럼 고로 이어요.'},
        {when:'그래서나 그런데로 한 문장 더', say:'그래서 ______. 그런데 ______.', sub:'마지막엔 그때 기분을 써요: 참 기뻤어요.'}],
      parent:'그림일기는 한국 초등학교 1, 2학년이 글쓰기를 처음 배울 때 흔히 하는 활동입니다. 공책 한 장에 위쪽은 그림, 아래쪽은 두세 문장을 쓰게 해 주세요. 맞춤법은 조금 틀려도 괜찮고, "그리고", "그래서", "그런데" 가운데 하나를 넣었는지만 봐 주시면 됩니다. 아이가 다 쓰면 소리 내어 읽게 하고, 할머니 할아버지께 사진으로 보내 드리면 좋은 선물이 됩니다.'}
+  ],
+  dictWords:[] },
+
+/* ---- 둘째 묶음: 같이 놀자 -----------------------------------------
+   놀이 이름, 함께 하자는 말(같이 놀자, 할까?, 할래?)과 어른께 여쭙는 말(같이 하실래요?).
+   둘째 밤에 할 수 있어요/없어요와 못(못 타요)을 배웁니다. 받침이 없으면 ㄹ 수, 있으면 을 수.
+   셋째 밤은 다투고 화해하는 이야기로 넷째 달의 기분 말과 미안해, 괜찮아를 다시 씁니다. */
+{ n:4, bundle:2, title:'같이 놀자',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'심심해! 누구랑 같이 놀고 싶어. 오늘은 같이 놀자고 할 때 쓰는 말을 모아 왔어.',
+     big:'같이 놀자!'},
+    {type:'pairs', title:'무엇을 하고 놀까?', who:'moi',
+     t:'놀이 이름이야. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'숨바꼭질', pic:'pl5_hide', en:'hide and seek'}, {w:'공놀이', pic:'pl5_ball', en:'playing ball'},
+       {w:'자전거', pic:'pl5_bike', en:'bicycle'}, {w:'줄넘기', pic:'pl5_rope', en:'jump rope'},
+       {w:'수영', pic:'pl5_swim', en:'swimming'}, {w:'같이', pic:'pl5_together', en:'together'}],
+     tip:{who:'tori', t:'자전거는 타요, 줄넘기는 해요, 숨바꼭질도 해요. 놀이마다 붙는 말이 달라. 자전거를 타요, 줄넘기를 해요.'}},
+    {type:'pairs', title:'같이 하자고 할 때', who:'dami',
+     t:'친구에게는 편하게, 어른께는 여쭙는 말로 하거라.',
+     pairs:[
+       {when:'같이 하자고 할 때', pic:'pl5_together', friend:'같이 놀자!', elder:'같이 하실래요?', en:"Let's play together!"},
+       {when:'무엇을 할지 물을 때', pic:'what', friend:'뭐 하고 놀까?', elder:'뭐 할까요?', en:'What shall we do?'},
+       {when:'좋다고 할 때', pic:'mood_happy', friend:'좋아!', elder:'좋아요.', en:'Okay! Sounds good.'}]},
+    {type:'choose', title:'무엇을 하고 놀아요?', who:'tori',
+     t:'그림을 보고 알맞은 말을 골라 봐.',
+     qs:[
+       {pic:'pl5_hide', o:['숨바꼭질','줄넘기','수영'], a:'숨바꼭질'},
+       {pic:'pl5_bike', o:['자전거를 타요.','자전거를 해요.'], a:'자전거를 타요.', en:'I ride a bike.', why:'자전거는 타요예요.'},
+       {pic:'pl5_rope', o:['줄넘기를 해요.','줄넘기를 타요.'], a:'줄넘기를 해요.', en:'I jump rope.', why:'줄넘기는 해요예요.'},
+       {pic:'pl5_together', t:'친구에게 같이 놀자고 해요.', o:['같이 놀자!','같이 하실래요?'], a:'같이 놀자!', why:'친구에게는 편한 말로 해요.'},
+       {pic:'p_grandpa', t:'할아버지께 같이 하자고 여쭤요.', o:['할아버지, 같이 놀자!','할아버지, 같이 하실래요?'], a:'할아버지, 같이 하실래요?', why:'어른께는 ‘하실래요?’로 여쭤요.'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 놀이를 찾아 봐.',
+     qs:[
+       {say:'수영', o:['pl5_swim','pl5_bike','pl5_hide'], a:'pl5_swim'},
+       {say:'줄넘기', o:['pl5_ball','pl5_rope','pl5_together'], a:'pl5_rope'},
+       {say:'같이', o:['pl5_fight','pl5_hide','pl5_together'], a:'pl5_together'},
+       {say:'공놀이', o:['pl5_ball','pl5_swim','pl5_rope'], a:'pl5_ball'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'놀이 말을 써 봐.',
+     items:[{w:'같이', en:'together', hint:{who:'dami', t:'소리는 [가치]지만 글자는 ‘같이’란다. 받침 ㅌ이 이를 만나면 ㅊ처럼 소리 나지.'}}, {w:'수영', en:'swimming'}, {w:'자전거', en:'bicycle'}]}
+  ],
+  dictWords:[{w:'같이', en:'together'}, {w:'놀자', en:"let's play"}, {w:'숨바꼭질', en:'hide and seek'}, {w:'공놀이', en:'playing ball'},
+             {w:'자전거', en:'bicycle'}, {w:'줄넘기', en:'jump rope'}, {w:'수영', en:'swimming'}] },
+
+{ n:5, bundle:2, title:'자전거를 탈 수 있어요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 할 수 있는 일과 아직 못 하는 일을 말해 볼 거야. 나는 자전거를 탈 수 있어. 그런데 수영은 아직 못 해!',
+     big:'자전거를 탈 수 있어요'},
+    {type:'tense', title:'할 수 있어요', who:'dami',
+     t:'움직이는 말의 요 앞부분에 ㄹ 수 있어요를 붙인단다. 받침이 있는 말에는 을 수 있어요지. 받침 삼 형제를 떠올려 보거라.',
+     cols:['움직이는 말', '할 수 있어요'],
+     groups:[
+       {rule:'받침이 없으면 ㄹ 수 있어요', rows:[['타요','탈 수 있어요'], ['해요','할 수 있어요'], ['가요','갈 수 있어요']]},
+       {rule:'받침이 있으면 을 수 있어요', rows:[['먹어요','먹을 수 있어요'], ['읽어요','읽을 수 있어요']]},
+       {rule:'할 수 없어요는 못으로도 말해요', rows:[['할 수 없어요','못 해요'], ['탈 수 없어요','못 타요']]}],
+     note:'못은 안처럼 움직이는 말 바로 앞에 온단다. 안 해요는 하기 싫어서 안 하는 것, 못 해요는 하고 싶어도 할 수 없는 것이지. 그러니 아직 배우는 중이면 못 해요라고 하거라.'},
+    {type:'likes', title:'나는 할 수 있어요?', who:'tori',
+     t:'놀이마다 할 수 있으면 ‘할 수 있어요’, 아직 못 하면 ‘아직 못 해요’를 눌러 봐. 네 문장이 만들어져. 세 개 이상 하면 다음으로 갈 수 있어.',
+     labels:['할 수 있어요', '아직 못 해요'],
+     items:[
+       {w:'자전거', pic:'pl5_bike', lines:['저는 자전거를 탈 수 있어요.', '저는 자전거를 아직 못 타요.']},
+       {w:'수영', pic:'pl5_swim', lines:['저는 수영을 할 수 있어요.', '저는 수영을 아직 못 해요.']},
+       {w:'줄넘기', pic:'pl5_rope', lines:['저는 줄넘기를 할 수 있어요.', '저는 줄넘기를 아직 못 해요.']},
+       {w:'한글 읽기', pic:'t_book', lines:['저는 한글을 읽을 수 있어요.', '저는 한글을 아직 못 읽어요.']},
+       {w:'김치 먹기', pic:'f_kimchi', lines:['저는 김치를 먹을 수 있어요.', '저는 김치를 아직 못 먹어요.']}],
+     tip:{who:'moi', t:'‘아직’은 지금은 아니어도 곧 할 거라는 뜻이야. 아직 못 해도 괜찮아!'}},
+    {type:'choose', title:'어느 쪽이 맞을까요?', who:'tori',
+     t:'그림을 보고 바르게 말한 쪽을 골라 봐.',
+     qs:[
+       {pic:'pl5_bike', o:['자전거를 탈 수 있어요.','자전거를 타을 수 있어요.'], a:'자전거를 탈 수 있어요.', en:'I can ride a bike.', why:'타요에는 받침이 없어서 ㄹ 수예요.'},
+       {pic:'f_kimchi', o:['김치를 먹을 수 있어요.','김치를 먹 수 있어요.'], a:'김치를 먹을 수 있어요.', en:'I can eat kimchi.', why:'먹에는 받침이 있어서 을 수예요.'},
+       {pic:'pl5_swim', t:'수영을 배우는 중이에요.', o:['수영을 안 해요.','수영을 아직 못 해요.'], a:'수영을 아직 못 해요.', en:"I can't swim yet.", why:'하고 싶어도 할 수 없으면 못 해요예요.'},
+       {pic:'s_read', o:['한글을 읽을 수 있어요.','한글을 읽 수 있어요.'], a:'한글을 읽을 수 있어요.', en:'I can read Hangul.'}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'같이 공놀이할까?', tiles:['같이','공놀이할까?'], en:'Shall we play ball together?'},
+       {s:'저는 자전거를 탈 수 있어요.', tiles:['저는','자전거를','탈','수','있어요.'], extra:['타'], en:'I can ride a bike.'},
+       {s:'수영은 아직 못 해요.', tiles:['수영은','아직','못','해요.'], extra:['안'], en:"I can't swim yet.", hint:'할 수 없을 때는 못이에요.'},
+       {s:'같이 줄넘기를 할 수 있어요.', tiles:['같이','줄넘기를','할','수','있어요.'], en:'We can jump rope together.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'할 수 있어요는 소리와 글자가 꽤 다르단다. 그리고 같이에는 특별한 소리 비밀이 있지.',
+     cmp:[
+       {s:'할 수 있어요', d:'할 쑤 이써요', n:'ㄹ 뒤의 수는 쑤처럼 세게 나요'},
+       {s:'같이', d:'가치', n:'ㅌ 받침이 이를 만나면 ㅊ 소리가 나요'},
+       {s:'못 해요', d:'모태요', n:'ㅅ 받침과 ㅎ이 만나 ㅌ 소리가 나요'},
+       {s:'먹을 수', d:'머글 쑤', n:'ㄱ이 건너가고, 수는 쑤처럼 나요'}],
+     note:'같이의 ㅌ은 뒤에 이가 오면 ㅊ으로 바뀌어 [가치]가 된단다. 밭이 [바치]가 되는 것과 같은 이치지. 하지만 쓸 때는 늘 ‘같이’란다.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'같이', en:'together', hint:{who:'dami', t:'소리는 [가치]지만 받침 ㅌ을 쓰는 ‘같’에 ‘이’란다.'}},
+       {w:'못', en:"can't", hint:{who:'dami', t:'못 해요는 [모태요]로 들리지만 ‘못’의 받침은 ㅅ이란다. 못과 해요는 띄어 쓰지.'}},
+       {w:'아직', en:'yet, still'}]}
+  ],
+  dictWords:[{w:'못', en:"can't"}, {w:'아직', en:'yet'}, {w:'수영', en:'swimming'}] },
+
+{ n:6, bundle:2, title:'다투고 화해해요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'모이랑 공놀이를 하다가 다퉜어. 친구랑 다투면 어떻게 해야 할까? 먼저 글자 없이 귀로만 들어 보고, 그다음에 글자를 같이 보자.',
+     big:'미안해, 괜찮아'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 토리와 모이의 기분이 어떻게 바뀌는지 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'tori', t:'모이야, 같이 공놀이하자!', en:"Moi, let's play ball together!"},
+       {who:'moi', t:'좋아! 그런데 내가 먼저 할래.', en:"Okay! But I want to go first."},
+       {who:'tori', t:'싫어! 내가 먼저 할래!', en:'No! I want to go first!'},
+       {who:'moi', t:'아니야, 내 공이야!', en:"No, it's my ball!"},
+       {who:'tori', t:'너무해! 나 화났어.', en:"That's not fair! I'm angry."},
+       {who:'dami', t:'허허, 얘들아. 싸우지 말고 한 번씩 번갈아 하거라.', en:"Ho ho, kids. Don't fight. Take turns."},
+       {who:'moi', t:'토리야, 미안해. 네가 먼저 해.', en:'Tori, sorry. You go first.'},
+       {who:'tori', t:'괜찮아. 나도 미안해. 우리 같이 하자!', en:"It's okay. I'm sorry too. Let's play together!"}],
+     note:{who:'dami', t:'친구끼리는 다툴 수도 있단다. 중요한 건 그다음이지. 모이가 먼저 미안해라고 했고, 토리는 괜찮아, 나도 미안해로 받았지. 이렇게 화해하면 우정이 더 단단해진단다.'}},
+    {type:'sequence', title:'이야기 순서', who:'moi',
+     t:'우리가 다투고 화해한 이야기야. 차례대로 눌러 줘.',
+     qs:[
+       {cards:[{pic:'pl5_ball', t:'같이 공놀이를 했어요.'}, {pic:'pl5_fight', t:'서로 먼저 하겠다고 다퉜어요.'}, {pic:'mood_angry', t:'토리가 화났어요.'}, {pic:'pl5_together', t:'미안하다고 하고 화해했어요.'}]}]},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'토리와 모이는 무엇을 하고 놀았어요?', o:['숨바꼭질','공놀이','줄넘기'], a:'공놀이', why:'토리가 ‘같이 공놀이하자!’라고 했어요.'},
+       {t:'왜 다퉜어요?', o:['서로 먼저 하고 싶어서','공이 없어서','비가 와서'], a:'서로 먼저 하고 싶어서', why:'둘 다 ‘내가 먼저 할래’라고 했어요.'},
+       {t:'할아버지는 어떻게 하라고 하셨어요?', o:['번갈아 하라고','집에 가라고','자라고'], a:'번갈아 하라고', why:'할아버지는 ‘번갈아 하거라’라고 하셨어요.'},
+       {t:'먼저 미안하다고 한 친구는 누구예요?', o:['토리','모이','담이'], a:'모이', why:'모이가 ‘토리야, 미안해’라고 했어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 말하는지 잘 보고 대답해 봐.',
+     qs:[
+       {pic:'pl5_bike', line:{who:'moi', t:'토리야, 같이 자전거 탈래?'}, en:'Tori, do you want to ride bikes together?', o:['좋아, 같이 타자!','좋아요, 같이 타요.'], a:'좋아, 같이 타자!', why:'모이는 친구라서 편한 말로 대답해요.'},
+       {pic:'pl5_swim', line:{who:'dami', t:'토리야, 수영할 수 있느냐?'}, en:'Tori, can you swim?', o:['네, 할 수 있어요.','응, 할 수 있어.'], a:'네, 할 수 있어요.', why:'할아버지는 어른이라서 ‘할 수 있어요’라고 해요.'},
+       {line:{who:'moi', t:'토리야, 아까 화내서 미안해.'}, en:'Tori, sorry I got angry earlier.', o:['괜찮아. 나도 미안해.','너무해!'], a:'괜찮아. 나도 미안해.', why:'친구가 사과하면 괜찮아로 받아 주면 좋아요.'}]},
+    {type:'task', title:'한국어로 놀자고 하기', who:'moi',
+     t:'가족이나 친구에게 한국어로 놀자고 해 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'형제나 친구에게', say:'같이 놀자! 뭐 하고 놀까?', sub:'숨바꼭질, 공놀이, 줄넘기 가운데 골라요.'},
+       {when:'엄마, 아빠, 할머니 할아버지께', say:'같이 하실래요?', sub:'어른께는 여쭙는 말로.'},
+       {when:'놀다가 다투면', say:'미안해. 같이 하자.', sub:'사과를 들으면 ‘괜찮아’로 받아 줘요.'}],
+     parent:'아이가 형제나 친구에게 한국어로 놀이를 제안하게 해 주세요. 부모님께는 "같이 하실래요?"로 여쭙게 하시고 흔쾌히 응해 주시면 좋습니다. 놀다가 다툼이 생기면 "미안해"와 "괜찮아"를 한국어로 주고받게 이끌어 주세요. 오늘 배운 "못 해요"는 하고 싶지만 아직 할 수 없다는 뜻이라, 아이가 새로 배우는 것이 있으면 "아직 못 해요. 그런데 배우고 있어요"처럼 말하게 해 보셔도 좋습니다.'}
   ],
   dictWords:[] }
 ];

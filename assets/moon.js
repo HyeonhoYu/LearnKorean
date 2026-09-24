@@ -640,10 +640,13 @@ SCREENS.likes = S => {
   const grid = h('div', {class:'likes'});
   S.items.forEach(item => {
     const out = h('div', {class:'likeout', 'aria-live':'polite'});
-    const btns = ['좋아해요', '싫어해요'].map(v => h('button', {class:'chip', onclick: () => {
+    /* 기본은 좋아해요, 싫어해요. S.labels 와 item.lines 가 있으면 그 두 가지로 고릅니다(예: 할 수 있어요, 아직 못 해요). */
+    const labels = S.labels || ['좋아해요', '싫어해요'];
+    const lineOf = v => item.lines ? item.lines[labels.indexOf(v)] : likeLine(item.w, v);
+    const btns = labels.map(v => h('button', {class:'chip', onclick: () => {
       btns.forEach(b => b.classList.toggle('on', b.textContent === v));
-      out.innerHTML = ''; out.append(sayBtn(likeLine(item.w, v)));
-      talk(likeLine(item.w, v));
+      out.innerHTML = ''; out.append(sayBtn(lineOf(v)));
+      talk(lineOf(v));
       picked.add(item.w);
       if(picked.size >= need) showNext();
     }}, v));
@@ -1049,7 +1052,7 @@ function listClips(){
     if(S.type === 'birthday'){ add('제 생일은', n, '생일 앞부분'); for(let m = 1; m <= 12; m++) add(monthName(m), n, '달 이름');
       for(let d = 1; d <= 31; d++) add(dayName(d) + '이에요', n, '날짜 끝'); }
     if(S.type === 'tense') S.groups.forEach(G => G.rows.forEach(([a, b]) => { add(a, n, (S.cols || ['지금'])[0]); add(b, n, (S.cols || ['', '지난 일'])[1]); }));
-    if(S.type === 'likes') S.items.forEach(x => ['좋아해요', '싫어해요'].forEach(v => add(likeLine(x.w, v), n, '좋아해요와 싫어해요')));
+    if(S.type === 'likes') S.items.forEach(x => (x.lines || ['좋아해요', '싫어해요'].map(v => likeLine(x.w, v))).forEach(t => add(t, n, '나의 문장')));
     if(S.type === 'clock') for(let i = 1; i <= 12; i++) add(hourWord(i) + '예요', n, '시계');
     if(S.type === 'sibling') ['형','누나','오빠','언니','동생'].forEach(w => add(w, n, '형제 부르는 말'));
     if(S.type === 'build') S.qs.forEach(q => add(q.s, n, '문장 만들기', '문장 끝까지 자연스럽게'));
