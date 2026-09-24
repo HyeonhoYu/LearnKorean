@@ -451,3 +451,25 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
 .seqcard svg{width:130px;height:auto;display:block}
 .seqcard.shake{animation:seqshake .4s}
 @keyframes seqshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* ---- 일곱째 달: 편지 꾸미기 ---- */
+.letterwrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.letterpick .chiprow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.letterpick .chip{font-size:15px;padding:6px 10px;min-width:0}
+.letterpick .chip.on{background:var(--hwang)}
+.namerow{display:flex;align-items:center;gap:4px;margin-bottom:4px}
+.namerow input{font:inherit;font-size:18px;padding:6px 10px;border:3px solid var(--meok);border-radius:10px;width:9em;background:#FFFDF6}
+.letterpaper{background:#FFFDF6;border:3px solid var(--meok);border-radius:6px;padding:22px 24px;min-height:320px;
+  background-image:repeating-linear-gradient(#FFFDF6 0 34px,#E7DCC4 34px 35px);line-height:35px;box-shadow:0 6px 0 var(--meok)}
+.letterpaper .lp{margin:0;font-size:18px}
+.letterpaper .lp.to{font-weight:700}
+.letterpaper .lp.from{text-align:right;margin-top:10px}
+.letterpaper .lp.empty{color:#B7A57A}
+.lettertools{margin-top:14px}
+@media (max-width:760px){.letterwrap{grid-template-columns:1fr}}
+@media print{
+  html.print-one body *{visibility:hidden !important}
+  html.print-one .print-me,html.print-one .print-me *{visibility:visible !important}
+  html.print-one .print-me{position:absolute;left:0;top:0;width:100%;box-shadow:none}
+  html.print-one .print-me .empty{display:none}
+}

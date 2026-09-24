@@ -829,6 +829,55 @@ SCREENS.sequence = S => {
   draw();
 };
 
+/* ---- 편지 꾸미기: 칸마다 문장을 골라 편지 한 장을 완성합니다 ----
+   S.parts 는 편지의 차례대로 [{label, opts}]. S.sign 은 끝의 이름 뒤에 붙는 말(올림, 드림 등).
+   이름은 입력칸에 쓰고, 저장하지 않습니다. 완성하면 소리로 듣고 인쇄할 수 있습니다. */
+function printOnly(node){
+  const root = document.documentElement;
+  node.classList.add('print-me');
+  root.classList.add('print-one');
+  const done = () => { root.classList.remove('print-one'); node.classList.remove('print-me'); window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+  try { window.print(); } catch(e) {}
+  setTimeout(done, 1500);
+}
+SCREENS.letter = S => {
+  head2(S);
+  hideNext();
+  const picked = S.parts.map(() => null);
+  let name = '';
+  const paper = h('div', {class:'letterpaper'});
+  const pickers = h('div', {class:'letterpick'});
+  const tools = h('div', {class:'lettertools'});
+  const nameIn = h('input', {type:'text', maxlength:'12', placeholder: S.namePh || '내 이름', 'aria-label':'보내는 사람 이름', autocomplete:'off'});
+  nameIn.addEventListener('input', () => { name = nameIn.value.trim(); draw(); });
+  const lines = () => picked.map((v, i) => v === null ? null : S.parts[i].opts[v]);
+  const draw = () => {
+    const L = lines();
+    paper.innerHTML = '';
+    L.forEach((t, i) => paper.append(h('p', {class: 'lp' + (i === 0 ? ' to' : '') + (t ? '' : ' empty')}, t || S.parts[i].label + ' 칸을 골라요')));
+    paper.append(h('p', {class:'lp from' + (name ? '' : ' empty')}, (name || '______') + ' ' + (S.sign || '올림')));
+    tools.innerHTML = '';
+    if(L.every(Boolean)){
+      const all = [...L, (name || '') + ' ' + (S.sign || '올림')].filter(Boolean);
+      tools.append(h('button', {class:'btn quiet play', onclick: () => { let k = 0; const nx = () => { if(k < all.length) talkThen(all[k++], nx); }; nx(); }}, '편지 읽어 주기'),
+        h('button', {class:'btn quiet play', style:'margin-left:8px', onclick: () => printOnly(paper)}, '인쇄하기'));
+      showNext();
+    }
+  };
+  S.parts.forEach((P, i) => {
+    const row = h('div', {class:'chiprow'});
+    P.opts.forEach((t, j) => row.append(h('button', {class:'chip', onclick: () => {
+      picked[i] = j; [...row.children].forEach((b, k) => b.classList.toggle('on', k === j)); talk(t); draw(); }}, t)));
+    pickers.append(h('p', {class:'rhead'}, (i + 1) + '. ' + P.label), row);
+  });
+  pickers.append(h('p', {class:'rhead'}, (S.parts.length + 1) + '. 보내는 사람'), h('div', {class:'namerow'}, nameIn, h('span', {}, ' ' + (S.sign || '올림'))),
+    h('p', {class:'sub'}, '이름은 이 화면에만 보이고 어디에도 저장되지 않아요.'));
+  card.append(h('div', {class:'letterwrap'}, pickers, h('div', {}, paper, tools)));
+  draw();
+  if(S.tip) card.append(guide(S.tip.who, S.tip.t, true));
+};
+
 /* ---- 소리와 글자 (담이) ---- */
 SCREENS.sound = S => {
   head2(S);
@@ -1047,6 +1096,7 @@ function listClips(){
     if(S.type === 'rule') [...S.yes, ...S.no].forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙'));
     if(S.type === 'josa') S.names.forEach(nm => add(josa(nm, S.j || '이에요'), n, '받침 규칙 고르기'));
     if(S.type === 'shrink') S.rows.forEach(([full, short]) => { add(full, n, '세는 말'); S.units.forEach(u => add(short + ' ' + u, n, '줄어드는 숫자')); });
+    if(S.type === 'letter') S.parts.forEach(P => P.opts.forEach(t => add(t, n, '편지 문장')));
     if(S.type === 'sequence') S.qs.forEach(q => { const w = orderWords(q.cards.length); q.cards.forEach((c, i) => { add(c.t, n, '이야기 카드'); add(w[i] + ' ' + c.t, n, '이야기 전체'); }); });
     if(S.type === 'findit') S.qs.forEach(q => add(q.say || q.t, n, '그림에서 찾기'));
     if(S.type === 'birthday'){ add('제 생일은', n, '생일 앞부분'); for(let m = 1; m <= 12; m++) add(monthName(m), n, '달 이름');

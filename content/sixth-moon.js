@@ -931,7 +931,7 @@ const SIXTH_MOON = {
   store: 'daltokki:v1:sixth-moon',
   units: M6_NIGHTS.map(x => ({n: x.n, words: x.dictWords || []})),
   extra: [], pool: () => M6_POOL,
-  num: 6, name: '여섯째 달', title2: '여섯째 달, 한국을 알아요', nextName: '일곱째 달',
+  num: 6, name: '여섯째 달', title2: '여섯째 달, 한국을 알아요', nextName: '일곱째 달', nextPath: 'seventh-moon/',
   topics: '비교하기, 설명하기, 설날, 추석, 세종대왕과 한글',
   nights: M6_NIGHTS, bundles: M6_BUNDLES, pic: M6_PIC, keys: M6_POOL, total: M6_TOTAL, check: M6_CHECK,
   prev: {store: 'daltokki:v1:fifth-moon', total: 15},
