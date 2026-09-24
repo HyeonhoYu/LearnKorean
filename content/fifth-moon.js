@@ -903,7 +903,7 @@ const FIFTH_MOON = {
   store: 'daltokki:v1:fifth-moon',
   units: M5_NIGHTS.map(x => ({n: x.n, words: x.dictWords || []})),
   extra: [], pool: () => M5_POOL,
-  num: 5, name: '다섯째 달', title2: '다섯째 달, 한국에 가요', nextName: '여섯째 달',
+  num: 5, name: '다섯째 달', title2: '다섯째 달, 한국에 가요', nextName: '여섯째 달', nextPath: 'sixth-moon/',
   topics: '이야기 잇기, 친구, 앞날, 돈, 한국 방문',
   nights: M5_NIGHTS, bundles: M5_BUNDLES, pic: M5_PIC, keys: M5_POOL, total: M5_TOTAL, check: M5_CHECK,
   prev: {store: 'daltokki:v1:fourth-moon', total: 15},
