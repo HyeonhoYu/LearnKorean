@@ -68,12 +68,33 @@ const M6_ONLY = {
   race_walk: m6Scene('거북이가 걸어요', m6Animal('turtle', 90, 118, 1.3) + '<path d="M30 112 L50 112 M36 104 L52 104" stroke="#8C7F63" stroke-width="2.4" stroke-linecap="round"/>'),
   race_win: m6Scene('거북이가 이겨요', m6Animal('turtle', 90, 118, 1.2) + '<path d="M170 120 L170 36 M170 36 L140 46 L170 56" stroke="#221F1C" stroke-width="3" fill="#C1403A"/><g fill="#E3A93C" stroke="#221F1C" stroke-width="1.2"><path d="M90 50 l3 6 l6 1 l-5 4 l2 6 l-6 -3 l-6 3 l2 -6 l-5 -4 l6 -1 Z"/></g>')
 };
+/* ---- 둘째 묶음 그림: 꾸미는 말과 고양이 ---- */
+const m6Scale = (pic, k, label) => `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}"><g transform="translate(100 118) scale(${k}) translate(-100 -118)">${pic.replace(/<\/?svg[^>]*>/g, '')}</g></svg>`;
+/* 고양이: 털빛, 방울, 꼬리 길이를 바꿔 설명을 듣고 가려낼 수 있게 합니다 */
+const m6Cat = (fur, bell, longTail, label) => `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">
+  <path d="M10 118 L190 118" stroke="#221F1C" stroke-width="2.6"/>
+  <g transform="translate(104 100) scale(1.5)">
+    <path d="M16 8 Q${longTail ? '40 4 36 -22' : '26 6 24 -2'}" stroke="#221F1C" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M16 8 Q${longTail ? '40 4 36 -22' : '26 6 24 -2'}" stroke="${fur}" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+    <ellipse cx="0" cy="6" rx="20" ry="13" fill="${fur}" stroke="#221F1C" stroke-width="2.4"/>
+    <circle cx="-14" cy="-10" r="12" fill="${fur}" stroke="#221F1C" stroke-width="2.4"/>
+    <path d="M-24 -16 L-24 -30 L-16 -21 Z M-4 -16 L-4 -30 L-12 -21 Z" fill="${fur}" stroke="#221F1C" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="-18" cy="-11" r="1.8" fill="${fur === '#2B2724' ? '#F2C14E' : '#221F1C'}"/><circle cx="-10" cy="-11" r="1.8" fill="${fur === '#2B2724' ? '#F2C14E' : '#221F1C'}"/>
+    ${bell ? '<circle cx="-12" cy="2" r="3.4" fill="#C1403A" stroke="#221F1C" stroke-width="1.2"/>' : ''}</g></svg>`;
+Object.assign(M6_ONLY, {
+  bag_big: m6Scale(M5_PIC.bag_blue, 1.15, '큰 가방'), bag_small: m6Scale(M5_PIC.bag_blue, .5, '작은 가방'),
+  hat_red: M5_PIC.w_hat, hat_blue: M5_PIC.w_hat.replace(/fill="#C1403A"/g, 'fill="#2D6E8E"').replace('aria-label="모자"', 'aria-label="파란 모자"'),
+  cat_nabi: m6Cat('#E3A93C', true, true, '방울을 단 노란 고양이'), cat_short: m6Cat('#E3A93C', false, false, '꼬리가 짧은 노란 고양이'),
+  cat_black: m6Cat('#2B2724', true, true, '검은 고양이'),
+  hair_long: M5_PIC.p_aunt, hair_short: M5_PIC.p_uncle, tall: M5_PIC.p_dad, short_kid: M5_PIC.p_baby,
+  glasses: M5_PIC.p_grandpa, wear: M5_PIC.p_mom
+});
 const M6_PIC = Object.assign({}, M5_PIC, M6_ONLY);
 
 /* ---- 묶음 ---- */
 const M6_BUNDLES = [
   {k:1, title:'더 커요, 제일 커요', topic:'견주는 말', nights:[1, 2, 3], after:'그동안 가족끼리 누가 더 큰지, 누가 제일 빠른지 견주어 말해 봐.'},
-  {k:2, title:'어떻게 생겼어요?', topic:'꾸미는 말과 설명하기', nights:[4, 5, 6]},
+  {k:2, title:'어떻게 생겼어요?', topic:'꾸미는 말과 설명하기', nights:[4, 5, 6], after:'그동안 가족과 수수께끼 놀이를 하며 물건을 설명해 봐.'},
   {k:3, title:'설날', topic:'세배, 떡국, 새해 인사', nights:[7, 8, 9]},
   {k:4, title:'추석', topic:'송편, 보름달, 달토끼 옛이야기', nights:[10, 11, 12]},
   {k:5, title:'세종대왕과 한글', topic:'한글이 생긴 이야기', nights:[13, 14, 15]}
@@ -218,6 +239,141 @@ const M6_NIGHTS = [
        {when:'달리기를 해 보고', say:'______가 ______보다 빨라요.', sub:'받침이 있으면 이: 형이 저보다 빨라요.'},
        {when:'물건을 견주어 보고', say:'이 연필이 더 길어요.', sub:'많아요, 적어요, 높아요, 낮아요도 써 봐요.'}],
      parent:'가족끼리 키를 재거나, 달리기를 하거나, 연필 길이를 대 보며 한국어로 견주어 말하게 해 주세요. "보다"는 견주는 대상 뒤에 붙는다는 점(아빠가 저보다 커요)이 영어와 반대라서 아이가 헷갈리기 쉽습니다. 틀리면 바르게 되받아 주시면 충분합니다. 토끼와 거북이 이야기는 한국 아이들도 어릴 때 흔히 듣는 이야기라, 조부모님께 이 이야기를 한국어로 다시 들려달라고 부탁해 보셔도 좋습니다.'}
+  ],
+  dictWords:[] },
+
+/* ---- 둘째 묶음: 어떻게 생겼어요? ------------------------------------
+   꾸미는 말(큰, 작은, 긴, 짧은, 빨간, 파란)을 이름 앞에 붙이고, 사람과 동물을 설명합니다.
+   규칙: 커요 → 큰, 작아요 → 작은. 받침이 없으면 ㄴ, 있으면 은. 길어요처럼 ㄹ 받침은 ㄹ이 빠지고 긴.
+   색 이름의 빨간, 파란은 셋째 달의 빨간색에서 이미 만난 모양입니다.
+   설명을 듣고 무엇인지 맞히는 수수께끼는 그림 고르기 화면으로 합니다. */
+{ n:4, bundle:2, title:'빨간 모자, 큰 가방',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'오늘은 이름 앞에 붙어서 어떤 것인지 알려 주는 말을 모아 왔어. 그냥 가방이 아니라 큰 가방, 그냥 모자가 아니라 빨간 모자!',
+     big:'빨간 모자, 큰 가방'},
+    {type:'tense', title:'문장 끝에서, 이름 앞에서', who:'dami',
+     t:'첫 묶음의 커요, 작아요가 이름 앞에 오면 모양이 바뀐단다. 받침이 없으면 ㄴ, 있으면 은을 붙이지.',
+     cols:['문장 끝에서', '이름 앞에서'],
+     groups:[
+       {rule:'받침이 없으면 ㄴ', rows:[['가방이 커요','큰 가방'], ['차가 빨라요','빠른 차']]},
+       {rule:'받침이 있으면 은', rows:[['가방이 작아요','작은 가방'], ['산이 높아요','높은 산'], ['연필이 짧아요','짧은 연필']]},
+       {rule:'ㄹ 받침은 ㄹ이 빠져요', rows:[['연필이 길어요','긴 연필']]}],
+     note:'빨간색의 빨간, 파란색의 파란도 사실 이 모양이란다. 셋째 달부터 벌써 쓰고 있었던 게지. 빨간 모자, 파란 가방, 노란 옷.'},
+    {type:'pairs', title:'꾸미는 말과 이름', who:'moi',
+     t:'그림을 누르면 소리가 나. 앞에 붙은 말이 무엇을 알려 주는지 봐.',
+     singles:[
+       {w:'큰 가방', pic:'bag_big', en:'a big bag'}, {w:'작은 가방', pic:'bag_small', en:'a small bag'},
+       {w:'긴 연필', pic:'long', en:'a long pencil'}, {w:'짧은 연필', pic:'short', en:'a short pencil'},
+       {w:'빨간 모자', pic:'hat_red', en:'a red hat'}, {w:'파란 모자', pic:'hat_blue', en:'a blue hat'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'tori',
+     t:'들리는 말에 딱 맞는 그림을 눌러 봐. 앞에 붙은 말을 잘 들어.',
+     qs:[
+       {say:'작은 가방', o:['bag_big','bag_small'], a:'bag_small'},
+       {say:'파란 모자', o:['hat_red','hat_blue'], a:'hat_blue'},
+       {say:'긴 연필', o:['short','long'], a:'long'},
+       {say:'높은 산', o:['low','high'], a:'high'}]},
+    {type:'choose', title:'바르게 꾸민 말은?', who:'tori',
+     t:'이름 앞에 오는 모양을 골라 봐.',
+     qs:[
+       {pic:'big', o:['큰 코끼리','커 코끼리'], a:'큰 코끼리', why:'커요가 이름 앞에 오면 큰이에요.'},
+       {pic:'small', o:['작아 쥐','작은 쥐'], a:'작은 쥐', why:'작에 받침이 있어서 작은이에요.'},
+       {pic:'fast', o:['빠른 토끼','빨라 토끼'], a:'빠른 토끼'},
+       {pic:'giraffe', o:['길은 목','긴 목'], a:'긴 목', why:'길어요는 ㄹ이 빠져서 긴이에요.'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'꾸미는 말을 써 봐.',
+     items:[{w:'큰', en:'big (before a noun)'}, {w:'작은', en:'small (before a noun)', hint:{who:'dami', t:'소리는 [자근]이지만 ‘작’에 ‘은’을 붙인단다.'}}, {w:'긴', en:'long (before a noun)'}]}
+  ],
+  dictWords:[{w:'큰', en:'big'}, {w:'작은', en:'small'}, {w:'긴', en:'long'}, {w:'짧은', en:'short'}, {w:'빨간', en:'red'}, {w:'파란', en:'blue'}] },
+
+{ n:5, bundle:2, title:'키가 크고 머리가 길어요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 사람과 동물을 설명해 볼 거야. 키가 커요, 머리가 길어요, 안경을 써요. 그리고 설명을 듣고 누구인지 맞히는 수수께끼도 해!',
+     big:'키가 크고 머리가 길어요'},
+    {type:'pairs', title:'사람을 설명하는 말', who:'moi',
+     t:'사람이 어떻게 생겼는지 말할 때 쓰는 말이야.',
+     singles:[
+       {w:'키가 커요', pic:'tall', en:'is tall'}, {w:'키가 작아요', pic:'short_kid', en:'is short'},
+       {w:'머리가 길어요', pic:'hair_long', en:'has long hair'}, {w:'머리가 짧아요', pic:'hair_short', en:'has short hair'},
+       {w:'안경을 써요', pic:'glasses', en:'wears glasses'}, {w:'옷을 입어요', pic:'wear', en:'wears clothes'}],
+     tip:{who:'tori', t:'안경, 모자, 우산은 써요, 옷은 입어요. 머리 위나 얼굴에 쓰는 건 써요, 몸에 걸치는 건 입어요야.'}},
+    {type:'choose', mode:'pic', title:'수수께끼', who:'dami',
+     t:'이 할아버지가 설명하는 것을 잘 듣고 무엇인지 맞혀 보거라.',
+     qs:[
+       {say:'저는 목이 아주 길어요. 키가 제일 커요. 누구일까요?', t:'목이 아주 길어요. 키가 제일 커요. 누구일까요?', o:['elephant','giraffe','turtle'], a:'giraffe'},
+       {say:'저는 귀가 길어요. 아주 빨라요. 누구일까요?', t:'귀가 길어요. 아주 빨라요. 누구일까요?', o:['rabbit','mouse','turtle'], a:'rabbit'},
+       {say:'저는 느려요. 등에 단단한 집이 있어요. 누구일까요?', t:'느려요. 등에 단단한 집이 있어요. 누구일까요?', o:['giraffe','turtle','elephant'], a:'turtle'},
+       {say:'머리가 하얗고 안경을 써요. 누구일까요?', t:'머리가 하얗고 안경을 써요. 누구일까요?', o:['hair_long','glasses','short_kid'], a:'glasses'},
+       {say:'머리가 길고 분홍색 옷을 입었어요. 누구일까요?', t:'머리가 길고 분홍색 옷을 입었어요. 누구일까요?', o:['hair_short','tall','hair_long'], a:'hair_long'}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 설명해 봐.',
+     qs:[
+       {s:'키가 크고 머리가 길어요.', tiles:['키가','크고','머리가','길어요.'], en:'She is tall and has long hair.', hint:'다섯째 달의 고로 이어요.'},
+       {s:'우리 할아버지는 안경을 써요.', tiles:['우리','할아버지는','안경을','써요.'], extra:['입어요.'], en:'My grandpa wears glasses.'},
+       {s:'빨간 모자를 좋아해요.', tiles:['빨간','모자를','좋아해요.'], en:'I like the red hat.'},
+       {s:'작은 고양이가 있어요.', tiles:['작은','고양이가','있어요.'], extra:['작아'], en:'There is a small cat.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'꾸미는 말에 은이 붙으면 받침이 건너가지.',
+     cmp:[
+       {s:'작은', d:'자근', n:'ㄱ 받침이 뒤로 건너가요'},
+       {s:'짧은', d:'짤븐', n:'ㄼ 가운데 ㅂ이 뒤로 건너가요'},
+       {s:'높은', d:'노픈', n:'ㅍ 받침이 뒤로 건너가요'},
+       {s:'입어요', d:'이버요', n:'ㅂ 받침이 뒤로 건너가요'}],
+     note:'짧아요의 [짤바요]처럼 짧은도 [짤븐]이란다. 같은 받침은 같은 방식으로 소리가 나니, 하나를 익히면 다른 것도 따라온단다.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'입어요', en:'wear (clothes)', hint:{who:'dami', t:'소리는 [이버요]지만 ‘입’에 받침 ㅂ이 있단다.'}},
+       {w:'안경', en:'glasses'},
+       {w:'키', en:'height'}]}
+  ],
+  dictWords:[{w:'입어요', en:'wear'}, {w:'안경', en:'glasses'}, {w:'키', en:'height'}, {w:'머리', en:'hair, head'}] },
+
+{ n:6, bundle:2, title:'할머니의 고양이 나비',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'할머니 댁 고양이 나비가 없어졌어! 설명을 잘 듣고 나비를 찾아 줘. 먼저 글자 없이 귀로만 들어 보고, 그다음에 글자를 같이 보자.',
+     big:'나비가 어떻게 생겼어요?'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 나비가 어떻게 생겼는지 잘 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'halmi', t:'아이고, 우리 나비가 없어졌구나.', en:'Oh dear, our Nabi is missing.'},
+       {who:'tori', t:'할머니, 나비가 어떻게 생겼어요?', en:'Grandma, what does Nabi look like?'},
+       {who:'halmi', t:'작은 고양이란다. 털이 노랗고 꼬리가 길지.', en:'She is a small cat. Her fur is yellow and her tail is long.'},
+       {who:'tori', t:'또요?', en:'Anything else?'},
+       {who:'halmi', t:'목에 빨간 방울을 달았단다.', en:'She wears a red bell on her neck.'},
+       {who:'moi', t:'저기 노란 고양이가 있어요!', en:"There's a yellow cat over there!"},
+       {who:'tori', t:'그런데 저 고양이는 꼬리가 짧아. 방울도 없어. 나비가 아니야.', en:"But that cat's tail is short. And it has no bell. It's not Nabi."},
+       {who:'moi', t:'상자 안에 작은 고양이가 있어! 꼬리가 길고 빨간 방울도 있어!', en:'There is a small cat in the box! It has a long tail and a red bell!'},
+       {who:'halmi', t:'맞다, 우리 나비다! 설명을 잘 들어 줘서 고맙구나.', en:"Yes, that's our Nabi! Thank you for listening so carefully."}],
+     note:{who:'halmi', t:'한국에서는 고양이 이름으로 나비를 많이 짓는단다. 토리와 모이가 털빛, 꼬리, 방울을 하나씩 견주어서 우리 나비를 찾았구나. 잘 설명하고 잘 들으면 이렇게 무엇이든 찾을 수 있지.'}},
+    {type:'choose', mode:'pic', title:'나비를 찾아요', who:'tori',
+     t:'할머니 설명에 딱 맞는 고양이를 눌러 봐.',
+     qs:[
+       {say:'작은 고양이예요. 털이 노랗고 꼬리가 길어요. 빨간 방울을 달았어요.', t:'털이 노랗고, 꼬리가 길고, 빨간 방울을 달았어요.', o:['cat_short','cat_black','cat_nabi'], a:'cat_nabi'},
+       {say:'털이 까맣고 빨간 방울을 달았어요.', t:'털이 까맣고 빨간 방울을 달았어요. 이 고양이는?', o:['cat_nabi','cat_black','cat_short'], a:'cat_black'},
+       {say:'털이 노랗고 꼬리가 짧아요.', t:'털이 노랗고 꼬리가 짧아요. 이 고양이는?', o:['cat_short','cat_nabi','cat_black'], a:'cat_short'}]},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'나비는 무엇이에요?', o:['강아지','고양이','토끼'], a:'고양이', why:'나비는 할머니 댁 고양이예요.'},
+       {t:'나비의 꼬리는 어때요?', o:['길어요','짧아요'], a:'길어요', why:'할머니는 ‘꼬리가 길지’라고 하셨어요.'},
+       {t:'나비는 목에 무엇을 달았어요?', o:['빨간 방울','파란 모자','노란 가방'], a:'빨간 방울', why:'할머니는 ‘빨간 방울을 달았단다’라고 하셨어요.'},
+       {t:'나비는 어디에 있었어요?', o:['나무 위','상자 안','침대 아래'], a:'상자 안', why:'모이가 ‘상자 안에 작은 고양이가 있어!’라고 했어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {pic:'bag_big', line:{who:'halmi', t:'토리야, 네 가방은 어떻게 생겼니?'}, en:'Tori, what does your bag look like?', o:['크고 파란 가방이에요.','크고 파란 가방이야.'], a:'크고 파란 가방이에요.', why:'할머니께는 이에요로 대답해요.'},
+       {pic:'cat_nabi', line:{who:'moi', t:'토리야, 나비 꼬리 길어?'}, en:"Tori, is Nabi's tail long?", o:['응, 길어.','응, 긴.'], a:'응, 길어.', why:'문장 끝에서는 길어, 이름 앞에서만 긴이에요.'},
+       {pic:'giraffe', t:'모이에게 기린을 설명해 줘요.', en:'Describe a giraffe to Moi.', o:['목이 길고 키가 제일 커.','목이 긴 키가 제일 커.'], a:'목이 길고 키가 제일 커.', why:'두 가지를 이을 때는 고로 이어요.'}]},
+    {type:'task', title:'수수께끼 놀이', who:'moi',
+     t:'가족과 수수께끼 놀이를 해 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'집 안 물건 하나를 골라 설명해요', say:'이건 작고 빨간 거예요. 무엇일까요?', sub:'세 가지 힌트를 차례로: 크기, 색, 쓰는 곳.'},
+       {when:'가족을 설명해 봐요', say:'키가 크고 안경을 써요. 누구일까요?', sub:'머리가 길어요, 짧아요도 써 봐요.'},
+       {when:'이번엔 가족이 내는 수수께끼를 맞혀요', say:'______예요!', sub:'받침이 있으면 이에요: 연필이에요!'}],
+     parent:'집 안 물건이나 가족을 한국어로 설명하고 맞히는 놀이를 해 주세요. 한국에서는 이런 놀이를 스무고개라고 부릅니다. 아이가 "크고, 파랗고, 둥글어요"처럼 꾸미는 말을 여러 개 이어서 설명하면 크게 칭찬해 주세요. "큰"과 "커요"처럼 이름 앞과 문장 끝의 모양이 다르다는 점을 헷갈려하면, 이름이 뒤에 오는지를 함께 살펴봐 주시면 됩니다.'}
   ],
   dictWords:[] }
 ];
