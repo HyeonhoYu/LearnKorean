@@ -641,7 +641,7 @@ SCREENS.likes = S => {
   S.items.forEach(item => {
     const out = h('div', {class:'likeout', 'aria-live':'polite'});
     /* 기본은 좋아해요, 싫어해요. S.labels 와 item.lines 가 있으면 그 두 가지로 고릅니다(예: 할 수 있어요, 아직 못 해요). */
-    const labels = S.labels || ['좋아해요', '싫어해요'];
+    const labels = item.labels || S.labels || ['좋아해요', '싫어해요'];
     const lineOf = v => item.lines ? item.lines[labels.indexOf(v)] : likeLine(item.w, v);
     const btns = labels.map(v => h('button', {class:'chip', onclick: () => {
       btns.forEach(b => b.classList.toggle('on', b.textContent === v));

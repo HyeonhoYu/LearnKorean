@@ -64,13 +64,30 @@ function m7Diary(part){
   return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
 }
 ['page', 'date', 'weather', 'did', 'felt'].forEach(k => { M7_ONLY['dy_' + k] = m7Diary(k); });
+/* ---- 셋째 묶음 그림: 생각과 토론 ---- */
+M7_ONLY.think = `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="생각"><path d="M8 122 L192 122" stroke="#221F1C" stroke-width="2.6"/>
+  ${m2Person('kid', 60, 'stand', 1)}
+  <path d="M96 60 Q90 30 118 26 Q130 8 154 18 Q182 16 180 40 Q192 58 170 66 Q152 78 130 68 Q104 76 96 60 Z" fill="#FBF7EC" stroke="#221F1C" stroke-width="2.4"/>
+  <circle cx="86" cy="70" r="3.4" fill="#FBF7EC" stroke="#221F1C" stroke-width="1.6"/><circle cx="80" cy="80" r="2.2" fill="#FBF7EC" stroke="#221F1C" stroke-width="1.4"/>
+  <path d="M140 30 Q130 30 130 42 Q130 50 136 54 L136 60 L146 60 L146 54 Q152 50 152 42 Q152 30 140 30 Z" fill="#F2C14E" stroke="#221F1C" stroke-width="2"/>
+  <path d="M137 64 L145 64" stroke="#221F1C" stroke-width="2"/></svg>`;
+M7_ONLY.dog = `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="강아지"><path d="M8 120 L192 120" stroke="#221F1C" stroke-width="2.6"/>
+  <g transform="translate(100 118) scale(1.5)"><ellipse cx="4" cy="-14" rx="22" ry="12" fill="#D9A45E" stroke="#221F1C" stroke-width="2.2"/>
+  <circle cx="-18" cy="-26" r="11" fill="#D9A45E" stroke="#221F1C" stroke-width="2.2"/><path d="M-26 -32 Q-34 -20 -26 -16 Q-22 -24 -22 -30 Z" fill="#8A5A36" stroke="#221F1C" stroke-width="1.6"/>
+  <circle cx="-20" cy="-28" r="1.6" fill="#221F1C"/><circle cx="-28" cy="-23" r="2" fill="#221F1C"/>
+  <path d="M-8 -2 L-8 2 M14 -2 L14 2" stroke="#221F1C" stroke-width="4" stroke-linecap="round"/><path d="M26 -18 Q34 -26 32 -32" stroke="#221F1C" stroke-width="3" fill="none" stroke-linecap="round"/></g></svg>`;
+M7_ONLY.debate = `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="토론"><rect width="200" height="130" rx="6" fill="#EFE2C2"/>
+  <rect x="20" y="84" width="54" height="38" fill="#B08452" stroke="#221F1C" stroke-width="2.4"/><rect x="126" y="84" width="54" height="38" fill="#B08452" stroke="#221F1C" stroke-width="2.4"/>
+  ${m2Person('kid', 47, 'wave', 1).replace('translate(47 122)', 'translate(47 96)')}${m2Person('friend', 153, 'wave', -1).replace('translate(153 122)', 'translate(153 96)')}
+  <rect x="84" y="16" width="32" height="22" rx="4" fill="#FBF7EC" stroke="#221F1C" stroke-width="2"/><path d="M92 27 L108 27" stroke="#C1403A" stroke-width="3"/>
+  <path d="M60 30 L84 26 M140 30 L116 26" stroke="#8C7F63" stroke-width="2" stroke-dasharray="3 3"/></svg>`;
 const M7_PIC = Object.assign({}, M6_PIC, M7_ONLY);
 
 /* ---- 묶음 ---- */
 const M7_BUNDLES = [
   {k:1, title:'편지를 써요', topic:'편지의 틀과 안부', nights:[1, 2, 3], after:'그동안 할머니 할아버지께 손으로 편지를 한 장 써 봐.'},
   {k:2, title:'일기를 써요', topic:'글에서 쓰는 ~다 말투', nights:[4, 5, 6], after:'그동안 날마다 일기를 한 편씩 써 봐.'},
-  {k:3, title:'내 생각은요', topic:'의견과 까닭, 토론', nights:[7, 8, 9]},
+  {k:3, title:'내 생각은요', topic:'의견과 까닭, 토론', nights:[7, 8, 9], after:'그동안 가족과 작은 토론을 하며 까닭을 붙여 생각을 말해 봐.'},
   {k:4, title:'옛날이야기', topic:'해님 달님과 이야기 짓기', nights:[10, 11, 12]},
   {k:5, title:'나의 이야기', topic:'나를 소개하고 꿈 말하기', nights:[13, 14, 15]}
 ];
@@ -345,6 +362,139 @@ const M7_NIGHTS = [
        {when:'한 일을 두세 문장으로', say:'나는 ______에 갔다. 그리고 ______을 했다.', sub:'다섯째 달의 그리고, 그래서, 그런데로 이어요.'},
        {when:'맨 끝에 느낀 점', say:'정말 ______었다.', sub:'재미있었다, 기뻤다, 힘들었다.'}],
      parent:'사흘 동안 아이가 공책에 손으로 일기를 쓰게 해 주세요. 세 문장이면 충분합니다. 이번 묶음에서 처음 배운 "~다" 말투는 한국 책과 신문이 쓰는 글말이라, 앞으로 한국어 책을 읽는 데 꼭 필요합니다. 맞춤법은 틀려도 괜찮고, 문장 끝이 "~었다"로 끝났는지만 봐 주세요. 아이가 원하면 일기를 조부모님께 사진으로 보내 드려도 좋습니다.'}
+  ],
+  dictWords:[] },
+
+/* ---- 셋째 묶음: 내 생각은요 ------------------------------------------
+   의견(생각해요)과 까닭(왜냐하면 ~기 때문이에요), 그리고 다른 생각에 예의 있게 답하기(제 생각은 조금 달라요).
+   ~다고 생각해요는 둘째 묶음의 ~다 말투에 고 생각해요를 붙인 모양이라 이어서 가르칩니다(좋다 → 좋다고 생각해요).
+   토론 주제는 여름과 겨울처럼 아이들이 편하게 편을 고를 수 있는 것으로만 합니다. */
+{ n:7, bundle:3, title:'무엇이 더 좋아요?',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'여름이 좋아, 겨울이 좋아? 강아지가 좋아, 고양이가 좋아? 오늘은 내 생각을 말하고 그 까닭도 말해 볼 거야.',
+     big:'저는 이렇게 생각해요'},
+    {type:'pairs', title:'생각을 말하는 말', who:'moi',
+     t:'생각과 까닭을 말할 때 쓰는 말이야. 눌러서 들어 봐.',
+     singles:[
+       {w:'생각', pic:'think', en:'thought, opinion'}, {w:'생각해요', pic:'think', en:'I think'},
+       {w:'왜냐하면', pic:'so', en:'because (at the start)'}, {w:'까닭', pic:'what', en:'reason'},
+       {w:'토론', pic:'debate', en:'debate, discussion'}, {w:'강아지', pic:'dog', en:'puppy, dog'}],
+     tip:{who:'dami', t:'생각을 말할 때는 까닭을 함께 말해야 힘이 생긴단다. 여름이 좋아요, 하고 끝내지 말고, 왜냐하면 수영을 할 수 있기 때문이에요, 하고 이어 보거라.'}},
+    {type:'likes', title:'나는 어느 쪽?', who:'tori',
+     t:'둘 가운데 더 좋은 쪽을 골라 봐. 네 생각을 말하는 문장이 만들어져. 정답은 없어!',
+     items:[
+       {w:'여름과 겨울', pic:'w_summer', labels:['여름', '겨울'], lines:['저는 여름이 더 좋다고 생각해요.', '저는 겨울이 더 좋다고 생각해요.']},
+       {w:'강아지와 고양이', pic:'dog', labels:['강아지', '고양이'], lines:['저는 강아지가 더 좋다고 생각해요.', '저는 고양이가 더 좋다고 생각해요.']},
+       {w:'산과 바다', pic:'high', labels:['산', '바다'], lines:['저는 산이 더 좋다고 생각해요.', '저는 바다가 더 좋다고 생각해요.']},
+       {w:'김밥과 떡볶이', pic:'f_gimbap', labels:['김밥', '떡볶이'], lines:['저는 김밥이 더 좋다고 생각해요.', '저는 떡볶이가 더 좋다고 생각해요.']}],
+     tip:{who:'moi', t:'이/가를 잘 봐. 받침이 있는 여름, 산, 김밥에는 이, 받침이 없는 바다, 떡볶이에는 가야.'}},
+    {type:'choose', title:'까닭을 이어요', who:'tori',
+     t:'생각과 어울리는 까닭을 골라 봐.',
+     qs:[
+       {pic:'w_summer', t:'저는 여름이 좋아요. 왜냐하면 ...', o:['수영을 할 수 있기 때문이에요.','눈사람을 만들 수 있기 때문이에요.'], a:'수영을 할 수 있기 때문이에요.'},
+       {pic:'w_winter', t:'저는 겨울이 좋아요. 왜냐하면 ...', o:['눈이 오기 때문이에요.','더운 날이 많기 때문이에요.'], a:'눈이 오기 때문이에요.'},
+       {pic:'dog', t:'저는 강아지가 좋아요. 왜냐하면 ...', o:['같이 산책할 수 있기 때문이에요.','하늘을 날 수 있기 때문이에요.'], a:'같이 산책할 수 있기 때문이에요.'},
+       {pic:'think', t:'생각을 말할 때 까닭 앞에 붙이는 말은?', o:['왜냐하면','그리고','마지막에'], a:'왜냐하면'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 그림을 찾아 봐.',
+     qs:[
+       {say:'강아지', o:['cat','dog','rabbit'], a:'dog'},
+       {say:'토론', o:['debate','hg_present','s_classroom'], a:'debate'},
+       {say:'생각', o:['think','what','dy_page'], a:'think'},
+       {say:'바다', o:['high','w_summer','w_winter'], a:'w_summer'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'생각을 말하는 말을 써 봐.',
+     items:[{w:'생각', en:'thought'}, {w:'까닭', en:'reason', hint:{who:'dami', t:'‘닭’에는 ㄹ과 ㄱ이 함께 있단다. 읽어요, 맑아요의 그 받침이지.'}}, {w:'토론', en:'debate'}]}
+  ],
+  dictWords:[{w:'생각', en:'thought'}, {w:'까닭', en:'reason'}, {w:'토론', en:'debate'}, {w:'왜냐하면', en:'because'}, {w:'강아지', en:'puppy'}] },
+
+{ n:8, bundle:3, title:'왜냐하면',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 생각과 까닭을 한 번에 말해 볼 거야. 그리고 친구 생각이 나와 다를 때 예의 있게 말하는 법도 배워.',
+     big:'왜냐하면 ~기 때문이에요'},
+    {type:'tense', title:'생각과 까닭', who:'dami',
+     t:'까닭은 왜냐하면으로 시작해서 기 때문이에요로 끝낸단다. 그리고 생각은 둘째 묶음의 다 말투에 고 생각해요를 붙이지.',
+     cols:['말할 때', '생각과 까닭으로'],
+     groups:[
+       {rule:'까닭: 요 앞부분에 기 때문이에요', rows:[['재미있어요','재미있기 때문이에요'], ['눈이 와요','눈이 오기 때문이에요'], ['수영할 수 있어요','수영할 수 있기 때문이에요'], ['좋아해요','좋아하기 때문이에요']]},
+       {rule:'생각: 다에 고 생각해요', rows:[['좋아요','좋다고 생각해요'], ['재미있어요','재미있다고 생각해요'], ['쉬워요','쉽다고 생각해요']]}],
+     note:'쉬워요가 쉽다로 바뀌는 것처럼 모양이 조금 바뀌는 말도 있단다. 처음에는 좋다, 재미있다처럼 쉬운 말로 연습하거라.'},
+    {type:'pairs', title:'다른 생각에 답하기', who:'dami',
+     t:'생각이 다를 때는 예의 있게 말해야 한단다. 친구와 어른께 하는 말이 조금 다르지.',
+     pairs:[
+       {when:'생각이 다를 때', pic:'debate', friend:'내 생각은 좀 달라.', elder:'제 생각은 조금 달라요.', en:'I think a little differently.'},
+       {when:'상대 말을 인정할 때', pic:'pl5_together', friend:'네 말도 맞아.', elder:'말씀도 맞아요.', en:'You have a point too.'}],
+     tip:{who:'tori', t:'다른 생각을 말하기 전에 네 말도 맞아, 하고 먼저 들어 주면 토론이 싸움이 되지 않아.'}},
+    {type:'choose', title:'바르게 말한 쪽은?', who:'tori',
+     t:'생각과 까닭을 바르게 말한 쪽을 골라 봐.',
+     qs:[
+       {pic:'w_winter', o:['겨울이 좋다고 생각해요.','겨울이 좋아요고 생각해요.'], a:'겨울이 좋다고 생각해요.', en:'I think winter is good.'},
+       {pic:'s_play', o:['왜냐하면 재미있기 때문이에요.','왜냐하면 재미있어요 때문이에요.'], a:'왜냐하면 재미있기 때문이에요.', en:"Because it's fun."},
+       {pic:'debate', t:'친구와 생각이 달라요.', o:['내 생각은 좀 달라.','너는 틀렸어!'], a:'내 생각은 좀 달라.', why:'다른 생각은 예의 있게 말해요.'},
+       {pic:'p_teacher', t:'선생님과 생각이 달라요.', o:['제 생각은 조금 달라요.','내 생각은 좀 달라.'], a:'제 생각은 조금 달라요.', why:'어른께는 제 생각은으로 말해요.'}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'저는 여름이 더 좋다고 생각해요.', tiles:['저는','여름이','더','좋다고','생각해요.'], extra:['좋아요고'], en:'I think summer is better.'},
+       {s:'왜냐하면 수영할 수 있기 때문이에요.', tiles:['왜냐하면','수영할','수','있기','때문이에요.'], en:'Because I can swim.'},
+       {s:'제 생각은 조금 달라요.', tiles:['제','생각은','조금','달라요.'], extra:['틀렸어요.'], en:'I think a little differently.'},
+       {s:'네 말도 맞아.', tiles:['네','말도','맞아.'], en:'You have a point too.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'생각을 말하는 말에는 ㅎ이 부리는 재주가 숨어 있단다.',
+     cmp:[
+       {s:'생각해요', d:'생가캐요', n:'ㄱ과 ㅎ이 만나 ㅋ 소리가 나요'},
+       {s:'좋다고', d:'조타고', n:'ㅎ과 ㄷ이 만나 ㅌ 소리가 나요'},
+       {s:'때문이에요', d:'때무니에요', n:'ㄴ 받침이 뒤로 건너가요'},
+       {s:'왜냐하면', d:'왜냐하면', n:'받침이 없어서 그대로 나요'}],
+     note:'ㅎ은 이웃 소리와 만나면 거센소리로 바꿔 놓는 재주가 있단다. ㄱ과 만나면 ㅋ, ㄷ과 만나면 ㅌ. 넷째 달의 못 해요가 [모태요]였던 것도 같은 재주지.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'생각해요', en:'I think', hint:{who:'dami', t:'소리는 [생가캐요]지만 ‘생각’에 ‘해요’를 붙인단다.'}},
+       {w:'좋다고', en:'that it is good', hint:{who:'dami', t:'소리는 [조타고]지만 ‘좋’에는 조용한 ㅎ 받침이 있단다.'}},
+       {w:'때문이에요', en:"it's because"}]}
+  ],
+  dictWords:[{w:'생각해요', en:'I think'}, {w:'좋다고', en:'that it is good'}, {w:'때문이에요', en:"it's because"}] },
+
+{ n:9, bundle:3, title:'여름이냐 겨울이냐',
+  steps:[
+    {type:'intro', who:'dami',
+     t:'오늘 한글학교에서 작은 토론을 한단다. 여름과 겨울 가운데 무엇이 더 좋을까? 먼저 글자 없이 귀로만 들어 보거라.',
+     big:'여름이 좋아요, 겨울이 좋아요?'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 토리와 모이가 어떤 까닭을 말하는지 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'dami', t:'오늘은 여름과 겨울 가운데 무엇이 더 좋은지 이야기해 봐요.', en:"Today let's talk about which is better, summer or winter."},
+       {who:'tori', t:'저는 겨울이 더 좋다고 생각해요. 왜냐하면 눈사람을 만들 수 있기 때문이에요.', en:'I think winter is better. Because I can make a snowman.'},
+       {who:'moi', t:'제 생각은 조금 달라요. 저는 여름이 더 좋다고 생각해요.', en:'I think a little differently. I think summer is better.'},
+       {who:'moi', t:'왜냐하면 바다에서 수영할 수 있기 때문이에요.', en:'Because I can swim in the ocean.'},
+       {who:'tori', t:'모이 말도 맞아요. 여름에는 수박도 먹을 수 있어요.', en:"Moi has a point. In summer you can eat watermelon too."},
+       {who:'moi', t:'토리 말도 맞아요. 겨울에는 설날도 있어요!', en:"Tori has a point too. In winter there's Seollal!"},
+       {who:'dami', t:'허허, 둘 다 까닭을 잘 말했어요. 서로 다른 생각을 들어 주는 것, 그게 좋은 토론이란다.', en:'Ho ho, you both gave good reasons. Listening to different ideas, that is a good discussion.'},
+       {who:'tori', t:'그럼 봄이랑 가을은요?', en:'Then what about spring and fall?'}],
+     note:{who:'dami', t:'토론은 누가 이기는 게 아니란다. 토리와 모이는 자기 생각을 까닭과 함께 말했고, 서로 말도 맞다고 인정해 주었지. 그리고 둘 다 겨울의 설날, 여름의 수영처럼 앞서 배운 것을 까닭으로 가져왔구나.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 토론을 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'토리는 무엇이 더 좋다고 했어요?', o:['여름','겨울'], a:'겨울'},
+       {t:'토리의 까닭은 무엇이에요?', o:['눈사람을 만들 수 있어서','수영할 수 있어서'], a:'눈사람을 만들 수 있어서'},
+       {t:'모이는 생각이 다를 때 뭐라고 했어요?', o:['제 생각은 조금 달라요.','토리는 틀렸어요.'], a:'제 생각은 조금 달라요.'},
+       {t:'좋은 토론이란 무엇이라고 했어요?', o:['서로 다른 생각을 들어 주는 것','크게 말하는 것'], a:'서로 다른 생각을 들어 주는 것'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 말하는지 잘 보고 대답해 봐.',
+     qs:[
+       {line:{who:'moi', t:'토리야, 나는 여름이 더 좋아!'}, en:'Tori, I like summer better!', o:['네 말도 맞아. 그런데 나는 겨울이 좋아.','너는 틀렸어.'], a:'네 말도 맞아. 그런데 나는 겨울이 좋아.', why:'먼저 인정하고, 그런데로 내 생각을 말해요.'},
+       {line:{who:'dami', t:'토리야, 왜 겨울이 좋으냐?'}, en:'Tori, why do you like winter?', o:['왜냐하면 설날이 있기 때문이에요.','왜냐하면 설날이 있어요 때문이에요.'], a:'왜냐하면 설날이 있기 때문이에요.'},
+       {pic:'think', t:'생각을 말하는 문장으로 알맞은 것은?', o:['저는 봄이 좋다고 생각해요.','저는 봄이 좋다 생각해요고.'], a:'저는 봄이 좋다고 생각해요.'}]},
+    {type:'task', title:'우리 집 작은 토론', who:'moi',
+     t:'가족과 작은 토론을 해 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'주제를 하나 골라요', say:'아침에 밥이 좋아요, 빵이 좋아요?', sub:'여름과 겨울, 강아지와 고양이도 좋아요.'},
+       {when:'생각과 까닭을 말해요', say:'저는 ______이 좋다고 생각해요. 왜냐하면 ______기 때문이에요.', sub:'까닭은 하나면 충분해요.'},
+       {when:'다른 생각을 들으면', say:'말씀도 맞아요. 그런데 제 생각은 조금 달라요.', sub:'형제에게는 네 말도 맞아, 내 생각은 좀 달라.'}],
+     parent:'저녁 식탁에서 가볍게 편을 나눌 수 있는 주제로 토론해 보세요. 누가 옳은지가 아니라, 아이가 "생각해요"와 "왜냐하면 ~기 때문이에요"로 까닭을 붙여 말하는지를 봐 주시면 됩니다. 부모님이 일부러 다른 편을 들어 주시면 아이가 "제 생각은 조금 달라요"를 연습할 기회가 생깁니다. 다른 사람의 생각을 먼저 인정하고 자기 생각을 말하는 태도도 함께 칭찬해 주세요.'}
   ],
   dictWords:[] }
 ];
