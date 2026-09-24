@@ -130,6 +130,46 @@ function m6Seol(kind){
   return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
 }
 ['hanbok', 'sebae', 'money', 'tteokguk', 'yut', 'newyear', 'family'].forEach(k => { M6_ONLY['seol_' + k] = m6Seol(k); });
+/* ---- 넷째 묶음 그림: 추석 ---- */
+const m6Songp = (x, y, c, k) => `<g transform="translate(${x} ${y}) scale(${k || 1})"><path d="M-14 4 Q-14 -12 0 -12 Q14 -12 14 4 Z" fill="${c}" stroke="#221F1C" stroke-width="2"/><path d="M-8 -2 Q0 -6 8 -2" stroke="#FBF7EC" stroke-width="1.2" fill="none" opacity=".6"/></g>`;
+const m6Moon = (cx, cy, r, rabbit) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#F6E3A1" stroke="#221F1C" stroke-width="2.6"/>
+  ${rabbit ? `<g transform="translate(${cx} ${cy}) scale(${r / 40})" fill="#D9BD6A" opacity=".9">
+    <ellipse cx="-8" cy="8" rx="12" ry="9"/><circle cx="-2" cy="-4" r="7"/><path d="M-4 -10 Q-8 -26 -4 -26 Q0 -20 0 -10 Z M1 -10 Q3 -26 7 -24 Q7 -16 3 -10 Z"/>
+    <rect x="8" y="6" width="14" height="12" rx="2"/><path d="M4 -6 L18 6" stroke="#D9BD6A" stroke-width="3"/></g>` : ''}`;
+function m6Chu(kind){
+  const S = '#221F1C', night = '<rect width="200" height="130" rx="6" fill="#17324A"/>';
+  const g = {
+    songpyeon: `<ellipse cx="100" cy="88" rx="78" ry="24" fill="#FBF7EC" stroke="${S}" stroke-width="3"/>
+      <path d="M40 84 L70 76 M130 76 L160 84 M60 94 L88 90" stroke="#6E8F58" stroke-width="2" stroke-linecap="round"/>
+      ${[[70, 80, '#FBF7EC'], [100, 76, '#E8A0A0'], [130, 80, '#9DBA7E'], [84, 92, '#E3A93C'], [116, 92, '#FBF7EC']].map(([x, y, c]) => m6Songp(x, y, c, 1.3)).join('')}`,
+    fullmoon: `${night}${m6Moon(100, 56, 38, false)}<path d="M0 108 Q50 88 100 102 Q150 86 200 104 L200 130 L0 130 Z" fill="#3E5B4A" stroke="${S}" stroke-width="2"/>
+      <g fill="#F5E6BD"><circle cx="30" cy="24" r="1.6"/><circle cx="170" cy="30" r="1.8"/><circle cx="150" cy="80" r="1.4"/></g>`,
+    moonrabbit: `${night}${m6Moon(100, 64, 52, true)}<g fill="#F5E6BD"><circle cx="24" cy="20" r="1.6"/><circle cx="176" cy="28" r="1.8"/></g>`,
+    ganggang: `${night}${m6Moon(100, 30, 20, false)}<ellipse cx="100" cy="100" rx="70" ry="18" fill="none" stroke="#F5E6BD" stroke-width="2" stroke-dasharray="4 4"/>
+      ${[0, 1, 2, 3, 4, 5].map(i => { const a = i / 6 * Math.PI * 2, x = 100 + Math.cos(a) * 64, y = 96 + Math.sin(a) * 16;
+        return `<g transform="translate(${x.toFixed(0)} ${y.toFixed(0)})"><path d="M-7 14 L-5 -4 L5 -4 L7 14 Z" fill="${['#C1403A', '#2D6E8E', '#E3A93C', '#6E8F58', '#D98B7E', '#9DB4C6'][i]}" stroke="${S}" stroke-width="1.4"/><circle cx="0" cy="-10" r="6" fill="#F0D9BE" stroke="${S}" stroke-width="1.4"/><path d="M-6 -14 C-7 -20 7 -20 6 -14 Z" fill="#221F1C"/></g>`; }).join('')}`,
+    wish: `${night}${m6Moon(150, 38, 24, false)}<path d="M0 118 L200 118 L200 130 L0 130 Z" fill="#3E5B4A"/>
+      <g transform="translate(76 118)"><path d="M-16 0 L-14 -40 L14 -40 L16 0 Z" fill="#2D6E8E" stroke="${S}" stroke-width="2.4"/>
+      <circle cx="0" cy="-54" r="14" fill="#F0D9BE" stroke="${S}" stroke-width="2.4"/><path d="M-14 -58 C-16 -74 16 -74 14 -58 C8 -66 -8 -66 -14 -58 Z" fill="#221F1C"/>
+      <path d="M-5 -54 q2 2 4 0 M3 -54 q2 2 4 0" stroke="${S}" stroke-width="1.6" fill="none"/>
+      <path d="M-4 -38 L0 -26 L4 -38 Z" fill="#F0D9BE" stroke="${S}" stroke-width="1.6"/></g>
+      <g fill="#F2C14E"><path d="M106 70 l2 4 l4 1 l-3 3 l1 4 l-4 -2 l-4 2 l1 -4 l-3 -3 l4 -1 Z"/></g>`,
+    s_dough: `<ellipse cx="100" cy="108" rx="60" ry="10" fill="#E0C49A"/><circle cx="100" cy="76" r="30" fill="#FBF7EC" stroke="${S}" stroke-width="3"/>`,
+    s_fill: `<ellipse cx="100" cy="108" rx="60" ry="10" fill="#E0C49A"/><path d="M60 80 Q60 44 100 44 Q140 44 140 80 Q140 100 100 100 Q60 100 60 80 Z" fill="#FBF7EC" stroke="${S}" stroke-width="3"/>
+      <ellipse cx="100" cy="72" rx="18" ry="10" fill="#8A5A36" stroke="${S}" stroke-width="2"/><g fill="#D9BD6A"><circle cx="94" cy="70" r="2"/><circle cx="104" cy="74" r="2"/></g>`,
+    s_shape: `<ellipse cx="100" cy="108" rx="60" ry="10" fill="#E0C49A"/>${m6Songp(100, 92, '#FBF7EC', 3.2)}`,
+    s_steam: `<rect x="44" y="60" width="112" height="50" rx="6" fill="#B08452" stroke="${S}" stroke-width="3"/>
+      <path d="M50 64 L150 64" stroke="#6E8F58" stroke-width="4"/>${[70, 100, 130].map(x => m6Songp(x, 60, '#FBF7EC', 1.2)).join('')}
+      <path d="M72 44 Q66 32 74 22 M100 44 Q94 32 102 22 M128 44 Q122 32 130 22" stroke="#C9C0AE" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+    family: `<rect width="200" height="130" rx="6" fill="#F3E3C0"/>
+      <rect x="30" y="80" width="140" height="10" fill="#B08452" stroke="${S}" stroke-width="2"/>
+      ${[[60, '#FBF7EC'], [90, '#E8A0A0'], [120, '#9DBA7E']].map(([x, c]) => m6Songp(x, 76, c, 1)).join('')}
+      ${m2Person('grandma', 36, 'give', 1).replace('translate(36 122)', 'translate(36 118)')}${m6Hanbok(164, .7)}`
+  }[kind];
+  const label = {songpyeon:'송편', fullmoon:'보름달', moonrabbit:'달토끼', ganggang:'강강술래', wish:'소원', s_dough:'반죽을 동그랗게 빚어요', s_fill:'소를 넣어요', s_shape:'반달 모양으로 빚어요', s_steam:'솔잎을 깔고 쪄요', family:'추석'}[kind];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
+}
+['songpyeon', 'fullmoon', 'moonrabbit', 'ganggang', 'wish', 's_dough', 's_fill', 's_shape', 's_steam', 'family'].forEach(k => { M6_ONLY['chu_' + k] = m6Chu(k); });
 const M6_PIC = Object.assign({}, M5_PIC, M6_ONLY);
 
 /* ---- 묶음 ---- */
@@ -137,7 +177,7 @@ const M6_BUNDLES = [
   {k:1, title:'더 커요, 제일 커요', topic:'견주는 말', nights:[1, 2, 3], after:'그동안 가족끼리 누가 더 큰지, 누가 제일 빠른지 견주어 말해 봐.'},
   {k:2, title:'어떻게 생겼어요?', topic:'꾸미는 말과 설명하기', nights:[4, 5, 6], after:'그동안 가족과 수수께끼 놀이를 하며 물건을 설명해 봐.'},
   {k:3, title:'설날', topic:'세배, 떡국, 새해 인사', nights:[7, 8, 9], after:'그동안 가족에게 세배하는 법을 연습하고 새해 인사를 해 봐.'},
-  {k:4, title:'추석', topic:'송편, 보름달, 달토끼 옛이야기', nights:[10, 11, 12]},
+  {k:4, title:'추석', topic:'송편, 보름달, 달토끼 옛이야기', nights:[10, 11, 12], after:'그동안 보름달이 뜨면 가족과 달을 보며 소원을 빌어 봐.'},
   {k:5, title:'세종대왕과 한글', topic:'한글이 생긴 이야기', nights:[13, 14, 15]}
 ];
 
@@ -547,6 +587,137 @@ const M6_NIGHTS = [
        {when:'세뱃돈이나 선물을 받을 때', say:'감사합니다.', sub:'두 손으로 받아요.'},
        {when:'떡국을 먹으며', say:'떡국을 먹으면 한 살 더 먹어요!', sub:'가족과 윷놀이도 해 봐요.'}],
      parent:'설날에 조부모님께 세배를 드리거나, 멀리 계시면 영상 통화로 새해 인사를 드리게 해 주세요. 세배는 남자아이와 여자아이의 절하는 방법이 조금 다르니 부모님이 한 번 보여 주시면 좋습니다. 설날 아침에 조상께 차례를 지내는 집도 있고, 교회나 성당에 가거나 가족끼리 떡국만 나누는 집도 있습니다. 어느 쪽이든 집안의 방식대로 설명해 주시면 됩니다. 한국은 2023년부터 공식적으로 만 나이를 쓰지만, "떡국 먹으면 한 살 더 먹는다"는 말은 지금도 설날의 정다운 인사로 쓰입니다.'}
+  ],
+  dictWords:[] },
+
+/* ---- 넷째 묶음: 추석 ---------------------------------------------
+   추석(한가위), 송편, 보름달, 강강술래, 소원과 추석 인사.
+   둘째 밤에 송편 빚는 순서와 소원 빌기(~게 해 주세요)를 익힙니다.
+   셋째 밤에 달 속 토끼가 떡방아를 찧는 옛이야기로 사이트 이름 달토끼와 토리의 뿌리를 풀어 줍니다.
+   약속대로 성묘와 차례는 부모님 안내에서만 짧게 소개합니다. */
+{ n:10, bundle:4, title:'추석이에요',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'설날만큼 큰 명절이 또 있어. 바로 추석! 가을에 가족이 모여 햇곡식으로 음식을 만들고 보름달을 보는 날이야.',
+     big:'즐거운 추석 보내세요'},
+    {type:'pairs', title:'추석에 만나는 말', who:'moi',
+     t:'추석에 보고 듣는 것이야. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'추석', pic:'chu_family', en:'Chuseok (harvest festival)'}, {w:'한가위', pic:'chu_fullmoon', en:'another name for Chuseok'},
+       {w:'송편', pic:'chu_songpyeon', en:'half-moon rice cakes'}, {w:'보름달', pic:'chu_fullmoon', en:'full moon'},
+       {w:'강강술래', pic:'chu_ganggang', en:'ganggangsullae (circle dance)'}, {w:'소원', pic:'chu_wish', en:'wish'}],
+     tip:{who:'dami', t:'추석은 음력 팔월 보름, 한 해 가운데 달이 가장 밝고 둥근 날이란다. 양력으로는 보통 구월이나 시월에 오지. 한가위는 추석을 부르는 또 다른 이름이란다.'}},
+    {type:'pairs', title:'추석 인사', who:'dami',
+     t:'추석에 나누는 인사란다.',
+     pairs:[{when:'추석 인사', pic:'chu_fullmoon', friend:'즐거운 추석 보내!', elder:'즐거운 추석 보내세요.', en:'Have a happy Chuseok!'}]},
+    {type:'choose', title:'추석의 말', who:'tori',
+     t:'그림을 보고 알맞은 말을 골라 봐.',
+     qs:[
+       {pic:'chu_songpyeon', o:['떡국','송편','떡볶이'], a:'송편', why:'추석에는 송편, 설날에는 떡국이에요.'},
+       {pic:'chu_ganggang', o:['강강술래','윷놀이','숨바꼭질'], a:'강강술래', why:'보름달 아래에서 손을 잡고 둥글게 도는 놀이예요.'},
+       {pic:'chu_fullmoon', o:['보름달','해','별'], a:'보름달'},
+       {pic:'seol_tteokguk', t:'설날에 먹는 음식은?', o:['떡국','송편'], a:'떡국', why:'떡국은 설날, 송편은 추석이에요.'},
+       {pic:'p_grandpa', t:'추석에 할아버지께 인사해요.', o:['즐거운 추석 보내!','즐거운 추석 보내세요.'], a:'즐거운 추석 보내세요.'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 그림을 찾아 봐.',
+     qs:[
+       {say:'소원', o:['chu_wish','chu_songpyeon','chu_ganggang'], a:'chu_wish'},
+       {say:'송편', o:['seol_tteokguk','chu_songpyeon','f_tteok'], a:'chu_songpyeon'},
+       {say:'강강술래', o:['chu_ganggang','seol_yut','pl5_together'], a:'chu_ganggang'},
+       {say:'설날', o:['chu_family','seol_family'], a:'seol_family'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'추석 말을 써 봐.',
+     items:[{w:'추석', en:'Chuseok'}, {w:'송편', en:'songpyeon'}, {w:'소원', en:'wish'}]}
+  ],
+  dictWords:[{w:'추석', en:'Chuseok'}, {w:'한가위', en:'Hangawi'}, {w:'송편', en:'songpyeon'}, {w:'보름달', en:'full moon'}, {w:'소원', en:'wish'}] },
+
+{ n:11, bundle:4, title:'소원을 빌어요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 송편을 빚고 보름달에 소원을 빌 거야. 소원은 ‘~게 해 주세요’로 말해.',
+     big:'한국어를 잘하게 해 주세요'},
+    {type:'sequence', title:'송편 빚는 순서', who:'moi',
+     t:'송편 만드는 순서가 섞였어. 차례대로 눌러 줘.',
+     qs:[
+       {cards:[{pic:'chu_s_dough', t:'반죽을 동그랗게 빚어요.'}, {pic:'chu_s_fill', t:'가운데에 소를 넣어요.'}, {pic:'chu_s_shape', t:'반달 모양으로 빚어요.'}, {pic:'chu_s_steam', t:'솔잎을 깔고 쪄요.'}]}]},
+    {type:'tense', title:'소원을 말해요', who:'dami',
+     t:'바라는 것을 빌 때는 요 앞부분에 게 해 주세요를 붙인단다. 받침이 있어도 없어도 늘 게야.',
+     cols:['지금', '소원'],
+     groups:[
+       {rule:'게 해 주세요', rows:[['건강해요','건강하게 해 주세요'], ['행복해요','행복하게 해 주세요'], ['잘해요','잘하게 해 주세요'], ['커요','크게 해 주세요'], ['많아요','많게 해 주세요']]}],
+     note:'받침 삼 형제와 달리 게는 받침을 따지지 않는단다. 크게, 많게, 건강하게. 그리고 소원은 나보다 다른 사람을 위해 빌 때 더 빛나는 법이지.'},
+    {type:'choose', title:'어떤 소원일까요?', who:'tori',
+     t:'소원을 바르게 말한 쪽을 골라 봐.',
+     qs:[
+       {pic:'p_grandma', o:['할머니가 건강하게 해 주세요.','할머니가 건강해 해 주세요.'], a:'할머니가 건강하게 해 주세요.', en:'Please let Grandma be healthy.'},
+       {pic:'s_hangeul', o:['한국어를 잘하게 해 주세요.','한국어를 잘하게 주세요.'], a:'한국어를 잘하게 해 주세요.', en:'Please let me be good at Korean.'},
+       {pic:'seol_family', o:['우리 가족이 행복하게 해 주세요.','우리 가족이 행복하게 해.'], a:'우리 가족이 행복하게 해 주세요.', en:'Please let my family be happy.', why:'소원은 높이는 말로 빌어요.'},
+       {pic:'chu_s_shape', t:'송편은 어떤 모양이에요?', o:['반달 모양이에요.','네모 모양이에요.'], a:'반달 모양이에요.', en:"It's a half-moon shape."}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'추석에 가족이 모여요.', tiles:['추석에','가족이','모여요.'], en:'Families gather on Chuseok.'},
+       {s:'보름달에 소원을 빌어요.', tiles:['보름달에','소원을','빌어요.'], extra:['소원를'], en:'I make a wish on the full moon.'},
+       {s:'송편을 반달 모양으로 빚어요.', tiles:['송편을','반달','모양으로','빚어요.'], en:'I shape songpyeon into a half moon.'},
+       {s:'할머니가 건강하게 해 주세요.', tiles:['할머니가','건강하게','해','주세요.'], extra:['건강해'], en:'Please let Grandma be healthy.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'추석 말에도 소리 비밀이 숨어 있단다.',
+     cmp:[
+       {s:'보름달', d:'보름딸', n:'두 말이 붙으면서 뒤의 ㄷ이 ㄸ처럼 나요'},
+       {s:'추석에', d:'추서게', n:'ㄱ 받침이 뒤로 건너가요'},
+       {s:'빌어요', d:'비러요', n:'ㄹ 받침이 뒤로 건너가요'},
+       {s:'송편을', d:'송펴늘', n:'ㄴ 받침이 뒤로 건너가요'}],
+     note:'보름과 달이 붙은 보름달은 [보름딸]로 소리 난단다. 설날의 세뱃돈이 [세배똔]인 것과 비슷하지. 두 말이 붙어 한 말이 되면 뒤가 세게 나기도 한단다.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'보름달', en:'full moon', hint:{who:'dami', t:'소리는 [보름딸]이지만 ‘보름’과 ‘달’이란다. ㄸ이 아니라 ㄷ을 쓰거라.'}},
+       {w:'빌어요', en:'wish, pray', hint:{who:'dami', t:'소리는 [비러요]지만 ‘빌’에 받침 ㄹ이 있단다.'}},
+       {w:'건강', en:'health'}]}
+  ],
+  dictWords:[{w:'빌어요', en:'make a wish'}, {w:'건강', en:'health'}, {w:'반달', en:'half moon'}, {w:'행복', en:'happiness'}] },
+
+{ n:12, bundle:4, title:'달토끼 이야기',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'추석 밤, 할머니 댁 마당에서 보름달을 봐. 오늘은 달토끼라는 이름에 숨은 이야기를 들을 거야. 먼저 글자 없이 귀로만 들어 봐.',
+     big:'달에 토끼가 살아요?'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 보름달 속에 무엇이 있는지 잘 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'moi', t:'와, 보름달이 아주 커요!', en:'Wow, the full moon is so big!'},
+       {who:'halmi', t:'저 달을 잘 보거라. 무엇이 보이니?', en:'Look closely at the moon. What do you see?'},
+       {who:'tori', t:'음, 토끼가 보여요! 방아를 찧어요!', en:"Hmm, I see a rabbit! It's pounding with a mortar!"},
+       {who:'halmi', t:'그렇단다. 옛날부터 달에는 토끼가 계수나무 아래에서 떡방아를 찧는다고 했지. 그 토끼를 달토끼라고 부른단다.', en:'That is right. Since long ago, people have said a rabbit pounds rice cakes under a laurel tree on the moon. We call it the moon rabbit.'},
+       {who:'moi', t:'토리야, 너도 토끼잖아! 혹시 저 토끼가 너야?', en:"Tori, you're a rabbit too! Could that rabbit be you?"},
+       {who:'tori', t:'헤헤, 나는 밤마다 한국어 방아를 찧는 달토끼야!', en:"Hehe, I'm a moon rabbit who pounds Korean every night!"},
+       {who:'halmi', t:'허허, 그래서 밤마다 한 밤씩 달을 채웠구나.', en:'Ho ho, so that is why you filled the moon one night at a time.'},
+       {who:'tori', t:'할머니, 저도 소원을 빌래요. 한국어를 더 잘하게 해 주세요!', en:'Grandma, I want to make a wish too. Please let me get even better at Korean!'}],
+     note:{who:'halmi', t:'첫째 달부터 토리가 방아를 찧어 보자고 했지? 방아를 찧으면 곡식이 떡이 되듯, 날마다 한 밤씩 배우면 말이 쌓인단다. 달이 한 밤씩 차서 보름달이 되는 것처럼 말이야. 그게 달토끼라는 이름의 뜻이란다.'}},
+    {type:'sequence', title:'추석 하루', who:'moi',
+     t:'토리의 추석 하루를 차례대로 눌러 줘.',
+     qs:[
+       {cards:[{pic:'chu_family', t:'가족이 모였어요.'}, {pic:'chu_s_shape', t:'송편을 빚었어요.'}, {pic:'chu_ganggang', t:'강강술래를 했어요.'}, {pic:'chu_moonrabbit', t:'보름달을 보며 소원을 빌었어요.'}]}]},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'보름달 속에 무엇이 보여요?', o:['토끼','거북이','까치'], a:'토끼'},
+       {t:'달토끼는 무엇을 해요?', o:['떡방아를 찧어요','수영을 해요','잠을 자요'], a:'떡방아를 찧어요'},
+       {t:'달토끼는 무슨 나무 아래에 있어요?', o:['계수나무','사과나무','소나무'], a:'계수나무', why:'할머니는 ‘계수나무 아래에서’라고 하셨어요.'},
+       {t:'토리의 소원은 무엇이에요?', o:['한국어를 더 잘하게 해 주세요','떡을 많이 먹게 해 주세요'], a:'한국어를 더 잘하게 해 주세요'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {pic:'chu_moonrabbit', line:{who:'halmi', t:'토리야, 달에 무엇이 보이니?'}, en:'Tori, what do you see on the moon?', o:['토끼가 보여요.','토끼가 보여.'], a:'토끼가 보여요.', why:'할머니께는 보여요로 대답해요.'},
+       {pic:'chu_songpyeon', line:{who:'moi', t:'토리야, 송편 몇 개 먹었어?'}, en:'Tori, how many songpyeon did you eat?', o:['세 개 먹었어.','삼 개 먹었어.'], a:'세 개 먹었어.', why:'물건은 하나, 둘로 세요.'},
+       {pic:'chu_wish', t:'보름달에 가족을 위해 소원을 빌어요.', en:'Make a wish for your family.', o:['우리 가족이 건강하게 해 주세요.','우리 가족이 건강해.'], a:'우리 가족이 건강하게 해 주세요.'}]},
+    {type:'task', title:'보름달 소원', who:'moi',
+     t:'보름달이 뜨는 날 밤에 해 봐. 추석이 아니어도 보름달이면 돼. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'가족과 달을 보며', say:'달에 토끼가 보여요!', sub:'무엇이 보이는지 서로 말해 봐요.'},
+       {when:'소원을 빌어요', say:'______게 해 주세요.', sub:'가족을 위한 소원도 하나: 할머니가 건강하게 해 주세요.'},
+       {when:'가족에게 이야기를 들려줘요', say:'달에는 토끼가 떡방아를 찧어요.', sub:'달토끼 이야기를 한국어로 짧게 들려줘요.'}],
+     parent:'보름달이 뜨는 날 아이와 함께 달을 보며 "토끼가 보여요?"라고 물어봐 주세요. 한국에서는 달의 어두운 무늬를 계수나무 아래에서 방아를 찧는 토끼로 보아 왔습니다. 추석은 음력 팔월 보름으로 보통 구월이나 시월에 옵니다. 추석에는 조상의 산소에 가거나(성묘) 차례를 지내는 집도 있고, 가족끼리 음식을 나누며 지내는 집도 있으니 집안의 방식대로 이야기해 주시면 됩니다. 송편 대신 반달 모양 쿠키나 떡을 사서 함께 먹으며 이야기해도 충분합니다.'}
   ],
   dictWords:[] }
 ];
