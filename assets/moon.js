@@ -82,7 +82,7 @@ const qt = t => /[?]$/.test(t) ? '‘' + t + '’' : t;
 function waitLine(){
   const last = openBundles().pop(), nb = nextClosed();
   return (last ? qt(last.title) + ' 묶음까지 다 마쳤어. ' : '') +
-    (nb ? '다음 묶음 ' + josa(qt(nb.title), '은') + ' 곧 열려. 그동안 받아쓰기실에서 방아를 찧어 보자.' : (MOON.nextPath ? MOON.name + ' 보름달이 떴어! 이제 ' + MOON.nextName + '로 가자.' : MOON.name + ' 보름달이 떴어! ' + josa(MOON.nextName, '이') + ' 열릴 때까지 받아쓰기실에서 방아를 찧어 보자.'));
+    (nb ? '다음 묶음 ' + josa(qt(nb.title), '은') + ' 곧 열려. 그동안 받아쓰기실에서 방아를 찧어 보자.' : (MOON.nextPath ? MOON.name + ' 보름달이 떴어! 이제 ' + MOON.nextName + '로 가자.' : MOON.final ? MOON.name + ' 보름달이 떴어! 달토끼의 모든 달을 다 채웠어. 앞으로도 받아쓰기실에서 방아를 찧자.' : MOON.name + ' 보름달이 떴어! ' + josa(MOON.nextName, '이') + ' 열릴 때까지 받아쓰기실에서 방아를 찧어 보자.'));
 }
 function showPicker(){
   seq++; night = null; curGuide = null;
@@ -239,7 +239,7 @@ function startCheck(){
     const msg = s === 1
       ? '첫째 밤부터 같이 하자. 차근차근 하면 금방 늘 거야.'
       : all
-      ? MOON.name + ' 말은 벌써 다 알고 있구나! ' + (MOON.nextPath ? MOON.nextName + '로 가 보자.' : josa(MOON.nextName, '이') + ' 열리면 거기서 만나. 그동안 받아쓰기실에서 글자로 쓰는 연습을 해 보자.')
+      ? MOON.name + ' 말은 벌써 다 알고 있구나! ' + (MOON.nextPath ? MOON.nextName + '로 가 보자.' : MOON.final ? '달토끼를 모두 마쳤구나. 받아쓰기실에서 계속 연습해 보자.' : josa(MOON.nextName, '이') + ' 열리면 거기서 만나. 그동안 받아쓰기실에서 글자로 쓰는 연습을 해 보자.')
       : '벌써 ' + COUNT[skipped - 1] + ' 묶음을 알고 있어. ' + josa(qt(B.title), '은') + ' 알아 가는 중이니 ' + nightName(s) + '부터 하면 좋겠어.';
     const btns = h('div', {style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'});
     if(!all) btns.append(h('button', {class:'btn', onclick: () => startNight(s)}, nightName(s) + ' 시작하기'));
@@ -877,6 +877,33 @@ SCREENS.letter = S => {
     h('p', {class:'sub'}, '이름은 이 화면에만 보이고 어디에도 저장되지 않아요.'));
   card.append(h('div', {class:'letterwrap'}, pickers, h('div', {}, paper, tools)));
   draw();
+  if(S.tip) card.append(guide(S.tip.who, S.tip.t, true));
+};
+
+/* ---- 수료증: 이름을 넣어 인쇄합니다. 이름은 저장하지 않습니다 ----
+   S.body 는 본문, S.from 은 주는 이. 날짜는 오늘 날짜를 한자어 수로 적습니다(sino, monthName). */
+SCREENS.certificate = S => {
+  head2(S);
+  const d = new Date();
+  /* 증서는 보통 숫자로 날짜를 적습니다(2026년 9월 24일). */
+  const dateLine = d.getFullYear() + '년 ' + (d.getMonth() + 1) + '월 ' + d.getDate() + '일';
+  const nameIn = h('input', {type:'text', maxlength:'12', placeholder:'이름을 써요', 'aria-label':'수료증에 넣을 이름', autocomplete:'off'});
+  const nameOut = h('span', {class:'certname'}, '______');
+  nameIn.addEventListener('input', () => { nameOut.textContent = nameIn.value.trim() || '______'; });
+  let moons = '';
+  for(let i = 0; i < 7; i++) moons += `<svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="#F6E3A1" stroke="#221F1C" stroke-width="2.4"/></svg>`;
+  const cert = h('div', {class:'cert'},
+    h('p', {class:'certtop'}, '달토끼'),
+    h('h3', {class:'certtitle'}, S.certTitle || '수료증'),
+    h('div', {class:'certmoons', html: moons}),
+    h('p', {class:'certwho'}, '이름 ', nameOut),
+    h('p', {class:'certbody'}, S.body),
+    h('p', {class:'certdate'}, dateLine),
+    h('div', {class:'certfrom'}, h('div', {class:'certchars', html: ['tori', 'moi', 'dami'].map(w => `<span>${CHAR[w]('happy')}</span>`).join('')}), h('p', {}, S.from || '달토끼 토리, 모이, 담이')));
+  card.append(h('div', {class:'namerow', style:'margin-bottom:12px'}, nameIn),
+    h('p', {class:'sub'}, '이름은 이 화면에만 보이고 어디에도 저장되지 않아요.'),
+    cert,
+    h('div', {class:'lettertools'}, h('button', {class:'btn play', onclick: () => printOnly(cert)}, '수료증 인쇄하기')));
   if(S.tip) card.append(guide(S.tip.who, S.tip.t, true));
 };
 

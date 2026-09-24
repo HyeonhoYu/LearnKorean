@@ -473,3 +473,19 @@ h2{font-family:var(--display);font-weight:400;font-size:30px;margin:0 0 4px}
   html.print-one .print-me{position:absolute;left:0;top:0;width:100%;box-shadow:none}
   html.print-one .print-me .empty{display:none}
 }
+
+/* ---- 일곱째 달: 수료증 ---- */
+.cert{max-width:620px;margin:0 auto;background:#FFFDF6;border:6px double var(--meok);border-radius:10px;padding:26px 30px;text-align:center;
+  box-shadow:0 6px 0 var(--meok);background-image:radial-gradient(circle at 50% 0,#FBF3DC 0,#FFFDF6 60%)}
+.cert .certtop{margin:0;font-family:var(--display);font-size:18px;color:var(--juhong)}
+.cert .certtitle{font-family:var(--display);font-weight:400;font-size:44px;margin:2px 0 8px;letter-spacing:.2em}
+.cert .certmoons{display:flex;justify-content:center;gap:6px;margin-bottom:12px}
+.cert .certwho{font-size:20px;margin:6px 0 12px}
+.cert .certname{display:inline-block;min-width:6em;border-bottom:2px solid var(--meok);font-family:var(--display);font-size:30px;padding:0 10px}
+.cert .certbody{font-size:17px;line-height:1.8;margin:0 0 14px;text-align:left}
+.cert .certdate{margin:0 0 10px;font-size:16px}
+.cert .certchars{display:flex;justify-content:center;gap:4px}
+.cert .certchars span{display:inline-block;width:64px}
+.cert .certchars svg{width:100%;height:auto}
+.cert .certfrom p{margin:2px 0 0;font-family:var(--display);font-size:18px}
+@media print{html.print-one .cert{box-shadow:none;margin-top:40px}}

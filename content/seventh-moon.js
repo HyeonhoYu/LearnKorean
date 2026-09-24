@@ -118,6 +118,36 @@ Object.assign(M7_ONLY, {
   hd_book: `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="옛날이야기 책"><path d="M30 24 L100 30 L170 24 L170 110 L100 116 L30 110 Z" fill="#FBF7EC" stroke="#221F1C" stroke-width="3" stroke-linejoin="round"/>
     <path d="M100 30 L100 116" stroke="#221F1C" stroke-width="2.4"/><circle cx="64" cy="64" r="18" fill="#F2C14E" stroke="#221F1C" stroke-width="2"/><circle cx="136" cy="64" r="18" fill="#F6E3A1" stroke="#221F1C" stroke-width="2"/></svg>`
 });
+/* ---- 다섯째 묶음 그림: 꿈과 직업 ---- */
+function m7Job(kind){
+  const S = '#221F1C';
+  const g = {
+    doctor: `${m2Ground}${m2Person('kid', 100, 'stand', 1).replace('#2D6E8E', '#FBF7EC')}
+      <path d="M90 74 Q86 92 96 96 Q106 92 110 80" stroke="${S}" stroke-width="2.4" fill="none"/><circle cx="110" cy="80" r="4" fill="#9DB4C6" stroke="${S}" stroke-width="1.6"/>
+      <path d="M150 30 L150 50 M140 40 L160 40" stroke="#C1403A" stroke-width="6"/>`,
+    chef: `${m2Ground}${m2Person('kid', 90, 'stand', 1).replace('#2D6E8E', '#FBF7EC')}
+      <path d="M76 38 Q72 22 84 22 Q88 12 98 18 Q108 14 108 26 Q116 30 104 40 L80 40 Z" fill="#FBF7EC" stroke="${S}" stroke-width="2"/>
+      <path d="M130 110 L150 110 Q160 96 150 84 L130 84 Q120 96 130 110 Z" fill="#8C8577" stroke="${S}" stroke-width="2.4"/><path d="M122 86 L114 80" stroke="${S}" stroke-width="3"/>`,
+    scientist: `${m2Ground}${m2Person('kid', 80, 'stand', 1).replace('#2D6E8E', '#FBF7EC')}
+      <path d="M134 40 L134 64 L118 98 Q116 106 124 106 L160 106 Q168 106 166 98 L150 64 L150 40 Z" fill="#E7F0F4" stroke="${S}" stroke-width="2.4"/>
+      <path d="M124 90 L160 90 L166 98 Q168 106 160 106 L124 106 Q116 106 118 98 Z" fill="#6E8F58"/><circle cx="138" cy="80" r="3" fill="#FBF7EC"/><circle cx="148" cy="72" r="2.4" fill="#FBF7EC"/>`,
+    painter: `${m2Ground}${m2Person('kid', 70, 'give', 1)}
+      <path d="M120 110 L136 30 L152 110 M130 70 L142 70" stroke="#8A6A4A" stroke-width="3" fill="none"/>
+      <rect x="112" y="36" width="48" height="40" fill="#FBF7EC" stroke="${S}" stroke-width="2.4"/><circle cx="148" cy="48" r="5" fill="#F2C14E"/><path d="M114 72 L130 54 L142 66 L158 56 L158 74 L114 74 Z" fill="#9DBA7E"/>`,
+    athlete: `${m2Ground}${m2Person('kid', 90, 'wave', 1).replace('#2D6E8E', '#C1403A')}
+      <path d="M82 60 L90 74 L98 60" stroke="#E3A93C" stroke-width="3" fill="none"/><circle cx="90" cy="80" r="7" fill="#F2C14E" stroke="${S}" stroke-width="2"/>
+      <circle cx="148" cy="100" r="16" fill="#FBF7EC" stroke="${S}" stroke-width="2.4"/><path d="M136 94 L160 94 M148 84 L148 116" stroke="${S}" stroke-width="1.6"/>`,
+    dream: `<rect width="200" height="130" rx="6" fill="#17324A"/><circle cx="160" cy="30" r="16" fill="#F6E3A1" stroke="${S}" stroke-width="2"/>
+      <g fill="#F2C14E"><path d="M40 30 l3 6 l6 1 l-5 4 l2 6 l-6 -3 l-6 3 l2 -6 l-5 -4 l6 -1 Z"/><path d="M100 20 l2 4 l4 1 l-3 3 l1 4 l-4 -2 l-4 2 l1 -4 l-3 -3 l4 -1 Z"/></g>
+      ${m2Person('kid', 100, 'wave', 1).replace('translate(100 122)', 'translate(100 124)')}`,
+    hobby: `${m2Ground}${m2Person('kid', 60, 'stand', 1)}
+      <path d="M96 60 Q90 30 118 26 Q130 8 154 18 Q182 16 180 40 Q192 58 170 66 Q152 78 130 68 Q104 76 96 60 Z" fill="#FBF7EC" stroke="${S}" stroke-width="2.4"/>
+      <circle cx="122" cy="44" r="8" fill="#C1403A" stroke="${S}" stroke-width="1.6"/><rect x="140" y="34" width="18" height="18" fill="#6FA8D0" stroke="${S}" stroke-width="1.6"/><path d="M160 56 l6 -16 l6 16 Z" fill="#E3A93C"/>`
+  }[kind];
+  const label = {doctor:'의사', chef:'요리사', scientist:'과학자', painter:'화가', athlete:'운동선수', dream:'꿈', hobby:'취미'}[kind];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
+}
+['doctor', 'chef', 'scientist', 'painter', 'athlete', 'dream', 'hobby'].forEach(k => { M7_ONLY['job_' + k] = m7Job(k); });
 const M7_PIC = Object.assign({}, M6_PIC, M7_ONLY);
 
 /* ---- 묶음 ---- */
@@ -126,7 +156,7 @@ const M7_BUNDLES = [
   {k:2, title:'일기를 써요', topic:'글에서 쓰는 ~다 말투', nights:[4, 5, 6], after:'그동안 날마다 일기를 한 편씩 써 봐.'},
   {k:3, title:'내 생각은요', topic:'의견과 까닭, 토론', nights:[7, 8, 9], after:'그동안 가족과 작은 토론을 하며 까닭을 붙여 생각을 말해 봐.'},
   {k:4, title:'옛날이야기', topic:'해님 달님과 이야기 짓기', nights:[10, 11, 12], after:'그동안 가족에게 해님 달님 이야기를 한국어로 들려줘.'},
-  {k:5, title:'나의 이야기', topic:'나를 소개하고 꿈 말하기', nights:[13, 14, 15]}
+  {k:5, title:'나의 이야기', topic:'나를 소개하고 꿈 말하기', nights:[13, 14, 15], after:'이제 가족 앞에서 나의 이야기를 들려주고 수료증을 자랑해 봐.'}
 ];
 
 /* ---- 밤 ---- */
@@ -672,11 +702,175 @@ const M7_NIGHTS = [
        {when:'끝에', say:'그래서 행복하게 살았대요.', sub:'듣는 가족에게 그래서 어떻게 되었을까요? 하고 물어봐도 좋아요.'}],
      parent:'해님 달님(해와 달이 된 오누이)은 한국 아이들이 어릴 때 가장 많이 듣는 옛이야기 가운데 하나입니다. 원래 이야기에는 호랑이가 어머니를 해치는 대목이 있지만, 달토끼에서는 호랑이가 떡만 빼앗고 어머니는 다른 길로 무사히 돌아오는 것으로 부드럽게 바꿨습니다. 아이가 원래 이야기를 궁금해하면 나이에 맞게 들려주셔도 됩니다. 조부모님께 이 이야기를 한국어로 들려달라고 부탁드리면, 아이가 오늘 배운 "~었대요" 말투를 실제로 듣게 됩니다.'}
   ],
+  dictWords:[] },
+
+/* ---- 다섯째 묶음: 나의 이야기 -----------------------------------------
+   일곱 달 동안 배운 말을 모아 자기를 소개하고(이름, 나이, 가족, 좋아하는 것, 잘하는 것, 취미),
+   꿈을 말합니다(~이/가 되고 싶어요, 왜냐하면 ~기 때문이에요).
+   마지막 밤에 토리, 모이, 담이, 호랑이 할머니가 모두 모여 일곱 번째 보름달을 보고,
+   이름을 넣어 인쇄하는 수료증으로 달토끼를 마칩니다. 이름은 저장하지 않습니다. */
+{ n:13, bundle:5, title:'나를 소개해요',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'달토끼의 마지막 묶음이야! 일곱 달 동안 배운 말로 너를 소개해 볼 거야. 둘째 달의 첫 인사 기억나? 이제는 훨씬 많이 말할 수 있어.',
+     big:'저를 소개할게요'},
+    {type:'pairs', title:'나를 소개하는 말', who:'moi',
+     t:'나를 소개할 때 쓰는 말이야. 눌러서 들어 봐.',
+     singles:[
+       {w:'소개', pic:'hg_present', en:'introduction'}, {w:'취미', pic:'job_hobby', en:'hobby'},
+       {w:'잘해요', pic:'mood_happy', en:'am good at'}, {w:'좋아하는 것', pic:'m_like', en:'things I like'},
+       {w:'저를 소개할게요', pic:'hg_present', en:'Let me introduce myself'}],
+     tip:{who:'tori', t:'둘째 달에는 저는 토리예요만 말했는데, 이제는 나이, 가족, 좋아하는 것, 잘하는 것, 꿈까지 말할 수 있어!'}},
+    {type:'letter', title:'나의 소개 글', who:'tori',
+     t:'칸마다 너에게 맞는 문장을 골라 봐. 없으면 제일 비슷한 걸 골라. 오른쪽에 소개 글이 만들어져. 이름은 소리 내어 말할 때 넣어 봐.',
+     parts:[
+       {label:'첫인사', opts:['안녕하세요. 저를 소개할게요.', '만나서 반가워요. 저를 소개할게요.']},
+       {label:'나이', opts:['저는 일곱 살이에요.', '저는 여덟 살이에요.', '저는 아홉 살이에요.', '저는 열 살이에요.']},
+       {label:'가족', opts:['우리 가족은 네 명이에요.', '저는 동생이 있어요.', '저는 형이나 언니가 있어요.']},
+       {label:'좋아하는 것', opts:['저는 떡볶이를 좋아해요.', '저는 강아지를 좋아해요.', '저는 겨울을 좋아해요.']},
+       {label:'잘하는 것', opts:['저는 그림을 잘 그려요.', '저는 자전거를 잘 타요.', '저는 한글을 잘 읽어요.']}],
+     noName:true, readLabel:'소개 글 읽어 주기',
+     tip:{who:'dami', t:'네 명의 명은 사람을 세는 말이란다. 한 명, 두 명, 세 명, 네 명. 셋째 달의 한 개, 두 개처럼 줄어드는 숫자를 쓰지.'}},
+    {type:'choose', title:'나를 소개해요', who:'tori',
+     t:'소개하는 말로 바르게 쓴 쪽을 골라 봐.',
+     qs:[
+       {pic:'job_hobby', t:'취미를 말해요.', o:['제 취미는 그림 그리기예요.','제 취미는 그림 그리기이에요.'], a:'제 취미는 그림 그리기예요.', why:'‘기’에는 받침이 없어서 예요예요.'},
+       {pic:'pl5_bike', o:['저는 자전거를 잘 타요.','저는 자전거를 잘 해요.'], a:'저는 자전거를 잘 타요.', why:'자전거는 타요예요.'},
+       {pic:'seol_family', t:'가족이 네 명이에요.', o:['우리 가족은 네 명이에요.','우리 가족은 넷 명이에요.'], a:'우리 가족은 네 명이에요.', why:'명 앞에서 넷은 네로 줄어요.'},
+       {pic:'m_like', o:['저는 떡볶이를 좋아해요.','저는 떡볶이가 좋아해요.'], a:'저는 떡볶이를 좋아해요.'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 그림을 찾아 봐.',
+     qs:[
+       {say:'취미', o:['job_hobby','job_dream','think'], a:'job_hobby'},
+       {say:'소개', o:['debate','hg_present','ml_letter'], a:'hg_present'},
+       {say:'가족', o:['seol_family','hd_sibs','pl5_together'], a:'seol_family'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'나를 소개하는 말을 써 봐.',
+     items:[{w:'소개', en:'introduction'}, {w:'취미', en:'hobby'}, {w:'잘해요', en:'am good at'}]}
+  ],
+  dictWords:[{w:'소개', en:'introduction'}, {w:'취미', en:'hobby'}, {w:'잘해요', en:'am good at'}, {w:'명', en:'(counter for people)'}] },
+
+{ n:14, bundle:5, title:'커서 무엇이 되고 싶어요?',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'커서 무엇이 되고 싶어? 오늘은 꿈을 말해 볼 거야. 그리고 셋째 묶음의 왜냐하면으로 까닭도 붙여 봐.',
+     big:'저는 커서 선생님이 되고 싶어요'},
+    {type:'pairs', title:'여러 가지 꿈', who:'moi',
+     t:'여러 가지 일이야. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'꿈', pic:'job_dream', en:'dream'}, {w:'의사', pic:'job_doctor', en:'doctor'}, {w:'선생님', pic:'p_teacher', en:'teacher'},
+       {w:'요리사', pic:'job_chef', en:'chef'}, {w:'과학자', pic:'job_scientist', en:'scientist'},
+       {w:'화가', pic:'job_painter', en:'painter'}, {w:'운동선수', pic:'job_athlete', en:'athlete'}]},
+    {type:'tense', title:'~이 되고 싶어요', who:'dami',
+     t:'무엇이 되고 싶다고 할 때는 되고 싶어요 앞에 이나 가를 붙인단다. 받침 삼 형제가 마지막 달까지 따라왔구나.',
+     cols:['꿈', '~이/가 되고 싶어요'],
+     groups:[
+       {rule:'받침이 있으면 이', rows:[['선생님','선생님이 되고 싶어요'], ['소방관','소방관이 되고 싶어요']]},
+       {rule:'받침이 없으면 가', rows:[['의사','의사가 되고 싶어요'], ['요리사','요리사가 되고 싶어요'], ['화가','화가가 되고 싶어요'], ['운동선수','운동선수가 되고 싶어요']]}],
+     note:'운동선수의 ‘수’에는 받침이 없으니 가란다. 둘째 달에 배운 이와 가가 이렇게 마지막 달까지 쓰이는구나.'},
+    {type:'likes', title:'나의 꿈', who:'tori',
+     t:'되고 싶은 것에는 ‘되고 싶어요’를, 아닌 것에는 ‘글쎄요’를 눌러 봐. 세 개 이상 하면 다음으로 갈 수 있어.',
+     labels:['되고 싶어요', '글쎄요'],
+     items:[
+       {w:'의사', pic:'job_doctor', lines:['저는 커서 의사가 되고 싶어요.', '의사는 글쎄요. 잘 모르겠어요.']},
+       {w:'선생님', pic:'p_teacher', lines:['저는 커서 선생님이 되고 싶어요.', '선생님은 글쎄요. 잘 모르겠어요.']},
+       {w:'요리사', pic:'job_chef', lines:['저는 커서 요리사가 되고 싶어요.', '요리사는 글쎄요. 잘 모르겠어요.']},
+       {w:'과학자', pic:'job_scientist', lines:['저는 커서 과학자가 되고 싶어요.', '과학자는 글쎄요. 잘 모르겠어요.']},
+       {w:'화가', pic:'job_painter', lines:['저는 커서 화가가 되고 싶어요.', '화가는 글쎄요. 잘 모르겠어요.']},
+       {w:'운동선수', pic:'job_athlete', lines:['저는 커서 운동선수가 되고 싶어요.', '운동선수는 글쎄요. 잘 모르겠어요.']}],
+     tip:{who:'moi', t:'꿈은 바뀌어도 괜찮아. 나는 어제는 요리사, 오늘은 화가가 되고 싶어!'}},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 꿈을 말해 봐.',
+     qs:[
+       {s:'저는 커서 의사가 되고 싶어요.', tiles:['저는','커서','의사가','되고','싶어요.'], extra:['의사이'], en:'I want to be a doctor when I grow up.'},
+       {s:'왜냐하면 아픈 사람을 돕고 싶기 때문이에요.', tiles:['왜냐하면','아픈','사람을','돕고','싶기','때문이에요.'], en:'Because I want to help sick people.'},
+       {s:'제 꿈은 선생님이에요.', tiles:['제','꿈은','선생님이에요.'], extra:['선생님예요.'], en:'My dream is to be a teacher.'},
+       {s:'저는 한국어를 잘해요.', tiles:['저는','한국어를','잘해요.'], en:'I am good at Korean.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'꿈을 말하는 말에도 받침이 건너가지. 이 할아버지의 마지막 소리 비밀이란다.',
+     cmp:[
+       {s:'꿈이', d:'꾸미', n:'ㅁ 받침이 뒤로 건너가요'},
+       {s:'선생님이', d:'선생니미', n:'ㅁ 받침이 뒤로 건너가요'},
+       {s:'싶어요', d:'시퍼요', n:'ㅍ 받침이 뒤로 건너가요'},
+       {s:'잘해요', d:'잘해요', n:'받침 ㄹ 뒤의 ㅎ은 약하게 나요'}],
+     note:'첫째 달에 받침을 처음 배웠을 때를 떠올려 보거라. 이제는 받침이 건너가고, 닮고, 세지고, 조용해지는 까닭까지 다 아는구나. 이 할아버지가 더 가르칠 게 없단다.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'꿈을 말하는 말을 써 봐.',
+     items:[{w:'꿈', en:'dream'}, {w:'의사', en:'doctor', hint:{who:'dami', t:'첫 글자는 ㅇ에 모음 ㅢ란다.'}}, {w:'과학자', en:'scientist'}]}
+  ],
+  dictWords:[{w:'꿈', en:'dream'}, {w:'의사', en:'doctor'}, {w:'요리사', en:'chef'}, {w:'과학자', en:'scientist'}, {w:'화가', en:'painter'}] },
+
+{ n:15, bundle:5, title:'일곱 번째 보름달',
+  steps:[
+    {type:'intro', who:'dami',
+     t:'달토끼의 마지막 밤이란다. 오늘 밤 일곱 번째 보름달이 떴지. 모두 모였으니 먼저 귀로만 들어 보거라.',
+     big:'일곱 번째 보름달'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 토리가 일곱 달 동안의 이야기를 해. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'dami', t:'토리야, 오늘 밤 일곱 번째 보름달이 떴구나.', en:'Tori, the seventh full moon has risen tonight.'},
+       {who:'tori', t:'할아버지, 처음 달토끼에 왔을 때 저는 한글도 몰랐어요.', en:"Grandpa, when I first came to Dal Tokki, I didn't even know Hangul."},
+       {who:'moi', t:'맞아! 그때 기역, 니은부터 배웠지.', en:'Right! Back then we learned from giyeok and nieun.'},
+       {who:'tori', t:'그다음에 인사를 배우고, 가족을 부르고, 하루를 말했어요.', en:'Then I learned greetings, called my family, and talked about my day.'},
+       {who:'halmi', t:'한국에도 와서 할머니한테 세배도 했지.', en:'You even came to Korea and gave me a New Year bow.'},
+       {who:'tori', t:'이제는 편지도 쓰고, 일기도 쓰고, 제 생각도 말할 수 있어요!', en:'Now I can write letters, keep a diary, and share my own thoughts!'},
+       {who:'tori', t:'저는 커서 한국어 선생님이 되고 싶어요. 왜냐하면 친구들에게 한글을 가르쳐 주고 싶기 때문이에요.', en:'When I grow up I want to be a Korean teacher. Because I want to teach Hangul to my friends.'},
+       {who:'dami', t:'허허, 달이 한 밤씩 차듯 토리도 한 밤씩 자랐구나. 참 잘했다.', en:'Ho ho, just as the moon fills night by night, you grew night by night too. Well done.'}],
+     note:{who:'dami', t:'달토끼는 여기서 끝나지만 한국어는 끝나지 않는단다. 받아쓰기실에서 날마다 방아를 찧고, 가족과 한국어로 이야기하고, 할머니 할아버지께 편지를 쓰거라. 보름달이 뜰 때마다 이 할아버지와 토리, 모이를 떠올려 주면 좋겠구나.'}},
+    {type:'choose', title:'일곱 달을 떠올려요', who:'tori',
+     t:'토리와 함께 걸어온 일곱 달을 떠올려 봐.',
+     qs:[
+       {t:'토리가 첫째 달에 배운 것은?', o:['한글','편지','토론'], a:'한글'},
+       {t:'토리가 한국 할머니 댁에서 설날에 한 것은?', o:['세배','수영','숙제'], a:'세배'},
+       {t:'달토끼는 달에서 무엇을 해요?', o:['떡방아를 찧어요','수영을 해요','잠을 자요'], a:'떡방아를 찧어요'},
+       {t:'토리의 꿈은 무엇이에요?', o:['한국어 선생님','요리사','화가'], a:'한국어 선생님'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'마지막으로 네가 토리가 되어 대답해 봐.',
+     qs:[
+       {line:{who:'halmi', t:'토리야, 커서 무엇이 되고 싶니?'}, en:'Tori, what do you want to be when you grow up?', o:['한국어 선생님이 되고 싶어요.','한국어 선생님이 되고 싶어.'], a:'한국어 선생님이 되고 싶어요.', why:'할머니께는 높이는 말로 대답해요.'},
+       {line:{who:'moi', t:'토리야, 달토끼 재미있었어?'}, en:'Tori, was Dal Tokki fun?', o:['응, 정말 재미있었어!','네, 정말 재미있었어요.'], a:'응, 정말 재미있었어!', why:'모이는 친구라서 편한 말로 대답해요.'},
+       {line:{who:'dami', t:'토리야, 이제 한국어를 그만 배워도 되겠구나?'}, en:'Tori, you can stop learning Korean now, right?', o:['아니요, 앞으로도 계속 배울 거예요!','네, 이제 그만할래요.'], a:'아니요, 앞으로도 계속 배울 거예요!', why:'달토끼는 끝나도 한국어 공부는 계속돼요.'}]},
+    {type:'certificate', title:'달토끼 수료증', who:'moi',
+     t:'일곱 달 동안 정말 잘했어! 네 이름을 쓰고 수료증을 인쇄해 봐.',
+     certTitle:'수료증',
+     body:'위 어린이는 달토끼에서 일곱 달, 아흔여덟 밤 동안 한글과 한국어를 꾸준히 배워 일곱 개의 보름달을 가득 채웠기에 이 증서를 드립니다. 앞으로도 한국어로 꿈을 키워 가기를 바랍니다.',
+     from:'달토끼 토리, 모이, 담이',
+     tip:{who:'dami', t:'이름은 이 화면에만 보이고 어디에도 저장되지 않는단다. 인쇄해서 벽에 붙이고, 할머니 할아버지께도 자랑하거라.'}},
+    {type:'task', title:'나의 이야기 발표', who:'moi',
+     t:'달토끼 마지막 과제야. 가족 앞에서 나의 이야기를 들려주고 수료증을 받아 봐. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'처음에 나를 소개해요', say:'안녕하세요. 저를 소개할게요.', sub:'이름, 나이, 가족, 좋아하는 것.'},
+       {when:'달토끼에서 배운 것을 말해요', say:'저는 달토끼에서 ______을 배웠어요.', sub:'한글, 인사, 편지, 일기, 무엇이든 좋아요.'},
+       {when:'마지막에 꿈을 말해요', say:'저는 커서 ______이 되고 싶어요.', sub:'왜냐하면 ______기 때문이에요.'}],
+     parent:'달토끼의 마지막 과제입니다. 아이가 가족 앞에서 자기소개, 달토끼에서 배운 것, 꿈을 이어서 말하게 해 주세요. 발표가 끝나면 인쇄한 수료증을 가족이 직접 건네주시면 아이에게 오래 남는 순간이 됩니다. 일곱 달 동안 아이 곁에서 함께해 주셔서 감사합니다. 달토끼를 마친 뒤에도 받아쓰기실에서 복습을 이어 가고, 한국어 그림책 읽기, 조부모님과의 영상 통화, 한글학교 활동으로 한국어를 계속 써 주세요.'}
+  ],
   dictWords:[] }
 ];
 
-/* ---- 빠른 확인: 일곱째 달은 묶음이 모두 열린 뒤에 만듭니다 ---- */
-const M7_CHECK = [];
+/* ---- 빠른 확인 ----
+   묶음마다 세 문제, 두 문제 이상 맞히면 그 묶음을 건너뜁니다. */
+const M7_CHECK = [
+  {k:1, qs:[
+    {pic:'ml_p_to', t:'할머니께 편지를 써요. 맨 위에는?', o:['할머니에게','할머니께'], a:'할머니께'},
+    {t:'약속하는 말은 어느 쪽이에요?', o:['방학에 꼭 갈게요.','방학에 갔어요.'], a:'방학에 꼭 갈게요.'},
+    {mode:'pic', say:'우표', t:'듣고 그림을 골라요.', o:['ml_envelope','ml_stamp','ml_letter'], a:'ml_stamp'}]},
+  {k:2, qs:[
+    {t:'갔어요. 일기에는?', o:['갔다.','갔어요.'], a:'갔다.'},
+    {pic:'dy_page', t:'일기에서 나를 말할 때는?', o:['저는','나는'], a:'나는'},
+    {mode:'pic', say:'날씨', t:'듣고 그림을 골라요.', o:['dy_date','dy_weather','dy_felt'], a:'dy_weather'}]},
+  {k:3, qs:[
+    {pic:'s_play', t:'왜냐하면 ...', o:['재미있기 때문이에요.','재미있어요 때문이에요.'], a:'재미있기 때문이에요.'},
+    {pic:'p_teacher', t:'선생님과 생각이 달라요.', o:['내 생각은 좀 달라.','제 생각은 조금 달라요.'], a:'제 생각은 조금 달라요.'},
+    {pic:'think', t:'생각을 말하는 문장으로 알맞은 것은?', o:['저는 봄이 좋다고 생각해요.','저는 봄이 좋다 생각해요고.'], a:'저는 봄이 좋다고 생각해요.'}]},
+  {k:4, qs:[
+    {pic:'hd_sibs', t:'옛이야기 말투로 알맞은 것은?', o:['오누이가 살았대요.','오누이가 살았다요.'], a:'오누이가 살았대요.'},
+    {mode:'pic', say:'동아줄', t:'듣고 그림을 골라요.', o:['hd_hill','hd_rope','hd_tree'], a:'hd_rope'},
+    {pic:'hd_sunmoon', t:'누이는 무엇이 되었대요?', o:['해','달'], a:'해'}]},
+  {k:5, qs:[
+    {mode:'pic', say:'요리사', t:'듣고 그림을 골라요.', o:['job_doctor','job_chef','job_painter'], a:'job_chef'},
+    {pic:'p_teacher', t:'저는 커서 선생님___ 되고 싶어요.', o:['이','가'], a:'이'},
+    {pic:'job_hobby', t:'제 취미는 그림 그리기___.', o:['예요','이에요'], a:'예요'}]}
+];
 
 /* ---- 받아쓰기 자판: 여섯째 달과 같습니다 ---- */
 const M7_POOL = M6_POOL;
@@ -687,7 +881,7 @@ const SEVENTH_MOON = {
   store: 'daltokki:v1:seventh-moon',
   units: M7_NIGHTS.map(x => ({n: x.n, words: x.dictWords || []})),
   extra: [], pool: () => M7_POOL,
-  num: 7, name: '일곱째 달', title2: '일곱째 달, 나의 이야기', nextName: '다음 달',
+  num: 7, name: '일곱째 달', title2: '일곱째 달, 나의 이야기', nextName: '다음 달', final: true,
   topics: '편지, 일기, 내 생각, 옛날이야기, 나의 이야기',
   nights: M7_NIGHTS, bundles: M7_BUNDLES, pic: M7_PIC, keys: M7_POOL, total: M7_TOTAL, check: M7_CHECK,
   prev: {store: 'daltokki:v1:sixth-moon', total: 15},

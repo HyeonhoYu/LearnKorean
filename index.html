@@ -357,12 +357,12 @@ footer .coffeelink svg{width:18px;height:18px;vertical-align:-3px}
   </div>
 </footer>
 
-<script src="content/second-moon.js?v=20261025"></script>
-<script src="content/third-moon.js?v=20261025"></script>
-<script src="content/fourth-moon.js?v=20261025"></script>
-<script src="content/fifth-moon.js?v=20261025"></script>
-<script src="content/sixth-moon.js?v=20261025"></script>
-<script src="content/seventh-moon.js?v=20261025"></script>
+<script src="content/second-moon.js?v=20261026"></script>
+<script src="content/third-moon.js?v=20261026"></script>
+<script src="content/fourth-moon.js?v=20261026"></script>
+<script src="content/fifth-moon.js?v=20261026"></script>
+<script src="content/sixth-moon.js?v=20261026"></script>
+<script src="content/seventh-moon.js?v=20261026"></script>
 <script>
 /* ---- 진도 읽기: 한글 첫 달과 같은 키를 씁니다 ---- */
 const STORE_KEY = 'daltokki:v1:first-moon';
@@ -480,7 +480,7 @@ const goDict = x => {
   cta.href = 'dictation/';
   const last = x || later[later.length - 1];
   note.textContent = last.full
-    ? (last.done ? last.M.name + '을 다 채웠어요.' : '빠른 확인에서 ' + last.M.name + ' 말을 다 알고 있었어요.') + ' ' + last.M.nextName + '은 곧 열려요. 그동안 받아쓰기실에서 연습해요.'
+    ? (last.done ? last.M.name + '을 다 채웠어요.' : '빠른 확인에서 ' + last.M.name + ' 말을 다 알고 있었어요.') + (last.M.final ? ' 달토끼의 일곱 달을 모두 마쳤어요! 받아쓰기실에서 날마다 복습해요.' : ' ' + last.M.nextName + '은 곧 열려요. 그동안 받아쓰기실에서 연습해요.')
     : last.M.name + '에서 지금 열린 밤을 다 마쳤어요. 다음 밤들은 곧 열려요. 그동안 받아쓰기실에서 연습해요.';
 };
 /* 최근 달 다음으로 할 달: 최근 달 뒤에서 남은 밤이 있는 첫 달 */
