@@ -148,6 +148,48 @@ Object.assign(M5_ONLY, {
   tag_tteok: m5Tag('f_tteok', 3000), tag_gimbap: m5Tag('f_gimbap', 2000), tag_milk: m5Tag('f_milk', 1000), tag_bread: m5Tag('f_bread', 1000)
 });
 M5_ONLY.tag_snack = M5_ONLY.snack.replace(/<\/svg>\s*$/, `<g transform="translate(150 22) rotate(12)"><rect x="-30" y="-14" width="60" height="28" rx="5" fill="#F6D98F" stroke="#221F1C" stroke-width="2.4"/><circle cx="-22" cy="0" r="3" fill="#FBF7EC" stroke="#221F1C" stroke-width="1.4"/><text x="6" y="1" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-weight="700" font-size="14" fill="#221F1C">500</text></g></svg>`);
+/* ---- 다섯째 묶음 그림: 탈것과 역 ---- */
+function m5Ride(kind){
+  const S = '#221F1C';
+  const wheel = (x, y) => `<circle cx="${x}" cy="${y}" r="9" fill="#5A5248" stroke="${S}" stroke-width="2.4"/><circle cx="${x}" cy="${y}" r="3" fill="#C9C0AE"/>`;
+  const busBody = num => `<rect x="30" y="34" width="140" height="66" rx="10" fill="#6E8F58" stroke="${S}" stroke-width="3"/>
+      ${[42, 70, 98, 126].map(x => `<rect x="${x}" y="44" width="22" height="22" rx="3" fill="#CFE0EA" stroke="${S}" stroke-width="2"/>`).join('')}
+      <rect x="152" y="44" width="12" height="40" fill="#CFE0EA" stroke="${S}" stroke-width="2"/>
+      ${num ? `<rect x="60" y="22" width="44" height="18" rx="3" fill="#221F1C"/><text x="82" y="31" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-weight="700" font-size="15" fill="#F2C14E">${num}</text>` : ''}
+      ${wheel(62, 102)}${wheel(138, 102)}`;
+  const g = {
+    subway: `<rect width="200" height="130" rx="6" fill="#E7E4DC"/><rect x="0" y="110" width="200" height="20" fill="#8C8577"/>
+      <rect x="14" y="36" width="172" height="70" rx="14" fill="#DAD6CC" stroke="${S}" stroke-width="3"/><rect x="14" y="74" width="172" height="8" fill="#2D6E8E"/>
+      ${[26, 64, 102, 140].map(x => `<rect x="${x}" y="46" width="30" height="22" rx="3" fill="#9DB4C6" stroke="${S}" stroke-width="2"/>`).join('')}
+      <rect x="86" y="84" width="28" height="22" fill="#C9C0AE" stroke="${S}" stroke-width="2"/>`,
+    bus: `<rect width="200" height="130" rx="6" fill="#DCEBD6"/><rect x="0" y="110" width="200" height="20" fill="#8C8577"/>${busBody(0)}`,
+    bus7: `<rect width="200" height="130" rx="6" fill="#DCEBD6"/><rect x="0" y="110" width="200" height="20" fill="#8C8577"/>${busBody(7)}`,
+    taxi: `<rect width="200" height="130" rx="6" fill="#DCEBD6"/><rect x="0" y="110" width="200" height="20" fill="#8C8577"/>
+      <path d="M36 88 L48 60 Q52 52 62 52 L138 52 Q148 52 152 60 L164 88 Z" fill="#E3A93C" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="28" y="84" width="144" height="20" rx="6" fill="#E3A93C" stroke="${S}" stroke-width="3"/>
+      <path d="M58 58 L96 58 L96 82 L48 82 Z M104 58 L142 58 L152 82 L104 82 Z" fill="#CFE0EA" stroke="${S}" stroke-width="2" stroke-linejoin="round"/>
+      <rect x="84" y="40" width="32" height="12" rx="3" fill="#FBF7EC" stroke="${S}" stroke-width="2"/>${wheel(62, 104)}${wheel(138, 104)}`,
+    train: `<rect width="200" height="130" rx="6" fill="#DCEBD6"/><rect x="0" y="108" width="200" height="4" fill="#5A5248"/><rect x="0" y="116" width="200" height="4" fill="#5A5248"/>
+      <path d="M20 104 L20 56 Q20 44 32 44 L150 44 Q186 48 190 90 L190 104 Z" fill="#FBF7EC" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M150 44 Q186 48 190 90 L150 90 Z" fill="#17324A" opacity=".85"/>
+      <rect x="20" y="84" width="170" height="6" fill="#2D6E8E"/>${[32, 62, 92, 122].map(x => `<rect x="${x}" y="56" width="22" height="18" rx="3" fill="#9DB4C6" stroke="${S}" stroke-width="2"/>`).join('')}`,
+    station: `<rect width="200" height="130" rx="6" fill="#E7E4DC"/>
+      <rect x="40" y="20" width="120" height="44" rx="8" fill="#2D6E8E" stroke="${S}" stroke-width="3"/>
+      <rect x="56" y="30" width="24" height="24" rx="6" fill="#FBF7EC" stroke="${S}" stroke-width="2"/><rect x="60" y="34" width="7" height="7" fill="#2D6E8E"/><rect x="69" y="34" width="7" height="7" fill="#2D6E8E"/><path d="M60 58 L56 62 M76 58 L80 62" stroke="#FBF7EC" stroke-width="2.4"/>
+      <path d="M90 36 L140 36 M90 48 L130 48" stroke="#FBF7EC" stroke-width="4" stroke-linecap="round"/>
+      <path d="M100 64 L100 118" stroke="${S}" stroke-width="5"/><rect x="0" y="116" width="200" height="14" fill="#8C8577"/>`,
+    ticket: `<path d="M34 40 L166 40 L166 58 Q156 65 166 72 L166 92 L34 92 L34 72 Q44 65 34 58 Z" fill="#F6D98F" stroke="${S}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M126 40 L126 92" stroke="${S}" stroke-width="2" stroke-dasharray="5 4"/>
+      <path d="M48 56 L110 56 M48 68 L96 68 M48 80 L104 80" stroke="#8C7F63" stroke-width="3" stroke-linecap="round"/><circle cx="146" cy="66" r="10" fill="#C1403A" opacity=".7"/>`,
+    getoff: `<rect width="200" height="130" rx="6" fill="#DCEBD6"/><rect x="0" y="110" width="200" height="20" fill="#8C8577"/>
+      <rect x="10" y="30" width="110" height="74" rx="10" fill="#6E8F58" stroke="${S}" stroke-width="3"/><rect x="92" y="44" width="22" height="58" fill="#3E5B4A" stroke="${S}" stroke-width="2"/>
+      ${m2Person('kid', 150, 'walk', 1).replace('translate(150 122)', 'translate(150 112)')}
+      <path d="M118 96 L136 96" stroke="#C1403A" stroke-width="4" stroke-linecap="round"/><path d="M130 90 L138 96 L130 102" stroke="#C1403A" stroke-width="4" fill="none" stroke-linecap="round"/>`
+  }[kind];
+  const label = {subway:'지하철', bus:'버스', bus7:'칠 번 버스', taxi:'택시', train:'기차', station:'역', ticket:'표', getoff:'내려요'}[kind];
+  return `<svg viewBox="0 0 200 130" width="150" height="98" role="img" aria-label="${label}">${g}</svg>`;
+}
+['subway', 'bus', 'bus7', 'taxi', 'train', 'station', 'ticket', 'getoff'].forEach(k => { M5_ONLY['ride_' + k] = m5Ride(k); });
 const M5_PIC = Object.assign({}, M4_PIC, M5_ONLY);
 
 /* ---- 묶음 ---- */
@@ -156,7 +198,7 @@ const M5_BUNDLES = [
   {k:2, title:'같이 놀자', topic:'친구와 놀기, 할 수 있어요', nights:[4, 5, 6], after:'그동안 가족이나 친구에게 한국어로 같이 놀자고 해 봐.'},
   {k:3, title:'한국에 갈 거예요', topic:'앞날 말하기와 여행 준비', nights:[7, 8, 9], after:'그동안 가족에게 이번 방학이나 주말에 무엇을 할 건지 말해 봐.'},
   {k:4, title:'이거 얼마예요?', topic:'돈과 가게', nights:[10, 11, 12], after:'그동안 집에서 가게 놀이를 하며 이거 얼마예요, 하고 물어봐.'},
-  {k:5, title:'할머니 댁까지', topic:'한국 방문', nights:[13, 14, 15]}
+  {k:5, title:'할머니 댁까지', topic:'한국 방문', nights:[13, 14, 15], after:'이제 가족에게 여행 이야기를 처음부터 끝까지 들려줘.'}
 ];
 
 /* ---- 밤 ---- */
@@ -695,11 +737,162 @@ const M5_NIGHTS = [
        {when:'사고 싶은 것을 말해요', say:'이거 ______ 주세요.', sub:'물건은 하나, 둘로: 사과 두 개 주세요.'}],
      parent:'집에 있는 과일, 과자, 장난감에 포스트잇으로 가격표(오백 원, 천 원, 이천 원처럼 딱 떨어지는 값)를 붙이고 가게 놀이를 해 주세요. 종이로 천 원, 오천 원, 만 원 지폐를 만들어 쓰면 더 재미있습니다. 아이가 주인일 때는 "어서 오세요", "감사합니다"를, 손님일 때는 "이거 얼마예요?", "여기 있어요"를 쓰게 해 주세요. 물건은 하나, 둘(두 개), 값은 일, 이(이천 원)로 센다는 점을 한 번씩 짚어 주시면 좋습니다.'}
   ],
+  dictWords:[] },
+
+/* ---- 다섯째 묶음: 할머니 댁까지 --------------------------------------
+   한국에서 타는 것(지하철, 버스, 택시, 기차)과 역, 표, 내려요.
+   버스 번호는 일, 이, 삼으로 읽습니다(칠 번 버스). 넷째 달의 길 찾기, 존댓말과
+   다섯째 달의 잇는 말, 지난 일, 앞날이 마지막 이야기에 모두 모입니다.
+   호랑이 할머니(넷째 달)가 다시 나오고, 담이 할아버지가 부탁한 안부를 토리가 전합니다. */
+{ n:13, bundle:5, title:'지하철을 타요',
+  steps:[
+    {type:'intro', who:'moi',
+     t:'토리가 드디어 한국에 도착했어! 공항에서 할머니 댁까지 가려면 무엇을 타야 할까? 오늘은 탈것을 모아 왔어.',
+     big:'지하철을 타요'},
+    {type:'pairs', title:'한국의 탈것', who:'moi',
+     t:'한국에서 많이 타는 것이야. 그림을 누르면 소리가 나.',
+     singles:[
+       {w:'지하철', pic:'ride_subway', en:'subway'}, {w:'버스', pic:'ride_bus', en:'bus'}, {w:'택시', pic:'ride_taxi', en:'taxi'},
+       {w:'기차', pic:'ride_train', en:'train'}, {w:'역', pic:'ride_station', en:'station'}, {w:'표', pic:'ride_ticket', en:'ticket'}],
+     tip:{who:'dami', t:'한국 도시에는 지하철이 거미줄처럼 이어져 있단다. 서울 지하철은 줄마다 색이 달라서, 몇 호선인지 색으로도 찾을 수 있지.'}},
+    {type:'pairs', title:'탈 때와 내릴 때', who:'moi',
+     t:'탈것에 오를 때와 나올 때 쓰는 말이야.',
+     singles:[
+       {w:'타요', pic:'ride_bus', en:'get on, ride'}, {w:'내려요', pic:'ride_getoff', en:'get off'},
+       {w:'역에서', pic:'ride_station', en:'at the station'}, {w:'도착해요', pic:'g_house', en:'arrive'}],
+     tip:{who:'tori', t:'버스를 타요, 버스에서 내려요. 탈 때는 을/를, 내릴 때는 에서야. 어디에서 내리는지 말하는 거니까.'}},
+    {type:'choose', title:'무엇을 타요?', who:'tori',
+     t:'그림을 보고 알맞은 말을 골라 봐.',
+     qs:[
+       {pic:'ride_subway', o:['지하철','기차','버스'], a:'지하철'},
+       {pic:'ride_taxi', o:['택시를 타요.','택시를 해요.'], a:'택시를 타요.', en:'I take a taxi.'},
+       {pic:'ride_getoff', o:['버스에서 내려요.','버스를 내려요.'], a:'버스에서 내려요.', en:'I get off the bus.', why:'내릴 때는 에서예요.'},
+       {pic:'ride_ticket', o:['표','돈','여권'], a:'표'},
+       {pic:'ride_station', o:['역','공항','공원'], a:'역'}]},
+    {type:'choose', mode:'pic', title:'듣고 그림을 골라요', who:'moi',
+     t:'내가 말하는 그림을 찾아 봐.',
+     qs:[
+       {say:'기차', o:['ride_subway','ride_train','ride_bus'], a:'ride_train'},
+       {say:'버스', o:['ride_bus','ride_taxi','ride_subway'], a:'ride_bus'},
+       {say:'내려요', o:['ride_ticket','ride_getoff','ride_station'], a:'ride_getoff'},
+       {say:'택시', o:['ride_train','ride_bus','ride_taxi'], a:'ride_taxi'}]},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'탈것 이름을 써 봐.',
+     items:[{w:'버스', en:'bus'}, {w:'기차', en:'train'}, {w:'택시', en:'taxi', hint:{who:'dami', t:'소리는 [택씨]지만 글자는 ‘시’란다. ㄱ 받침 뒤라서 세게 들리지.'}}]}
+  ],
+  dictWords:[{w:'지하철', en:'subway'}, {w:'버스', en:'bus'}, {w:'택시', en:'taxi'}, {w:'기차', en:'train'},
+             {w:'역', en:'station'}, {w:'표', en:'ticket'}, {w:'내려요', en:'get off'}] },
+
+{ n:14, bundle:5, title:'칠 번 버스를 타요',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'오늘은 할머니 댁 가는 길을 말해 볼 거야. 몇 번 버스를 타는지, 어디에서 내리는지. 다섯째 달에 배운 잇는 말도 다 써!',
+     big:'칠 번 버스를 타요'},
+    {type:'choose', title:'버스 번호 읽기', who:'dami',
+     t:'버스 번호는 일, 이, 삼으로 읽는단다. 번 앞의 숫자는 날짜처럼 읽지.',
+     qs:[
+       {pic:'ride_bus7', t:'몇 번 버스예요?', o:['칠 번 버스예요.','일곱 번 버스예요.'], a:'칠 번 버스예요.', en:"It's bus number 7.", why:'버스 번호는 일, 이, 삼으로 읽어요.'},
+       {pic:'n12', t:'이 번호의 버스를 타요.', o:['십이 번 버스를 타요.','열두 번 버스를 타요.'], a:'십이 번 버스를 타요.', en:'I take bus number 12.'},
+       {pic:'n3', t:'지하철 삼 호선을 타요. 몇 호선이에요?', o:['삼 호선','세 호선'], a:'삼 호선', en:'Line 3', why:'지하철 줄 번호도 일, 이, 삼으로 읽어요.'}]},
+    {type:'sequence', title:'할머니 댁 가는 길', who:'moi',
+     t:'공항에서 할머니 댁까지 가는 순서야. 차례대로 눌러 줘.',
+     qs:[
+       {cards:[{pic:'tr_airport', t:'공항에 도착했어요.'}, {pic:'ride_subway', t:'지하철을 탔어요.'}, {pic:'ride_bus7', t:'칠 번 버스로 갈아탔어요.'}, {pic:'g_house', t:'할머니 댁에 도착했어요.'}]}]},
+    {type:'choose', title:'길을 말해요', who:'tori',
+     t:'그림에 맞는 문장을 골라 봐. 잇는 말과 지난 일, 앞날을 잘 봐.',
+     qs:[
+       {pic:'ride_subway', o:['지하철을 타고 역에서 내렸어요.','지하철을 탔고 역에서 내려요.'], a:'지하철을 타고 역에서 내렸어요.', en:'I took the subway and got off at the station.', why:'고에는 ㅆ을 넣지 않고, 맨 끝이 언제인지 정해요.'},
+       {pic:'tomorrow', t:'내일 할 일이에요.', o:['내일 기차를 탈 거예요.','내일 기차를 탔어요.'], a:'내일 기차를 탈 거예요.', en:"I'll take the train tomorrow."},
+       {pic:'town', t:'할머니 댁은 어디에 있어요?', o:['공원 앞에 있어요.','앞 공원에 있어요.'], a:'공원 앞에 있어요.', en:"It's in front of the park.", why:'물건이 먼저, 자리가 나중이에요.'}]},
+    {type:'build', title:'문장을 만들어요', who:'moi',
+     t:'낱말 카드를 차례대로 눌러서 문장을 만들어 봐.',
+     qs:[
+       {s:'칠 번 버스를 탈 거예요.', tiles:['칠','번','버스를','탈','거예요.'], extra:['일곱'], en:"I'll take bus number 7."},
+       {s:'지하철을 타고 역에서 내렸어요.', tiles:['지하철을','타고','역에서','내렸어요.'], extra:['탔고'], en:'I took the subway and got off at the station.'},
+       {s:'할머니 댁은 공원 앞에 있어요.', tiles:['할머니','댁은','공원','앞에','있어요.'], extra:['집은'], en:"Grandma's house is in front of the park.", hint:'할머니의 집은 댁이에요.'},
+       {s:'먼저 지하철을 타요. 그다음에 버스를 타요.', tiles:['먼저','지하철을','타요.','그다음에','버스를','타요.'], en:'First take the subway. Then take the bus.'}]},
+    {type:'sound', title:'소리와 글자가 달라요', who:'dami',
+     t:'탈것과 번호에도 소리 비밀이 있단다.',
+     cmp:[
+       {s:'역에서', d:'여게서', n:'ㄱ 받침이 뒤로 건너가요'},
+       {s:'몇 번', d:'멷 뻔', n:'ㅊ 받침은 ㄷ처럼, 뒤의 ㅂ은 ㅃ처럼 나요'},
+       {s:'택시', d:'택씨', n:'ㄱ 받침 뒤의 ㅅ은 ㅆ처럼 나요'},
+       {s:'십 번', d:'십 뻔', n:'ㅂ 받침 뒤의 ㅂ은 ㅃ처럼 나요'}],
+     note:'받침 뒤에 오는 ㄱ, ㄷ, ㅂ, ㅅ, ㅈ은 힘이 들어가 세게 소리 나곤 한단다. 첫째 달부터 여러 번 만났지? 하지만 글자는 늘 제 모양 그대로란다.'},
+    {type:'dict', title:'듣고 써 봐요', who:'tori',
+     t:'들리는 말을 써 봐. 담이 할아버지 말을 떠올려 봐.',
+     items:[
+       {w:'역에서', en:'at the station', hint:{who:'dami', t:'소리는 [여게서]지만 ‘역’에 받침 ㄱ이 있단다.'}},
+       {w:'지하철', en:'subway'},
+       {w:'내렸어요', en:'got off', hint:{who:'dami', t:'내려요의 지난 일이란다. ‘렸’에 ㅆ을 넣거라.'}}]}
+  ],
+  dictWords:[{w:'역에서', en:'at the station'}, {w:'내렸어요', en:'got off'}, {w:'도착해요', en:'arrive'}] },
+
+{ n:15, bundle:5, title:'드디어 할머니 댁',
+  steps:[
+    {type:'intro', who:'tori',
+     t:'다섯째 달 마지막 밤이야. 드디어 할머니 댁에 왔어! 넷째 달에 만난 호랑이 할머니 기억나? 먼저 귀로만 들어 봐.',
+     big:'할머니, 안녕하세요!'},
+    {type:'dialogue', title:'이야기를 들어요', who:'tori',
+     t:'처음부터 듣기를 눌러 봐. 토리가 여행 이야기를 어떻게 이어서 하는지 들어 봐. 다 듣고 나면 글자 보기를 눌러.',
+     lines:[
+       {who:'halmi', t:'아이고, 토리야! 어서 오너라. 먼 길 오느라 애썼구나.', en:'Oh my, Tori! Come in. You came such a long way.'},
+       {who:'tori', t:'할머니, 안녕하세요! 담이 할아버지가 안부 전해 달라고 하셨어요.', en:'Hello, Grandma! Grandpa Dami asked me to send his regards.'},
+       {who:'halmi', t:'고맙구나. 그래, 어떻게 왔니?', en:'Thank you. So, how did you get here?'},
+       {who:'tori', t:'먼저 비행기를 타고 한국에 왔어요. 그리고 지하철을 탔어요.', en:'First I flew to Korea. Then I took the subway.'},
+       {who:'tori', t:'그다음에 칠 번 버스를 타고 공원 앞에서 내렸어요.', en:'Next I took bus number 7 and got off in front of the park.'},
+       {who:'moi', t:'할머니, 저도 왔어요! 까치는 날아서 왔어요!', en:'Grandma, I came too! Magpies fly here!'},
+       {who:'halmi', t:'허허, 모이도 왔구나. 배고프지? 떡을 만들었단다.', en:"Ho ho, Moi came too. You must be hungry. I made rice cakes."},
+       {who:'tori', t:'감사합니다, 잘 먹겠습니다! 내일은 할머니하고 시장에 갈 거예요.', en:"Thank you, I'll enjoy it! Tomorrow I'll go to the market with you, Grandma."}],
+     note:{who:'halmi', t:'토리가 여행 이야기를 먼저, 그리고, 그다음에로 차례차례 이어서 했구나. 어제 온 길은 왔어요, 내렸어요, 내일 할 일은 갈 거예요. 할머니한테는 높이는 말로 또박또박. 다섯 달 동안 참 많이 컸다.'}},
+    {type:'choose', title:'이야기를 떠올려요', who:'tori',
+     t:'방금 들은 이야기를 떠올려 봐. 헷갈리면 앞으로 돌아가서 다시 들어도 돼.',
+     qs:[
+       {t:'토리는 무엇을 타고 한국에 왔어요?', o:['기차','비행기','택시'], a:'비행기', why:'토리는 ‘비행기를 타고 한국에 왔어요’라고 했어요.'},
+       {t:'토리는 몇 번 버스를 탔어요?', o:['칠 번','십 번','삼 번'], a:'칠 번', why:'토리는 ‘칠 번 버스를 타고’라고 했어요.'},
+       {t:'버스에서 어디에서 내렸어요?', o:['역 앞','공원 앞','학교 앞'], a:'공원 앞', why:'토리는 ‘공원 앞에서 내렸어요’라고 했어요.'},
+       {t:'내일은 무엇을 할 거예요?', o:['시장에 갈 거예요','집에 갈 거예요','학교에 갈 거예요'], a:'시장에 갈 거예요', why:'토리는 ‘내일은 할머니하고 시장에 갈 거예요’라고 했어요.'}]},
+    {type:'choose', title:'토리가 되어 말해요', who:'tori',
+     t:'이번엔 네가 토리야. 누가 묻는지 잘 보고 대답해 봐.',
+     qs:[
+       {pic:'tr_plane', line:{who:'halmi', t:'토리야, 어떻게 왔니?'}, en:'Tori, how did you get here?', o:['비행기를 타고 왔어.','비행기를 타고 왔어요.'], a:'비행기를 타고 왔어요.', why:'할머니께는 ‘왔어요’로 말해요.'},
+       {pic:'shop5', line:{who:'moi', t:'토리야, 내일 뭐 할 거야?'}, en:'Tori, what will you do tomorrow?', o:['시장에 갈 거야.','시장에 갔어.'], a:'시장에 갈 거야.', why:'내일 일이라서 갈 거야예요. 모이는 친구라 편한 말로.'},
+       {pic:'p_halmi', t:'할머니께 떡을 받았어요. 먹기 전에 뭐라고 해요?', en:'Grandma gave you rice cakes.', o:['잘 먹겠습니다.','잘 먹었습니다.'], a:'잘 먹겠습니다.', why:'먹기 전에는 ‘잘 먹겠습니다’예요.'}]},
+    {type:'task', title:'나의 여행 이야기', who:'moi',
+     t:'다섯째 달 마지막 과제야. 다녀온 여행이나 가 보고 싶은 여행을 이야기로 들려줘. 다 하면 했어요를 눌러.',
+     lines:[
+       {when:'처음', say:'먼저 ______을 타고 ______에 갔어요.', sub:'가 보고 싶은 여행이면 갈 거예요로.'},
+       {when:'가운데', say:'그리고 ______. 그다음에 ______.', sub:'무엇을 먹었는지, 누구를 만났는지 이어서.'},
+       {when:'끝', say:'마지막에 ______. 참 ______.', sub:'그때 기분으로 끝내요: 참 기뻤어요.'}],
+     parent:'다섯째 달의 마무리 과제입니다. 실제로 다녀온 여행(한국이 아니어도 괜찮습니다)이나 가 보고 싶은 여행을 아이가 네다섯 문장으로 이어서 말하게 해 주세요. 먼저, 그리고, 그다음에, 마지막에를 넣고, 다녀온 일은 "갔어요", 앞으로의 일은 "갈 거예요"로 말하는지 봐 주시면 됩니다. 영상으로 찍어 조부모님께 보내 드리면 아이가 스스로 자랑스러워합니다. 이 과제로 다섯째 달이 끝납니다. 이야기 잇기, 친구, 앞날, 돈, 한국 방문까지 모두 해냈으니 많이 칭찬해 주세요.'}
+  ],
   dictWords:[] }
 ];
 
-/* ---- 빠른 확인: 다섯째 달은 묶음이 모두 열린 뒤에 만듭니다 ---- */
-const M5_CHECK = [];
+/* ---- 빠른 확인 ----
+   묶음마다 세 문제, 두 문제 이상 맞히면 그 묶음을 건너뜁니다. */
+const M5_CHECK = [
+  {k:1, qs:[
+    {pic:'w_umbrella', t:'비가 왔어요. ______ 우산을 썼어요.', o:['그래서','그런데'], a:'그래서'},
+    {pic:'act_eat', t:'밥을 먹었어요. 학교에 갔어요. 한 문장으로는?', o:['밥을 먹고 학교에 갔어요.','밥을 먹었고 학교에 가요.'], a:'밥을 먹고 학교에 갔어요.'},
+    {mode:'pic', say:'그런데', t:'듣고 그림을 골라요.', o:['and','so','but'], a:'but'}]},
+  {k:2, qs:[
+    {mode:'pic', say:'줄넘기', t:'듣고 그림을 골라요.', o:['pl5_bike','pl5_rope','pl5_swim'], a:'pl5_rope'},
+    {pic:'pl5_bike', t:'그림에 맞는 말을 골라요.', o:['자전거를 탈 수 있어요.','자전거를 타을 수 있어요.'], a:'자전거를 탈 수 있어요.'},
+    {pic:'p_grandpa', t:'할아버지께 같이 하자고 여쭤요.', o:['같이 놀자!','같이 하실래요?'], a:'같이 하실래요?'}]},
+  {k:3, qs:[
+    {mode:'pic', say:'여권', t:'듣고 그림을 골라요.', o:['tr_clothes','tr_passport','tr_plane'], a:'tr_passport'},
+    {pic:'tomorrow', t:'내일 한국에 ______.', o:['갔어요','갈 거예요'], a:'갈 거예요'},
+    {pic:'f_kimchi', t:'한국에서 김치를 ______.', o:['먹을 거예요','먹 거예요'], a:'먹을 거예요'}]},
+  {k:4, qs:[
+    {pic:'mo1000', t:'얼마예요?', o:['일천 원','천 원'], a:'천 원'},
+    {pic:'mo3000', t:'얼마예요?', o:['삼천 원','셋천 원'], a:'삼천 원'},
+    {pic:'tag_gimbap', t:'김밥을 사고 싶어요.', o:['김밥 일 주세요.','김밥 하나 주세요.'], a:'김밥 하나 주세요.'}]},
+  {k:5, qs:[
+    {mode:'pic', say:'지하철', t:'듣고 그림을 골라요.', o:['ride_bus','ride_subway','ride_taxi'], a:'ride_subway'},
+    {pic:'ride_bus7', t:'몇 번 버스예요?', o:['칠 번 버스예요.','일곱 번 버스예요.'], a:'칠 번 버스예요.'},
+    {pic:'ride_getoff', t:'그림에 맞는 말을 골라요.', o:['버스에서 내려요.','버스를 내려요.'], a:'버스에서 내려요.'}]}
+];
 
 /* ---- 받아쓰기 자판: 넷째 달과 같습니다 ---- */
 const M5_POOL = M4_POOL;
