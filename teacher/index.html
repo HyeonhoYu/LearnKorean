@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>선생님 방 - 달토끼</title>
+<meta property="og:title" content="선생님 방 - 달토끼">
+<meta property="og:description" content="한글학교 선생님을 위한 달토끼 활동지. 밤마다 인쇄하거나 PDF로 저장해요.">
+<meta property="og:type" content="website">
+<meta name="description" content="달토끼 선생님 방. 밤마다 새 낱말, 고르기, 문장 만들기, 받아쓰기, 가족 과제가 담긴 활동지와 답안을 인쇄하거나 PDF로 저장할 수 있습니다.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20200%20200'%3E%3Ccircle%20cx='100'%20cy='100'%20r='96'%20fill='%2317324A'/%3E%3Ccircle%20cx='100'%20cy='100'%20r='74'%20fill='%23F5E6BD'/%3E%3Cg%20fill='%2317324A'%3E%3Cpath%20d='M80%20140%20L132%20140%20L125%20164%20L87%20164%20Z'/%3E%3Cellipse%20cx='98'%20cy='118'%20rx='19'%20ry='25'/%3E%3Ccircle%20cx='90'%20cy='88'%20r='13'/%3E%3Cpath%20d='M83%2078%20C76%2060%2074%2044%2081%2038%20C88%2044%2088%2062%2090%2077%20Z'/%3E%3Cpath%20d='M95%2078%20C93%2060%2096%2044%20102%2040%20C106%2048%20101%2064%2099%2078%20Z'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/dal.css?v=20261030">
+<style>
+.troom{display:block;flex:none;max-width:980px;margin:0 auto;padding:26px 20px 60px;width:100%;box-sizing:border-box}
+.troom .chip{font-size:15px;height:auto;min-width:0;padding:6px 12px;border-width:2px;border-radius:999px}
+#monthTabs .chip{font-size:16px}
+.troom h1{font-family:var(--display);font-weight:400;font-size:36px;margin:0 0 6px}
+.troom .lede{color:#5A5248;max-width:46em;line-height:1.7}
+#monthTabs{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0}
+#monthTabs .chip.on{background:var(--hwang)}
+.tbundle{border:3px solid var(--meok);border-radius:14px;background:var(--dalbit);padding:12px 16px;margin-bottom:14px}
+.tbhead{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:6px}
+.tbhead h3{margin:0;font-family:var(--display);font-weight:400;font-size:22px}
+.tbhead .btn{margin-left:auto;font-size:16px;padding:8px 14px}
+.tnight{display:grid;grid-template-columns:5.5em 1fr auto auto;gap:8px;align-items:center;padding:8px 0;border-top:1px dashed #C9C0AE}
+.tnight code{grid-column:2 / 3;font-size:12px;color:#8C7F63;word-break:break-all}
+.tnight .tnum{color:var(--juhong);font-size:14px}
+.tnight .chip{font-size:14px;padding:4px 10px}
+@media (max-width:640px){.tnight{grid-template-columns:1fr 1fr}.tnight code{grid-column:1 / -1}}
+#preview{margin-top:24px}
+.pvhead{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+/* 활동지 한 장 */
+.sheet{background:#fff;color:#221F1C;max-width:8.5in;margin:0 auto 24px;padding:.5in .55in;box-shadow:0 2px 10px rgba(0,0,0,.15);font-size:14px;line-height:1.5}
+.shead{border-bottom:3px solid #221F1C;padding-bottom:6px;margin-bottom:10px}
+.shead > div:first-child{display:flex;justify-content:space-between;font-size:12px}
+.sbrand{font-family:var(--display);font-size:16px;color:#C1403A}
+.smeta{color:#5A5248}
+.shead .stitle{font-family:var(--display);font-weight:400;font-size:28px;margin:2px 0}
+.sname{font-size:13px}
+.snameline{display:inline-block;width:14em;border-bottom:1.5px solid #221F1C;margin:0 12px 0 4px}
+.snameline.short{width:8em}
+.sbig{font-size:16px;margin:6px 0 10px}
+.ssec{margin:12px 0;break-inside:avoid}
+.ssec h3{font-family:var(--display);font-weight:400;font-size:19px;margin:0 0 6px;border-left:6px solid #E3A93C;padding-left:8px}
+.ssec h3 small{font-family:'Noto Sans KR',sans-serif;font-size:12px;color:#5A5248;margin-left:6px}
+.swords{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sword{display:grid;grid-template-columns:96px 1fr;grid-template-rows:auto 34px;gap:2px 8px;border:1.5px solid #C9C0AE;border-radius:8px;padding:6px;break-inside:avoid}
+.sword svg{grid-row:1 / 3}
+.swtext b{font-size:18px;margin-right:6px}.swtext .sen{font-size:11px;color:#8C7F63;display:block}
+.stag{font-size:11px;color:#fff;background:#8C7F63;border-radius:4px;padding:0 4px}
+.strace,.sblank{border-bottom:1.5px dashed #8C7F63;font-size:22px;color:#D5CFC2;font-family:'Noto Sans KR',sans-serif;letter-spacing:.08em;display:inline-block}
+.sword .strace{grid-column:2}.sword .sblank{display:none}
+.sblock h4{margin:8px 0 4px;font-size:14px}
+.sqrow{display:flex;gap:10px;align-items:center;margin-bottom:6px;break-inside:avoid}
+.sq{margin:0 0 2px}
+.sline2{color:#2D6E8E}
+.sopts{display:flex;flex-wrap:wrap;gap:6px 18px}
+.sletter{display:inline-block;width:1.5em;height:1.5em;border:1.5px solid #221F1C;border-radius:50%;text-align:center;line-height:1.4em;font-size:12px;margin-right:4px}
+.spicopts{display:flex;gap:14px;margin-bottom:8px}
+.spicopt{display:flex;align-items:center}
+.sseq{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.sseqcard{border:1.5px solid #C9C0AE;border-radius:8px;padding:6px;text-align:center;position:relative;break-inside:avoid}
+.sseqcard p{margin:2px 0 0;font-size:12px}
+.sbox{position:absolute;left:6px;top:6px;width:24px;height:24px;border:2px solid #221F1C;background:#fff}
+.srule{margin:6px 0 2px;font-weight:700;font-size:13px}
+.stable{border-collapse:collapse;width:100%;margin-bottom:4px}
+.stable th,.stable td{border:1.5px solid #C9C0AE;padding:4px 8px;height:28px;text-align:left}
+.stable th{background:#F5E6BD;font-weight:500}
+.small{font-size:11px;color:#5A5248}
+.sbuild{margin-bottom:10px;break-inside:avoid}
+.snum{font-weight:700;margin-right:6px}
+.sheettile{display:inline-block;border:1.5px solid #221F1C;border-radius:6px;padding:1px 8px;margin:0 4px 4px 0;background:#FBF7EC;font-size:14px}
+.sjosa{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px}.sjrow b{font-size:16px;margin-right:6px}
+.sbuild .sen{font-size:11px;color:#8C7F63}
+.swrite{border-bottom:1.5px solid #221F1C;height:26px;margin-top:4px}
+.swrite.short{display:inline-block;width:12em;height:22px}
+.sdict{display:flex;gap:28px;flex-wrap:wrap}
+.sstory p{margin:2px 0}.sstory b{display:inline-block;min-width:4em;color:#C1403A}
+.stask{margin-top:16px;border-top:2px dashed #221F1C;padding-top:8px;break-inside:avoid}
+.scut{font-size:11px;color:#8C7F63;margin:0 0 4px}
+.stask h3{font-family:var(--display);font-weight:400;font-size:18px;margin:0 0 4px}
+.stask ul{margin:0 0 6px;padding-left:18px}.swhen{color:#2D6E8E;margin-right:4px}
+.sparent{font-size:12px;margin:0}
+.skey ul{margin:0;padding-left:18px}
+#printArea{display:none}
+@page{size:letter;margin:.4in}
+@media print{
+  html.printing-sheets body > *{display:none !important}
+  html.printing-sheets #printArea{display:block !important}
+  html.printing-sheets .sheet{box-shadow:none;margin:0;padding:0;max-width:none;break-after:page}
+  html.printing-sheets .sheet:last-child{break-after:auto}
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../">달토끼 처음으로</a>
+  <div class="title">선생님 방</div>
+</header>
+<main class="troom">
+  <h1>선생님 방</h1>
+  <p class="lede">밤마다 활동지를 인쇄하거나 PDF로 저장할 수 있습니다. 인쇄 창이 열리면 대상에서 "PDF로 저장"을 고르시면 파일로 받아집니다.
+  활동지에는 새 낱말 따라 쓰기, 고르기 문제, 문장 만들기, 받아쓰기 칸, 이야기, 잘라서 집으로 보내는 가족 과제가 들어가고,
+  정답은 마지막 장 선생님용 답안에 따로 모았습니다. 밤마다 적힌 주소는 학생에게 숙제 링크로 보내실 수 있습니다.
+  첫째 달(한글 떼기)은 내용 구조가 달라 둘째 달부터 제공합니다.</p>
+  <div id="monthTabs" role="tablist" aria-label="달 고르기"></div>
+  <div id="roomList"></div>
+  <div id="preview"></div>
+</main>
+<div id="printArea"></div>
+<!-- 공용 엔진(dal.js)이 찾는 자리입니다. 선생님 방에서는 쓰지 않아 숨겨 둡니다. -->
+<div hidden><div id="card"></div><div id="feedback"></div><button id="nextBtn"></button><input type="checkbox" id="hintToggle"><span id="hdrTitle"></span><button id="homeBtn"></button><a id="siteHome"></a></div>
+<div id="audioNote" role="status" hidden></div>
+<div id="envNote" hidden></div>
+<script src="../assets/dal.js?v=20261030"></script>
+<script src="../content/second-moon.js?v=20261030"></script>
+<script src="../content/third-moon.js?v=20261030"></script>
+<script src="../content/fourth-moon.js?v=20261030"></script>
+<script src="../content/fifth-moon.js?v=20261030"></script>
+<script src="../content/sixth-moon.js?v=20261030"></script>
+<script src="../content/seventh-moon.js?v=20261030"></script>
+<script src="../content/outings.js?v=20261030"></script>
+<script src="../assets/sheet.js?v=20261030"></script>
+<script>initRoom();</script>
+</body>
+</html>
