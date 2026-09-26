@@ -256,6 +256,12 @@ footer .coffeelink svg{width:18px;height:18px;vertical-align:-3px}
             <span class="topics">오늘의 방아. 다섯 개만 듣고 써 봐요. 틀리면 토리와 담이가 왜 틀렸는지 알려 줘요.</span>
             <span class="status" id="dictStatus"></span></div>
         </a>
+        <a class="month room" href="outings/" id="roomOut">
+          <div class="mm" id="roomOutFig"></div>
+          <div><span class="mlabel">세 밤씩 골라서</span><b>달토끼 나들이</b>
+            <span class="topics">과정 옆의 작은 여행. 전래 놀이와 한국 여행 지도가 있어요. 마음에 드는 꾸러미를 골라요.</span>
+            <span class="status" id="outStatus"></span></div>
+        </a>
       </div>
     </div>
   </section>
@@ -357,12 +363,12 @@ footer .coffeelink svg{width:18px;height:18px;vertical-align:-3px}
   </div>
 </footer>
 
-<script src="content/second-moon.js?v=20261026"></script>
-<script src="content/third-moon.js?v=20261026"></script>
-<script src="content/fourth-moon.js?v=20261026"></script>
-<script src="content/fifth-moon.js?v=20261026"></script>
-<script src="content/sixth-moon.js?v=20261026"></script>
-<script src="content/seventh-moon.js?v=20261026"></script>
+<script src="content/second-moon.js?v=20261028"></script>
+<script src="content/third-moon.js?v=20261028"></script>
+<script src="content/fourth-moon.js?v=20261028"></script>
+<script src="content/fifth-moon.js?v=20261028"></script>
+<script src="content/sixth-moon.js?v=20261028"></script>
+<script src="content/seventh-moon.js?v=20261028"></script>
 <script>
 /* ---- 진도 읽기: 한글 첫 달과 같은 키를 씁니다 ---- */
 const STORE_KEY = 'daltokki:v1:first-moon';
@@ -656,6 +662,17 @@ FRIENDS.forEach(f => {
   if(d && d.last === today) st.textContent = '오늘 방아를 찧었어요. 지금까지 ' + (Number(d.days) || 1) + '번.';
   else if(d && Number(d.days) > 0) st.textContent = '지금까지 ' + Number(d.days) + '번 방아를 찧었어요. 오늘도 해 볼까요?';
   else st.textContent = '아직 시작하기 전이에요.';
+})();
+
+/* 나들이 카드: 다녀온 밤 수를 보여 줍니다 */
+(() => {
+  const st = document.getElementById('outStatus');
+  const fig = document.getElementById('roomOutFig');
+  if(fig) fig.innerHTML = '<svg viewBox="0 0 60 60" width="60" height="60" aria-hidden="true"><circle cx="30" cy="30" r="24" fill="#F6E3A1" stroke="#221F1C" stroke-width="2.4"/><path d="M14 44 Q30 20 46 44" fill="#9DBA7E" stroke="#221F1C" stroke-width="2"/><path d="M26 18 l4 -8 l4 8" stroke="#C1403A" stroke-width="3" fill="none"/></svg>';
+  if(!st) return;
+  let n = 0;
+  try { const d = JSON.parse(localStorage.getItem('daltokki:v1:outings') || 'null'); n = d && d.stars ? Object.keys(d.stars).length : 0; } catch(e) {}
+  st.textContent = n ? '지금까지 ' + n + '밤 다녀왔어요.' : '아직 떠나기 전이에요.';
 })();
 
 /* 숙제 링크 예시를 실제 주소로 보여 줍니다 */

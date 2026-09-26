@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dal.css?v=20261026">
+<link rel="stylesheet" href="../assets/dal.css?v=20261028">
 </head>
 <body>
 
@@ -40,21 +40,22 @@
   </div>
 </div>
 
-<script src="../assets/dal.js?v=20261026"></script>
-<script src="../content/first-moon.js?v=20261026"></script>
-<script src="../content/second-moon.js?v=20261026"></script>
-<script src="../content/third-moon.js?v=20261026"></script>
-<script src="../content/fourth-moon.js?v=20261026"></script>
-<script src="../content/fifth-moon.js?v=20261026"></script>
-<script src="../content/sixth-moon.js?v=20261026"></script>
-<script src="../content/seventh-moon.js?v=20261026"></script>
+<script src="../assets/dal.js?v=20261028"></script>
+<script src="../content/first-moon.js?v=20261028"></script>
+<script src="../content/second-moon.js?v=20261028"></script>
+<script src="../content/third-moon.js?v=20261028"></script>
+<script src="../content/fourth-moon.js?v=20261028"></script>
+<script src="../content/fifth-moon.js?v=20261028"></script>
+<script src="../content/sixth-moon.js?v=20261028"></script>
+<script src="../content/seventh-moon.js?v=20261028"></script>
+<script src="../content/outings.js?v=20261028"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════
    받아쓰기실 페이지
    여러 달의 낱말을 한곳에서 연습합니다. 달이 늘어나면 MONTHS 에 등록만 하면 됩니다.
    아이가 마친 밤(또는 빠른 확인으로 통과한 밤)의 낱말만 나옵니다.
    ══════════════════════════════════════════════════════════════ */
-const MONTHS = [FIRST_MOON, SECOND_MOON, THIRD_MOON, FOURTH_MOON, FIFTH_MOON, SIXTH_MOON, SEVENTH_MOON];
+const MONTHS = [FIRST_MOON, SECOND_MOON, THIRD_MOON, FOURTH_MOON, FIFTH_MOON, SIXTH_MOON, SEVENTH_MOON, OUTINGS];
 let pool = null;
 /* 밤 고르기는 아이가 마친 밤이 있는 가장 뒤의 달로 갑니다. */
 const goNights = () => {

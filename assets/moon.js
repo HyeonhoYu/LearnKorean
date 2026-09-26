@@ -82,7 +82,7 @@ const qt = t => /[?]$/.test(t) ? '‘' + t + '’' : t;
 function waitLine(){
   const last = openBundles().pop(), nb = nextClosed();
   return (last ? qt(last.title) + ' 묶음까지 다 마쳤어. ' : '') +
-    (nb ? '다음 묶음 ' + josa(qt(nb.title), '은') + ' 곧 열려. 그동안 받아쓰기실에서 방아를 찧어 보자.' : (MOON.nextPath ? MOON.name + ' 보름달이 떴어! 이제 ' + MOON.nextName + '로 가자.' : MOON.final ? MOON.name + ' 보름달이 떴어! 달토끼의 모든 달을 다 채웠어. 앞으로도 받아쓰기실에서 방아를 찧자.' : MOON.name + ' 보름달이 떴어! ' + josa(MOON.nextName, '이') + ' 열릴 때까지 받아쓰기실에서 방아를 찧어 보자.'));
+    (nb ? '다음 묶음 ' + josa(qt(nb.title), '은') + ' 곧 열려. 그동안 받아쓰기실에서 방아를 찧어 보자.' : (MOON.nextPath ? MOON.name + ' 보름달이 떴어! 이제 ' + MOON.nextName + '로 가자.' : MOON.text.allDone ? MOON.text.allDone : MOON.final ? MOON.name + ' 보름달이 떴어! 달토끼의 모든 달을 다 채웠어. 앞으로도 받아쓰기실에서 방아를 찧자.' : MOON.name + ' 보름달이 떴어! ' + josa(MOON.nextName, '이') + ' 열릴 때까지 받아쓰기실에서 방아를 찧어 보자.'));
 }
 function showPicker(){
   seq++; night = null; curGuide = null;
@@ -1077,7 +1077,7 @@ SCREENS.result = () => {
   const title = monthDone ? josa(MOON.name, '을') + ' 다 채웠어요' : lastOfBundle && bundleDone ? ORD[B.k - 1] + ' 묶음을 다 채웠어요' : '오늘 밤 달이 조금 차올랐어요';
   const nb = nextClosed();
   const line = s < 3 ? '괜찮아. 떡은 방아를 여러 번 찧어야 만들어져. 한 번 더 해 볼까?'
-    : monthDone && !nextOpen ? MOON.name + ' 보름달이 떴어! ' + MOON.topics + '까지 모두 해냈어. ' + (B.after || '')
+    : monthDone && !nextOpen ? (MOON.text.allDone || MOON.name + ' 보름달이 떴어! ' + MOON.topics + '까지 모두 해냈어. ') + ' ' + (B.after || '')
     : nextOpen ? '잘했어. ' + (lastOfBundle ? qt(B.title) + ' 묶음을 마쳤어. ' : '') + '이제 ' + josa(nightName(nextN), '으로') + ' 가자.'
     : qt(B.title) + ' 묶음을 다 마쳤어. ' + (nb ? '다음 묶음 ' + josa(qt(nb.title), '은') + ' 곧 열려. ' : '') + (B.after || '');
   card.append(h('div', {style:'text-align:center;padding-top:10px'},
