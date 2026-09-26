@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dal.css?v=20261030">
+<link rel="stylesheet" href="../assets/dal.css?v=20261031">
 <style>
 .troom{display:block;flex:none;max-width:980px;margin:0 auto;padding:26px 20px 60px;width:100%;box-sizing:border-box}
 .troom .chip{font-size:15px;height:auto;min-width:0;padding:6px 12px;border-width:2px;border-radius:999px}
@@ -85,6 +85,12 @@
 .stask ul{margin:0 0 6px;padding-left:18px}.swhen{color:#2D6E8E;margin-right:4px}
 .sparent{font-size:12px;margin:0}
 .skey ul{margin:0;padding-left:18px}
+.sjamo{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}
+.sjrow2{display:flex;align-items:center;gap:4px;break-inside:avoid}
+.sjrow2 svg{border:1.5px solid #C9C0AE;border-radius:4px;background:#fff}
+.shint{font-size:11px;color:#8C7F63;margin-left:4px}
+.sgrid th,.sgrid td{text-align:center;font-size:18px;width:3.2em}
+.sgrid td.scell{height:40px}
 #printArea{display:none}
 @page{size:letter;margin:.4in}
 @media print{
@@ -105,7 +111,7 @@
   <p class="lede">밤마다 활동지를 인쇄하거나 PDF로 저장할 수 있습니다. 인쇄 창이 열리면 대상에서 "PDF로 저장"을 고르시면 파일로 받아집니다.
   활동지에는 새 낱말 따라 쓰기, 고르기 문제, 문장 만들기, 받아쓰기 칸, 이야기, 잘라서 집으로 보내는 가족 과제가 들어가고,
   정답은 마지막 장 선생님용 답안에 따로 모았습니다. 밤마다 적힌 주소는 학생에게 숙제 링크로 보내실 수 있습니다.
-  첫째 달(한글 떼기)은 내용 구조가 달라 둘째 달부터 제공합니다.</p>
+  첫째 달(한글 떼기)은 획순 번호가 붙은 자모 쓰기 연습장으로 드립니다.</p>
   <div id="monthTabs" role="tablist" aria-label="달 고르기"></div>
   <div id="roomList"></div>
   <div id="preview"></div>
@@ -115,15 +121,16 @@
 <div hidden><div id="card"></div><div id="feedback"></div><button id="nextBtn"></button><input type="checkbox" id="hintToggle"><span id="hdrTitle"></span><button id="homeBtn"></button><a id="siteHome"></a></div>
 <div id="audioNote" role="status" hidden></div>
 <div id="envNote" hidden></div>
-<script src="../assets/dal.js?v=20261030"></script>
-<script src="../content/second-moon.js?v=20261030"></script>
-<script src="../content/third-moon.js?v=20261030"></script>
-<script src="../content/fourth-moon.js?v=20261030"></script>
-<script src="../content/fifth-moon.js?v=20261030"></script>
-<script src="../content/sixth-moon.js?v=20261030"></script>
-<script src="../content/seventh-moon.js?v=20261030"></script>
-<script src="../content/outings.js?v=20261030"></script>
-<script src="../assets/sheet.js?v=20261030"></script>
+<script src="../assets/dal.js?v=20261031"></script>
+<script src="../content/first-moon.js?v=20261031"></script>
+<script src="../content/second-moon.js?v=20261031"></script>
+<script src="../content/third-moon.js?v=20261031"></script>
+<script src="../content/fourth-moon.js?v=20261031"></script>
+<script src="../content/fifth-moon.js?v=20261031"></script>
+<script src="../content/sixth-moon.js?v=20261031"></script>
+<script src="../content/seventh-moon.js?v=20261031"></script>
+<script src="../content/outings.js?v=20261031"></script>
+<script src="../assets/sheet.js?v=20261031"></script>
 <script>initRoom();</script>
 </body>
 </html>
